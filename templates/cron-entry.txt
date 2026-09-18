@@ -1,0 +1,30 @@
+#===============================================================================
+#
+# Script Name: cron-entry.txt
+# Title: Cron entry
+# Tags: Cron, Automation
+# Purpose: Example crontab line for a scheduled script
+#
+# Description:
+#   Minute Hour DayOfMonth Month DayOfWeek user command
+#   Validate paths, ORACLE_SID, and log directories before installing.
+#
+# Parameters:
+#   None. Edit the schedule, user, command, and log path.
+#
+# Required Privileges:
+#   - crontab for the target user
+#   - Execute permission on the command
+#
+# Output Format:
+#   - Redirect stdout and stderr to a log file
+#
+# Example Usage:
+#   15 2 * * * oracle /usr/local/bin/script.sh >> /var/log/script.log 2>&1
+#
+# Author: Aaron Myers <aaron@balddba.com>
+#
+#===============================================================================
+
+# TODO: replace with the real schedule and command.
+# * * * * * user command

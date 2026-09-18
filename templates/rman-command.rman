@@ -1,0 +1,43 @@
+--*******************************************************************************
+--
+-- Script Name: script.rman
+-- Title: RMAN command file
+-- Tags: RMAN, Backup
+-- Purpose: Describe the backup or restore action this command file performs
+--
+-- Description:
+--   Run only after validating ORACLE_SID, NLS_DATE_FORMAT, and destination
+--   paths in the wrapping shell script.
+--
+-- Parameters:
+--   None in the command file. Pass environment from the wrapping shell script.
+--
+-- Required Privileges:
+--   - SYSDBA or backup operator for the target database
+--
+-- Output Format:
+--   - RMAN console output and any configured backup logs
+--
+-- Example Usage:
+--   rman target / cmdfile=script.rman
+--
+-- Author: Aaron Myers <aaron@balddba.com>
+--
+--*******************************************************************************
+
+SET ECHO ON
+SET COMMAND ID TO 'script-name';
+
+SHOW ALL;
+
+# Validate inputs in the wrapping shell script before invoking RMAN.
+# Do not run ALLOCATE, BACKUP, RESTORE, or DELETE until those checks pass.
+
+# TODO: replace with the real RMAN commands.
+# RUN {
+#   ALLOCATE CHANNEL c1 DEVICE TYPE DISK;
+#   BACKUP DATABASE;
+#   RELEASE CHANNEL c1;
+# }
+
+EXIT;
