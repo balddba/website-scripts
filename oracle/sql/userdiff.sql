@@ -136,9 +136,6 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('✅ Users ' || v_user1 || ' and ' || v_user2 || ' have identical privileges.');
     END IF;
 
-    BEGIN
-    -- [Previous privilege comparison code remains unchanged until end]
-
     DBMS_OUTPUT.PUT_LINE('--- TABLESPACE QUOTA DIFFERENCES ---');
 
     FOR rec IN (
@@ -180,8 +177,6 @@ BEGIN
     IF NOT v_quota_diff THEN
         DBMS_OUTPUT.PUT_LINE('NONE');
     END IF;
-
-    -- [Rest of the original ending code]
 
 END;
 /

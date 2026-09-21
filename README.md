@@ -88,3 +88,25 @@ Local site development can mount this checkout and set `SCRIPTS_LOCAL_PATH` inst
 - Content type: `application/json`
 - Secret: `SCRIPTS_WEBHOOK_SECRET`
 - Event: `push`
+
+## Running tests
+
+Parser unit tests need only Python. Oracle integration tests need a disposable schema or PDB and `ORACLE_TEST_*` in `.env`.
+
+```bash
+cp .env.example .env   # fill ORACLE_TEST_*
+uv sync --group dev
+uv run pytest tests/oracle
+```
+
+Oracle script runs also create `reports/oracle-script-report.html`. The self-contained report includes every returned row, all executed SQL, DBMS output, and execution errors. Because it can contain sensitive database details, `reports/` is ignored by Git. Use `--oracle-report PATH` to choose another location.
+
+| Variable | Purpose |
+| --- | --- |
+| `ORACLE_TEST_USER` | Database user |
+| `ORACLE_TEST_PASSWORD` | Password (never commit `.env`) |
+| `ORACLE_TEST_CONNECT` | EZCONNECT string or TNS alias |
+| `ORACLE_TEST_SCHEMA` | Schema that owns fixture objects |
+| `ORACLE_TEST_ALLOW_INSTANCE_DDL` | `1` only on a throwaway PDB; enables grant-sync and `xplan.package.sql` |
+
+Missing credentials skip the live-Oracle tests instead of failing them. Tests live under `tests/` and are not imported by the website catalog.

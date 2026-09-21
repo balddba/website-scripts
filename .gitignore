@@ -5,3 +5,7 @@ __pycache__/
 .target/
 .env
 *.swp
+.venv/
+.pytest_cache/
+.ruff_cache/
+reports/

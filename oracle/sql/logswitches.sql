@@ -28,8 +28,10 @@
 *
 *******************************************************************************/
 
--- Accept variable for days, default to 7 if not specified
-DEFINE days_limit = NVL('&1','7');
+-- Accept variable for days, default to 7 if not specified.
+COLUMN c_days NEW_VALUE days_limit NOPRINT
+SELECT NVL(CAST(TRIM('&1') AS VARCHAR2(128)), '7') AS c_days
+FROM dual;
 
 set linesize 200
 set pagesize 500

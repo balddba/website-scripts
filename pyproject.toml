@@ -1,0 +1,65 @@
+[project]
+name = "website-scripts-tests"
+version = "0.0.0"
+description = "Integration tests for the website-scripts catalog"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "loguru>=0.7.0",
+    "oracledb>=2.0",
+    "pydantic>=2.0",
+    "pytest>=8",
+    "python-dotenv>=1.0",
+    "ruff>=0.8",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "oracle: requires Oracle credentials in ORACLE_TEST_*",
+    "destructive: mutates objects in ORACLE_TEST_SCHEMA",
+    "instance_ddl: requires ORACLE_TEST_ALLOW_INSTANCE_DDL=1",
+]
+
+[tool.ruff]
+line-length = 300
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "D",
+    "E",
+    "F",
+    "W",
+    "I",
+    "B",
+    "RUF",
+    "C4",
+    "PIE",
+    "PT",
+    "SIM",
+    "PERF",
+    "RET",
+    "N",
+]
+ignore = [
+    "E501",
+    "SIM108",
+    "PERF203",
+    "RET504",
+    "D203",
+    "D213",
+    "D401",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["tests"]

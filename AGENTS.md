@@ -58,3 +58,8 @@ Start from the matching template in `templates/`. Copy the boxed header and fill
 | --- | --- |
 | Layout, examples, site sync | `README.md` |
 | New-file templates | `templates/` |
+
+## Running tests
+Parser tests: `uv run pytest tests/oracle/test_script_parser.py`
+
+Oracle integration tests need `.env` with `ORACLE_TEST_USER`, `ORACLE_TEST_PASSWORD`, `ORACLE_TEST_CONNECT`, and `ORACLE_TEST_SCHEMA`. Set `ORACLE_TEST_ALLOW_INSTANCE_DDL=1` only against a disposable PDB. Incomplete credentials skip live-Oracle tests. See `README.md`.

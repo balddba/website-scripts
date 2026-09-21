@@ -154,11 +154,11 @@ DEFINE _awr_end   = "*/"
 -- Supporting types for the pipelined functions...
 --
 
-CREATE OR REPLACE TYPE xplan_ot AS OBJECT
+CREATE OR REPLACE TYPE xplan_ot FORCE AS OBJECT
 ( plan_table_output VARCHAR2(300) );
 /
 
-CREATE OR REPLACE TYPE xplan_ntt AS
+CREATE OR REPLACE TYPE xplan_ntt FORCE AS
    TABLE OF xplan_ot;
 /
 
@@ -576,4 +576,3 @@ END xplan;
 
 UNDEFINE _awr_start
 UNDEFINE _awr_end
-
