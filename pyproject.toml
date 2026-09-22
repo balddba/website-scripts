@@ -10,6 +10,7 @@ dev = [
     "loguru>=0.7.0",
     "oracledb>=2.0",
     "pydantic>=2.0",
+    "pymysql>=1.1.0",
     "pytest>=8",
     "python-dotenv>=1.0",
     "ruff>=0.8",
@@ -23,6 +24,7 @@ pythonpath = ["."]
 testpaths = ["tests"]
 markers = [
     "oracle: requires Oracle credentials in ORACLE_TEST_*",
+    "mysql: requires MySQL credentials in MYSQL_TEST_*",
     "destructive: mutates objects in ORACLE_TEST_SCHEMA",
     "instance_ddl: requires ORACLE_TEST_ALLOW_INSTANCE_DDL=1",
 ]

@@ -91,7 +91,9 @@ Local site development can mount this checkout and set `SCRIPTS_LOCAL_PATH` inst
 
 ## Running tests
 
-Parser unit tests need only Python. Oracle integration tests need a disposable schema or PDB and `ORACLE_TEST_*` in `.env`.
+Parser unit tests need only Python. Oracle and MySQL integration tests need database connection settings configured in `.env`.
+
+### Oracle Tests
 
 ```bash
 cp .env.example .env   # fill ORACLE_TEST_*
@@ -109,4 +111,25 @@ Oracle script runs also create `reports/oracle-script-report.html`. The self-con
 | `ORACLE_TEST_SCHEMA` | Schema that owns fixture objects |
 | `ORACLE_TEST_ALLOW_INSTANCE_DDL` | `1` only on a throwaway PDB; enables grant-sync and `xplan.package.sql` |
 
-Missing credentials skip the live-Oracle tests instead of failing them. Tests live under `tests/` and are not imported by the website catalog.
+### MySQL Tests
+
+You can spin up a local MySQL test instance using Docker Compose:
+
+```bash
+docker compose up -d
+cp .env.example .env   # configured for local Docker container by default
+uv sync --group dev
+uv run pytest tests/mysql
+```
+
+MySQL script runs also create `reports/mysql-script-report.html`. The self-contained report includes every returned row, all executed SQL, and execution errors. Use `--mysql-report PATH` to choose another location.
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `MYSQL_TEST_HOST` | Database hostname or IP | `127.0.0.1` |
+| `MYSQL_TEST_PORT` | Port number | `3306` |
+| `MYSQL_TEST_USER` | Database user | `root` |
+| `MYSQL_TEST_PASSWORD` | Database password | `password` |
+| `MYSQL_TEST_DATABASE` | Default database | `mysql` |
+
+Missing credentials skip the live database tests instead of failing them. Tests live under `tests/` and are not imported by the website catalog.

@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: website-scripts-mysql
+    restart: unless-stopped
+    ports:
+      - "${MYSQL_TEST_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_TEST_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_TEST_DATABASE:-mysql}
+    command:
+      - --performance-schema=ON
+      - --performance-schema-instrument=%='ON'
+      - --performance-schema-consumer-events-statements-current=ON
+      - --performance-schema-consumer-events-statements-history=ON
+      - --performance-schema-consumer-events-statements-history-long=ON
+      - --performance-schema-consumer-events-waits-current=ON
+      - --performance-schema-consumer-events-stages-current=ON
+      - --innodb-buffer-pool-size=128M
+      - --max-connections=100
+    volumes:
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
