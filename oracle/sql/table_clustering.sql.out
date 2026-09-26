@@ -1,0 +1,41 @@
+=== Table clustering context ===
+
+
+Property                     Value
+---------------------------- --------------------------------------------------------------------------------
+Owner                        SQLTEST
+Table name                   WS_SQLTEST_LOCK
+Partitioned                  NO
+IOT type                     (heap table)
+Table cluster                (none)
+Estimated rows               1
+Blocks                       1
+Empty blocks                 0
+Average row length           12
+Chained rows                 0
+Last analyzed                2026-09-22 01:19:04
+Stale statistics             YES
+TABLE_CACHED_BLOCKS          1
+
+=== Index clustering factor ===
+Quality: GOOD = CF within 2x of table blocks (storage matches index
+order). FAIR = mixed. POOR = CF near row count (scattered rows).
+N/A = bitmap or domain index. Rebuilds do not improve CF.
+
+
+Index                        Type                   Unique  Columns                                      Clust Factor   Tab Blocks         Tab Rows CF/Blocks Avg Data Blks/Key Quality  Index Analyzed
+---------------------------- ---------------------- ------- ---------------------------------------- ---------------- ------------ ---------------- --------- ----------------- -------- -------------------
+SYS_C008547                  NORMAL                 UNIQUE  ID                                                      1            1                1      1.00                 1 GOOD     2026-09-25 17:12:13
+WS_SQLTEST_LOCK_IX           NORMAL                 NONUNIQ PAYLOAD                                                 1            1                1      1.00                 1 GOOD     2026-09-25 17:12:13
+
+=== Local index partition clustering ===
+Compared to the matching table partition. Global partitioned indexes
+are listed without a quality score. Empty when the table is not
+partitioned.
+
+
+=== Attribute clustering ===
+Empty when the table has no CLUSTERING clause (12c or later).
+
+
+=== Attribute clustering keys ===

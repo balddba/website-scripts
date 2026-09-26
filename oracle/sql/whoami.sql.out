@@ -1,0 +1,21 @@
+=== Who am I ===
+
+
+Name                   Value
+---------------------- --------------------------------------------------------------------------------
+User                   SQLTEST
+UID                    135
+SID                    1186
+Serial#                20476
+Instance               homelab
+DB name                SQLTEST
+DB unique name         homelab
+Container              SQLTEST
+Con ID                 6
+Host                   Aarons-MBP.aaronslab.net
+OS user                amyers
+Program                   ?  @Aarons-MBP.aaronslab.net (TNS V1-V3)
+Logon time             2026-09-25 17:12:35
+SYSDATE                2026-09-25 17:12:35
+Is DBA                 FALSE
+Current schema         SQLTEST

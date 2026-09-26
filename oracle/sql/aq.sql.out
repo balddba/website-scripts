@@ -1,0 +1,16 @@
+Enter value for 1:
+
+
+
+=== Queue tables ===
+
+
+=== Queues ===
+
+
+=== Message counts (V$AQ) ===
+
+
+=== Persistent queue stats (GV$PERSISTENT_QUEUES) ===
+
+Enq/Deq Time are hundredths of a second spent in enqueue and dequeue.

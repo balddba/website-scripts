@@ -1,0 +1,106 @@
+===============================================================================
+Unified Audit Summary
+===============================================================================
+
+=== Unified Auditing Status ===
+
+
+Parameter                      Value
+------------------------------ --------------------
+Unified Auditing               TRUE
+
+=== Enabled Unified Audit Policies ===
+
+
+Policy Name                    Enabled Option   Entity Name               Entity Type     Success  Failure
+------------------------------ ---------------- ------------------------- --------------- -------- --------
+ORA$DICTIONARY_SENS_COL_ACCESS BY USER          ALL USERS                 USER            YES      YES
+ORA_DV_DEFAULT_PROTECTION      BY USER          ALL USERS                 USER            YES      YES
+ORA_DV_SCHEMA_CHANGES          BY USER          ALL USERS                 USER            YES      YES
+ORA_LOGIN_LOGOUT               BY USER          ALL USERS                 USER            NO       YES
+ORA_SECURECONFIG               BY USER          ALL USERS                 USER            YES      YES
+
+Enter value for status: === Audit Events by Action exit success (Recent Summary) ===
+
+
+Action Name                  Status        Event Count
+---------------------------- ------------ ------------
+SELECT                       SUCCESS               104
+ALTER TABLE                  SUCCESS                16
+PURGE RECYCLEBIN             SUCCESS                13
+GRANT                        SUCCESS                10
+CREATE DATABASE LINK         SUCCESS                 9
+CREATE USER                  SUCCESS                 9
+DROP DATABASE LINK           FAILED (2024            9
+                             )
+
+DROP DATABASE LINK           SUCCESS                 9
+DROP USER                    SUCCESS                 9
+DROP USER                    FAILED (1918            9
+                             )
+
+ALTER USER                   SUCCESS                 1
+
+=== Recent Failed Audit Events ===
+
+
+Event Timestamp     DB User              Action Name                  Ret Code Obj Schema         Object Name               Client Program
+------------------- -------------------- ---------------------------- -------- ------------------ ------------------------- -------------------------
+2026-09-25 17:06:47 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-25 17:06:15 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 15:40:42 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 15:40:33 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 12:07:43 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 12:07:35 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 12:06:09 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 12:06:01 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 12:03:12 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 12:03:03 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 12:02:09 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 12:01:45 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 12:00:39 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 11:59:57 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 11:53:55 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 11:53:46 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-21 11:48:03 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 11:47:40 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-01-17 08:17:26 SYS                  DROP PACKAGE                     4043 MDSYS              SDO_RDF_EXP_IMP           sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:17:24 SYS                  DROP PROCEDURE                   4043 MDSYS              RDF$GRANT_OLS_PRIVS       sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:17:24 SYS                  DROP FUNCTION                    4043 MDSYS              SEMCTX_DUMMY_FUNCTION     sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:17:21 SYS                  DROP PACKAGE BODY                4043 MDSYS              SEM_RDFCTX                sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:17:21 SYS                  DROP PACKAGE BODY                4043 MDSYS              SEM_OLS                   sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:17:06 SYS                  DROP FUNCTION                    4043 MDSYS              SEMIDX_DUMMY_FUNCTION     sqlplus@phxdbjab68 (TNS V
+2026-01-17 08:16:57 SYS                  DROP FUNCTION                    4043 MDSYS              SEM_MATCH_NL              sqlplus@phxdbjab68 (TNS V
+
+=== Recent Unified Audit Trail Records ===
+
+
+Event Timestamp     DB User              Action Name                  Ret Code Obj Schema         Object Name               Client Program
+------------------- -------------------- ---------------------------- -------- ------------------ ------------------------- -------------------------
+2026-09-25 17:12:06 SQLTEST              ALTER TABLE                         0 SQLTEST            WS_SQLTEST_LOCK              ?  @Aarons-MBP.aaronsl
+2026-09-25 17:07:16 SQLTEST              PURGE RECYCLEBIN                    0                                              /Users/amyers/Documents/p
+2026-09-25 17:07:15 SQLTEST              PURGE RECYCLEBIN                    0                                              /Users/amyers/Documents/p
+2026-09-25 17:06:58 SQLTEST              ALTER TABLE                         0 SQLTEST            WS_SQLTEST_LOCK           /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HISTGRM$                  /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HISTGRM$                  /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                WRI$_OPTSTAT_HISTHEAD_HIS /Users/amyers/Documents/p
+                                                                                                  TORY
+
+2026-09-25 17:06:52 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-25 17:06:50 SQLTEST              DROP USER                           0                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-25 17:06:48 SQLTEST              GRANT                               0                                              /Users/amyers/Documents/p
+2026-09-25 17:06:48 SQLTEST              CREATE USER                         0                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-25 17:06:47 SQLTEST              DROP USER                        1918                    WS_SQLTEST_GRANTEE        /Users/amyers/Documents/p
+2026-09-25 17:06:15 SQLTEST              DROP DATABASE LINK                  0 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-25 17:06:15 SQLTEST              CREATE DATABASE LINK                0 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-25 17:06:15 SQLTEST              DROP DATABASE LINK               2024 SQLTEST            WS_SQLTEST_LOOPBACK       /Users/amyers/Documents/p
+2026-09-21 15:40:58 SQLTEST              PURGE RECYCLEBIN                    0                                              /Users/amyers/Documents/p
+2026-09-21 15:40:57 SQLTEST              PURGE RECYCLEBIN                    0                                              /Users/amyers/Documents/p
+2026-09-21 15:40:50 SQLTEST              ALTER TABLE                         0 SQLTEST            WS_SQLTEST_LOCK           /Users/amyers/Documents/p
+2026-09-21 15:40:46 SQLTEST              SELECT                              0 SYS                HISTGRM$                  /Users/amyers/Documents/p
+2026-09-21 15:40:46 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p
+2026-09-21 15:40:46 SQLTEST              SELECT                              0 SYS                HIST_HEAD$                /Users/amyers/Documents/p

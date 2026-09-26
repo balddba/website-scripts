@@ -1,0 +1,6 @@
+=== Tables without a primary key ===
+
+
+Owner                          Table Name                                       Num Rows Partitioned IOT Type
+------------------------------ ---------------------------------------- ---------------- ----------- ------------
+SQLTEST                        WS_SQLTEST_PART                          (null)           YES         (null)

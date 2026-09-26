@@ -1,0 +1,16 @@
+TS Type    Tablespace		     File# File Name								  Status    Autoextend	      Size MB	     Next MB	     Max MB
+---------- ------------------------- ----- ---------------------------------------------------------------------- --------- ---------- -------------- -------------- --------------
+PERMANENT  SYSAUX			60 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/sysaux.330.124 AVAILABLE YES 		690.0		10.0   33,554,432.0
+					   4545073
+
+PERMANENT  SYSTEM			59 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/system.333.124 AVAILABLE YES 		370.0		10.0   33,554,432.0
+					   4545073
+
+TEMPORARY  TEMP 			 9 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/TEMPFILE/temp.334.12445 ONLINE    YES 		660.0		64.0	   32,768.0
+					   45073
+
+UNDO	   UNDOTBS1			61 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/undotbs1.332.1 AVAILABLE YES 		100.0		 5.0   33,554,432.0
+					   244545073
+
+
+4 rows selected.

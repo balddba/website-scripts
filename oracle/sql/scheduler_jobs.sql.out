@@ -1,0 +1,202 @@
+=== Scheduler attributes ===
+
+
+Attribute                        Value
+-------------------------------- --------------------------------------------------------------------------------
+CURRENT_OPEN_WINDOW              (null)
+DEFAULT_TIMEZONE                 PST8PDT
+EMAIL_SENDER                     (null)
+EMAIL_SERVER                     (null)
+EMAIL_SERVER_CREDENTIAL          (null)
+EMAIL_SERVER_ENCRYPTION          NONE
+EVENT_EXPIRY_TIME                (null)
+FILE_WATCHER_COUNT               0
+LAST_OBSERVED_EVENT              (null)
+LOG_HISTORY                      30
+MAX_JOB_SLAVE_PROCESSES          (null)
+
+=== Open windows ===
+
+
+=== Job counts by owner ===
+
+
+Owner                              Jobs  Enabled Disabled  Running   Broken   Failed
+------------------------------ -------- -------- -------- -------- -------- --------
+SYS                                  23       12       11        0        0        0
+
+=== Job inventory ===
+
+SYSTEM=TRUE jobs are Oracle-supplied. User jobs are listed first.
+
+
+Owner                          Job Name                       System Job Type           Action                                             Job Class                Enabled  State                Sched Type
+------------------------------ ------------------------------ ------ ------------------ -------------------------------------------------- ------------------------ -------- -------------------- ----------------
+Repeat Interval                          Last Start          Last Duration    Next Run                          Runs Failures Max Fail Comments
+---------------------------------------- ------------------- ---------------- ------------------------- ------------ -------- -------- ----------------------------------------
+SYS                            BSLN_MAINTAIN_STATS_JOB        TRUE   (null)             (null)                                             DEFAULT_JOB_CLASS        TRUE     SCHEDULED            NAMED
+(null)                                   2026-09-21 06:58:30 +000000000 00:00 2026-09-27 00:00:00 -08:0            1        0 (null)   Oracle defined automatic moving window b
+                                                             :00.081316       0
+
+SYS                            CACHE_MAINT_JOB$$              TRUE   STORED_PROCEDURE   SYS.dbms_cache.refresh_work                        DEFAULT_JOB_CLASS        FALSE    DISABLED             CALENDAR
+FREQ=MINUTELY; INTERVAL=5                (null)              (null)           (null)                               0        0 (null)   system job for managing table caches
+
+SYS                            CLEANUP_NON_EXIST_OBJ          TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 12             2026-09-25 10:58:32 +000000000 00:00 2026-09-25 22:58:32 -04:0            9        0 (null)   Cleanup Non Existent Objects in obj$
+                                                             :00.066321       0
+
+SYS                            CLEANUP_ONLINE_IND_BUILD       TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 1              2026-09-25 12:52:31 +000000000 00:00 2026-09-25 13:52:31 -08:0          103        0 (null)   Cleanup Online Index Build
+                                                             :00.013221       0
+
+SYS                            CLEANUP_ONLINE_PMO             TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 1              2026-09-25 12:53:12 +000000000 00:00 2026-09-25 13:53:11 -08:0          103        0 (null)   Cleanup after Failed PMO
+                                                             :00.019449       0
+
+SYS                            CLEANUP_TAB_IOT_PMO            TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 1              2026-09-25 12:52:41 +000000000 00:00 2026-09-25 13:52:41 -08:0          103        0 (null)   Cleanup Tables after IOT PMO
+                                                             :00.019218       0
+
+SYS                            CLEANUP_TOBE_DROPPED_IDX       TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = Daily; INTERVAL = 1               2026-09-25 03:53:21 +000000000 00:00 2026-09-26 03:53:21 -08:0            5        0 (null)   Cleanup TOBE_DROPPED Indexes
+                                                             :02.432535       0
+
+SYS                            CLEANUP_TRANSIENT_PKG          TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 2              2026-09-25 11:53:01 +000000000 00:00 2026-09-25 13:53:01 -08:0           52        0 (null)   Cleanup Transient Packages
+                                                             :00.021850       0
+
+SYS                            CLEANUP_TRANSIENT_TYPE         TRUE   PLSQL_BLOCK        declare                   myinterval number;       SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            CALENDAR
+                                                                                                                                           SS
+FREQ = HOURLY; INTERVAL = 2              2026-09-25 10:58:31 +000000000 00:00 2026-09-25 22:58:31 -04:0            9        0 (null)   Cleanup Transient Types
+                                                             :00.044076       0
+
+SYS                            FILE_WATCHER                   TRUE   (null)             (null)                                             SCHED$_LOG_ON_ERRORS_CLA FALSE    DISABLED             NAMED
+                                                                                                                                           SS
+(null)                                   (null)              (null)           (null)                               0        0 (null)   File watcher job
+
+SYS                            HM_CREATE_OFFLINE_DICTIONARY   TRUE   STORED_PROCEDURE   dbms_hm.create_offline_dictionary                  DEFAULT_JOB_CLASS        FALSE    DISABLED             WINDOW_GROUP
+(null)                                   (null)              (null)           (null)                               0        0 (null)   Create offline dictionary in ADR for DRA
+
+SYS                            LOAD_OPATCH_INVENTORY          TRUE   PLSQL_BLOCK        BEGIN dbms_qopatch.opatch_inv_refresh_job(); END;  DEFAULT_JOB_CLASS        FALSE    DISABLED             ONCE
+(null)                                   (null)              (null)           (null)                               0        0 (null)   Load opatch inventory on request
+
+SYS                            OBJNUM_REUSE_MAINTAIN_JOB$$    TRUE   STORED_PROCEDURE   sys.objnum_reuse_insert_job                        DEFAULT_JOB_CLASS        TRUE     SCHEDULED            CALENDAR
+FREQ=HOURLY                              2026-09-25 12:50:32 +000000000 00:00 2026-09-25 13:50:32 -08:0          103        0 (null)   system job for maintaining objnum_reuse
+                                                             :00.019043       0
+
+SYS                            ORA$AUTOTASK_CLEAN             TRUE   (null)             (null)                                             ORA$AUTOTASK_JOB_CLASS   TRUE     SCHEDULED            NAMED
+(null)                                   2026-09-25 03:00:01 +000000000 00:00 2026-09-26 03:00:00 PST8P            5        0 (null)   Delete obsolete AUTOTASK repository data
+                                                             :00.116104       DT
+
+SYS                            ORA$PREPLUGIN_BACKUP_JOB       TRUE   (null)             (null)                                             DEFAULT_JOB_CLASS        FALSE    DISABLED             EVENT
+(null)                                   (null)              (null)           (null)                               0        0 (null)   (null)
+
+SYS                            ORA$_ATSK_ADVPURGE             TRUE   STORED_PROCEDURE   dbms_autotask_prvt.run_autotask                    ORA$AUTOTASK_JOB_CLASS   FALSE    DISABLED             IMMEDIATE
+(null)                                   2026-09-25 10:10:29 +000000000 00:00 (null)                               4        0 (null)   MMON AutoTask
+                                                             :00.070132
+
+SYS                            ORA$_ATSK_AUTOSTS              TRUE   STORED_PROCEDURE   dbms_autotask_prvt.run_autotask                    ORA$AUTOTASK_JOB_CLASS   FALSE    DISABLED             IMMEDIATE
+(null)                                   2026-09-25 17:03:51 +000000000 00:00 (null)                             408        0 (null)   MMON AutoTask
+                                                             :01.322022
+
+SYS                            ORA$_ATSK_EVTPRG               TRUE   STORED_PROCEDURE   dbms_autotask_prvt.run_autotask                    ORA$AUTOTASK_JOB_CLASS   FALSE    DISABLED             IMMEDIATE
+(null)                                   2026-09-25 10:10:29 +000000000 00:00 (null)                               4        0 (null)   MMON AutoTask
+                                                             :00.096671
+
+SYS                            ORA$_ATSK_HUBPRG               TRUE   STORED_PROCEDURE   dbms_autotask_prvt.run_autotask                    ORA$AUTOTASK_JOB_CLASS   FALSE    DISABLED             IMMEDIATE
+(null)                                   2026-09-25 10:10:29 +000000000 00:00 (null)                               4        0 (null)   MMON AutoTask
+                                                             :00.037725
+
+SYS                            ORA$_ATSK_SMPURGE              TRUE   STORED_PROCEDURE   dbms_autotask_prvt.run_autotask                    ORA$AUTOTASK_JOB_CLASS   FALSE    DISABLED             IMMEDIATE
+(null)                                   2026-09-25 10:14:29 +000000000 00:00 (null)                               4        0 (null)   MMON AutoTask
+                                                             :00.716948
+
+SYS                            PMO_DEFERRED_GIDX_MAINT_JOB    TRUE   (null)             (null)                                             SCHED$_LOG_ON_ERRORS_CLA TRUE     SCHEDULED            NAMED
+                                                                                                                                           SS
+(null)                                   2026-09-25 02:00:02 +000000000 00:00 2026-09-26 02:00:00 PST8P            5        0 (null)   Oracle defined automatic index cleanup f
+                                                             :00.167373       DT
+
+SYS                            PURGE_LOG                      TRUE   (null)             (null)                                             DEFAULT_JOB_CLASS        TRUE     SCHEDULED            NAMED
+(null)                                   2026-09-25 03:00:01 +000000000 00:00 2026-09-26 03:00:00 PST8P            5        0 (null)   purge log job
+                                                             :00.577954       DT
+
+SYS                            XMLDB_NFS_CLEANUP_JOB          TRUE   STORED_PROCEDURE   xdb.dbms_xdbutil_int.cleanup_expired_nfsclients    XMLDB_NFS_JOBCLASS       FALSE    DISABLED             CALENDAR
+Freq=minutely;interval=5                 (null)              (null)           (null)                               0        0 (null)   (null)
+
+
+=== Currently running ===
+
+
+=== Due in the next 24 hours ===
+
+
+Owner                          Job Name                       System Enabled  State                Next Run                  Repeat Interval
+------------------------------ ------------------------------ ------ -------- -------------------- ------------------------- ----------------------------------------
+SYS                            OBJNUM_REUSE_MAINTAIN_JOB$$    TRUE   TRUE     SCHEDULED            2026-09-25 13:50:32 -08:0 FREQ=HOURLY
+                                                                                                   0
+
+SYS                            CLEANUP_ONLINE_IND_BUILD       TRUE   TRUE     SCHEDULED            2026-09-25 13:52:31 -08:0 FREQ = HOURLY; INTERVAL = 1
+                                                                                                   0
+
+SYS                            CLEANUP_TAB_IOT_PMO            TRUE   TRUE     SCHEDULED            2026-09-25 13:52:41 -08:0 FREQ = HOURLY; INTERVAL = 1
+                                                                                                   0
+
+SYS                            CLEANUP_TRANSIENT_PKG          TRUE   TRUE     SCHEDULED            2026-09-25 13:53:01 -08:0 FREQ = HOURLY; INTERVAL = 2
+                                                                                                   0
+
+SYS                            CLEANUP_ONLINE_PMO             TRUE   TRUE     SCHEDULED            2026-09-25 13:53:11 -08:0 FREQ = HOURLY; INTERVAL = 1
+                                                                                                   0
+
+SYS                            CLEANUP_TRANSIENT_TYPE         TRUE   TRUE     SCHEDULED            2026-09-25 22:58:31 -04:0 FREQ = HOURLY; INTERVAL = 2
+                                                                                                   0
+
+SYS                            CLEANUP_NON_EXIST_OBJ          TRUE   TRUE     SCHEDULED            2026-09-25 22:58:32 -04:0 FREQ = HOURLY; INTERVAL = 12
+                                                                                                   0
+
+SYS                            PMO_DEFERRED_GIDX_MAINT_JOB    TRUE   TRUE     SCHEDULED            2026-09-26 02:00:00 PST8P (null)
+                                                                                                   DT
+
+SYS                            PURGE_LOG                      TRUE   TRUE     SCHEDULED            2026-09-26 03:00:00 PST8P (null)
+                                                                                                   DT
+
+SYS                            ORA$AUTOTASK_CLEAN             TRUE   TRUE     SCHEDULED            2026-09-26 03:00:00 PST8P (null)
+                                                                                                   DT
+
+SYS                            CLEANUP_TOBE_DROPPED_IDX       TRUE   TRUE     SCHEDULED            2026-09-26 03:53:21 -08:0 FREQ = Daily; INTERVAL = 1
+                                                                                                   0
+
+
+=== Run history last 7 days ===
+
+
+Owner                          Job Name                       Status               Runs First Run           Last Run
+------------------------------ ------------------------------ ------------ ------------ ------------------- -------------------
+SYS                            BSLN_MAINTAIN_STATS_JOB        SUCCEEDED               1 2026-09-21 06:58:30 2026-09-21 06:58:30
+SYS                            OBJNUM_REUSE_MAINTAIN_JOB$$    SUCCEEDED             103 2026-09-21 06:58:30 2026-09-25 12:50:32
+SYS                            ORA$AT_OS_OPT_SY_1             SUCCEEDED               1 2026-09-21 22:18:57 2026-09-21 22:18:57
+SYS                            ORA$AT_OS_OPT_SY_10            SUCCEEDED               1 2026-09-24 22:12:55 2026-09-24 22:12:55
+SYS                            ORA$AT_OS_OPT_SY_4             SUCCEEDED               1 2026-09-22 22:10:19 2026-09-22 22:10:19
+SYS                            ORA$AT_OS_OPT_SY_7             SUCCEEDED               1 2026-09-23 22:11:38 2026-09-23 22:11:38
+SYS                            ORA$AT_SA_SPC_SY_11            SUCCEEDED               1 2026-09-24 22:12:55 2026-09-24 22:12:55
+SYS                            ORA$AT_SA_SPC_SY_2             SUCCEEDED               1 2026-09-21 22:18:57 2026-09-21 22:18:57
+SYS                            ORA$AT_SA_SPC_SY_5             SUCCEEDED               1 2026-09-22 22:10:19 2026-09-22 22:10:19
+SYS                            ORA$AT_SA_SPC_SY_8             SUCCEEDED               1 2026-09-23 22:11:38 2026-09-23 22:11:38
+SYS                            ORA$AT_SQ_SQL_SW_12            SUCCEEDED               1 2026-09-24 22:12:55 2026-09-24 22:12:55
+SYS                            ORA$AT_SQ_SQL_SW_3             SUCCEEDED               1 2026-09-21 22:18:57 2026-09-21 22:18:57
+SYS                            ORA$AT_SQ_SQL_SW_6             SUCCEEDED               1 2026-09-22 22:10:19 2026-09-22 22:10:19
+SYS                            ORA$AT_SQ_SQL_SW_9             SUCCEEDED               1 2026-09-23 22:11:38 2026-09-23 22:11:38
+SYS                            ORA$AUTOTASK_CLEAN             SUCCEEDED               5 2026-09-21 07:58:30 2026-09-25 03:00:01
+SYS                            ORA$_ATSK_ADVPURGE             SUCCEEDED               4 2026-09-22 10:10:30 2026-09-25 10:10:29
+SYS                            ORA$_ATSK_AUTOSTS              SUCCEEDED             408 2026-09-21 11:13:19 2026-09-25 17:03:51
+SYS                            ORA$_ATSK_EVTPRG               SUCCEEDED               4 2026-09-22 10:10:30 2026-09-25 10:10:29
+SYS                            ORA$_ATSK_HUBPRG               SUCCEEDED               4 2026-09-22 10:10:30 2026-09-25 10:10:29
+SYS                            ORA$_ATSK_SMPURGE              SUCCEEDED               4 2026-09-22 10:14:30 2026-09-25 10:14:29
+SYS                            PURGE_LOG                      SUCCEEDED               5 2026-09-21 07:58:30 2026-09-25 03:00:01
+
+=== Failed or stopped runs last 7 days ===

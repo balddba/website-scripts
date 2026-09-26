@@ -1,0 +1,6 @@
+=== Table Space Fragmentation ===
+
+
+Owner                Table Name                     Tablespace               Num Rows  Avg Row    Alloc MB Est Data MB   Wasted MB Wasted % Last Analyzed
+-------------------- ------------------------------ -------------------- ------------ -------- ----------- ----------- ----------- -------- -------------------
+SQLTEST              WS_SQLTEST_LOCK                SYSTEM                          1       12        0.06        0.00        0.06    100.0 2026-09-22 01:19:04

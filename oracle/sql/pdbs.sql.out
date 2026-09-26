@@ -1,0 +1,5 @@
+Con ID PDB Name 		       Inst Instance	     Open Mode	Restricted Opened	       Local Undo Status
+------ ------------------------------ ----- ---------------- ---------- ---------- ------------------- ---------- ------------
+     6 SQLTEST				  1 homelab	     READ WRITE NO	   2026-09-21 10:58:08 ########## NORMAL
+
+1 row selected.

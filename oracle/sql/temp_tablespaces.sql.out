@@ -1,0 +1,24 @@
+=== Temporary tablespaces ===
+
+
+Tablespace               Status    Extent Mgt Allocation Bigfile Blk Sz Files        Size MB         Max MB        Used MB        Free MB Pct Used
+------------------------ --------- ---------- ---------- ------- ------ ----- -------------- -------------- -------------- -------------- --------
+TEMP                     ONLINE    LOCAL      UNIFORM    NO        8192     1          660.0       32,768.0            0.0          660.0      0.0
+
+=== Tempfiles ===
+
+
+Tablespace               File# File Name                                                              Status    Enabled      Autoextend        Size MB         Max MB
+------------------------ ----- ---------------------------------------------------------------------- --------- ------------ ---------- -------------- --------------
+TEMP                         9 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/TEMPFILE/temp.334.12445 ONLINE    READ WRITE   YES                 660.0       32,768.0
+                               45073
+
+
+=== Sort segments (GV$SORT_SEGMENT) ===
+
+
+Inst    SID   Serial# Tablespace                  Users       Total MB        Used MB        Free MB    Added Ext    Max Used MB
+---- ------ --------- ------------------------ -------- -------------- -------------- -------------- ------------ --------------
+   1                  TEMP                            0          606.0            0.0          606.0          606          606.0
+
+=== Current temp segment usage (GV$TEMPSEG_USAGE) ===

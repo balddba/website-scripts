@@ -1,0 +1,49 @@
+=== ASH Active Wait Chains and Blockers (Last 30 minutes) ===
+
+
+Inst    SID   Serial# SQL ID        Event                          Wait Class      Blk Inst Blk SID Blk SQL ID     Samples    Pct
+---- ------ --------- ------------- ------------------------------ --------------- -------- ------- ------------- -------- ------
+   1     31     38521 1vp9dgzxqnxum ON CPU                         CPU                                                   3    5.1
+   1     31     14664 01uqyjyb7xctb ON CPU                         CPU                                                   3    5.1
+   1     31     57021 11xwc8jsxp3hv ON CPU                         CPU                                                   3    5.1
+   1     31     36386 5wccj7s862g04 ON CPU                         CPU                                                   2    3.4
+   1     31       679 3qbhmgchmqsaj ON CPU                         CPU                                                   2    3.4
+   1     31     14664 182nhvgwnfqqn ON CPU                         CPU                                                   2    3.4
+   1     31     14664 5wccj7s862g04 ON CPU                         CPU                                                   2    3.4
+   1     31     35276 0swvanast5muu ON CPU                         CPU                                                   2    3.4
+   1     31     26283 2z3uazp892bnj ON CPU                         CPU                                                   2    3.4
+   1     31     14664 famw2p0jmuky9 ON CPU                         CPU                                                   2    3.4
+   1     31     57021 3b6ns51tsd038 ON CPU                         CPU                                                   2    3.4
+   1     31     30399 gq3w4h4c0vtbw ON CPU                         CPU                                                   2    3.4
+   1     31     38043 a58ruan7zft2q ON CPU                         CPU                                                   1    1.7
+   1     31     39552 fw0qw4kq6cu7j ON CPU                         CPU                                                   1    1.7
+   1     31     51575 bscfjz26aqxnz ON CPU                         CPU                                                   1    1.7
+   1     31     51586 86147yy9mq9d2 ON CPU                         CPU                                                   1    1.7
+   1     31      3203 1s9xv2z6stdzm ON CPU                         CPU                                                   1    1.7
+   1     31     30074 1ht07zd52fsft ON CPU                         CPU                                                   1    1.7
+   1     31      2457 cpzn9vkkwhsfy ON CPU                         CPU                                                   1    1.7
+   1     31     36386 636vhjq87z0xk ON CPU                         CPU                                                   1    1.7
+   1     31     36386 182nhvgwnfqqn ON CPU                         CPU                                                   1    1.7
+   1     31     14664 8ravu0fxfq4c3 ON CPU                         CPU                                                   1    1.7
+   1     31     14664 636vhjq87z0xk ON CPU                         CPU                                                   1    1.7
+   1     31     14664 fvmgjrckdb7hr ON CPU                         CPU                                                   1    1.7
+   1     31     24434 3kywng531fcxu ON CPU                         CPU                                                   1    1.7
+   1     31     21423 3gn51wjxj2dkg ON CPU                         CPU                                                   1    1.7
+   1     31     22801 30w5kabc4n991 ON CPU                         CPU                                                   1    1.7
+   1     31      7080 7wj2qd0ygpzdd ON CPU                         CPU                                                   1    1.7
+   1     31     44389 8zfjq48xafj60 ON CPU                         CPU                                                   1    1.7
+   1   1361     11113 1bnk7y15kycq4 enq: TX - row lock contention  Application            1      31                      1    1.7
+   1     31     41434 9sv86w4hrvkrd Non ASM connect ASM            Other                                                 1    1.7
+   1    223     18295 1bnk7y15kycq4 enq: TX - row lock contention  Application            1      31                      1    1.7
+   1     31     24349 1qx5kt9tx3ycq ON CPU                         CPU                                                   1    1.7
+   1     31     44188 1trz0b07zk7rr online DDL delay               Other                                                 1    1.7
+   1     31     54406 b6r56hq731542 ON CPU                         CPU                                                   1    1.7
+   1     31      9187 7tbawaqpr5kt5 ON CPU                         CPU                                                   1    1.7
+   1     31      9187 0w5ckm7rwv8xv ON CPU                         CPU                                                   1    1.7
+   1     31     38521               ON CPU                         CPU                                                   1    1.7
+   1     31     38521 1vp9dgzxqnxum db file sequential read        User I/O                                              1    1.7
+   1     31      9891               ON CPU                         CPU                                                   1    1.7
+   1     31     29932 4n5pj342ud4k4 ON CPU                         CPU                                                   1    1.7
+   1     31     52970 avaxaa1fp515f ON CPU                         CPU                                                   1    1.7
+   1     31     10357 82za4vx7cqsav ON CPU                         CPU                                                   1    1.7
+   1     31     45801 bcvavm5zxh69f ON CPU                         CPU                                                   1    1.7

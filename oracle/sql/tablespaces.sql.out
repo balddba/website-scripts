@@ -1,0 +1,10 @@
+Status    Tablespace               Type       Extent Mgt Bigfile Compression    Encryption       Size GB     Used GB Pct Used
+--------- ------------------------ ---------- ---------- ------- -------------- ------------ ----------- ----------- --------
+ONLINE    SYSAUX                   PERMANENT  LOCAL      YES     DISABLED       NO                  0.67        0.63     94.0
+ONLINE    SYSTEM                   PERMANENT  LOCAL      YES     DISABLED       NO                  0.36        0.36     98.5
+ONLINE    TEMP                     TEMPORARY  LOCAL      NO      DISABLED       NO                  0.64        0.59     91.8
+ONLINE    UNDOTBS1                 UNDO       LOCAL      YES     DISABLED       NO                  0.10        0.02     22.3
+                                                                                             ----------- -----------
+sum                                                                                                 1.77        1.60
+
+4 rows selected.

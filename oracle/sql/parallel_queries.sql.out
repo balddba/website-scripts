@@ -1,0 +1,80 @@
+=== Current PX sessions (QC and slaves) ===
+
+
+=== PX processes ===
+
+
+Inst Slave        Status         PID    SID   Serial# Username             SQL ID        OS PID
+---- ------------ ---------- ------- ------ --------- -------------------- ------------- ------------
+   1 P000         AVAILABLE       85                                                     4979
+   1 P001         AVAILABLE       86                                                     4981
+   1 P002         AVAILABLE       87                                                     4983
+   1 P003         AVAILABLE       88                                                     4985
+   1 P004         AVAILABLE       89                                                     4987
+   1 P005         AVAILABLE       90                                                     4989
+   1 P006         AVAILABLE       91                                                     4993
+   1 P007         AVAILABLE      104                                                     5060
+   1 P008         AVAILABLE      105                                                     5062
+   1 P009         AVAILABLE      106                                                     5064
+   1 P00A         AVAILABLE      107                                                     5066
+   1 P00B         AVAILABLE      108                                                     5070
+   1 P00C         AVAILABLE      109                                                     5072
+   1 P00D         AVAILABLE      110                                                     5074
+   1 P00E         AVAILABLE      111                                                     5078
+   1 P00F         AVAILABLE      112                                                     5090
+   1 P00G         AVAILABLE      141                                                     3729447
+   1 P00H         AVAILABLE      143                                                     3729449
+   1 P00I         AVAILABLE      146                                                     3729451
+   1 P00J         AVAILABLE      153                                                     3729453
+
+=== PQ sysstat ===
+
+
+Inst Statistic                                           Value
+---- ---------------------------------------- ----------------
+   1 DDL Initiated                                           0
+   1 DDL Initiated (IPQ)                                     0
+   1 DFO Trees                                         191,876
+   1 DML Initiated                                           0
+   1 DML Initiated (IPQ)                                     0
+   1 Distr Msgs Recv'd                                       0
+   1 Distr Msgs Sent                                         0
+   1 Local Msgs Recv'd                               7,865,341
+   1 Local Msgs Sent                                 7,877,990
+   1 Queries Initiated                                 184,103
+   1 Queries Initiated (IPQ)                                 0
+   1 Queries Queued                                          0
+   1 Server Sessions                                 1,381,295
+   1 Servers Busy                                            0
+   1 Servers Cleaned Up                                      0
+   1 Servers Highwater                                      24
+   1 Servers Idle                                           20
+   1 Servers Shutdown                                   10,960
+   1 Servers Started                                    10,980
+   1 Sessions Active                                         0
+
+=== PQ slaves (GV$PQ_SLAVE) ===
+
+
+Inst Slave        Status     Sessions Idle Cur Busy Cur  CPU Cur
+---- ------------ ---------- -------- -------- -------- --------
+   1 P000         IDLE        190,885        0        0        0
+   1 P001         IDLE        190,881        0        0        0
+   1 P002         IDLE        189,328        0        0        0
+   1 P003         IDLE        189,324        0        0        0
+   1 P004         IDLE        185,318        0        0        0
+   1 P005         IDLE        185,318        0        0        0
+   1 P006         IDLE        103,323        0        0        0
+   1 P007         IDLE         98,510        0        0        0
+   1 P008         IDLE          7,951        5        0        0
+   1 P009         IDLE          7,951        5        0        0
+   1 P00A         IDLE          7,921        5        0        0
+   1 P00B         IDLE          7,920        5        0        0
+   1 P00C         IDLE          4,266       21        0        0
+   1 P00D         IDLE          4,266       21        0        0
+   1 P00E         IDLE          4,057       21        0        0
+   1 P00F         IDLE          4,057       21        0        0
+   1 P00G         IDLE              4        5        0        0
+   1 P00H         IDLE              3        5        0        0
+   1 P00I         IDLE              2        5        0        0
+   1 P00J         IDLE              2        5        0        0

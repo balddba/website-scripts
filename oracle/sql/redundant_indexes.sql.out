@@ -1,0 +1,4 @@
+=== Redundant indexes ===
+PREFIX = leading columns match a wider index. DUPLICATE = same columns.
+KEEP UNIQUE = unique index is a prefix of a non-unique index; do not drop
+it if it enforces uniqueness.

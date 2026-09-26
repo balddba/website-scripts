@@ -1,0 +1,21 @@
+===============================
+Oracle User Account Summary
+===============================
+
+--- ROLES ---
+Role: PDB_DBA (Admin Option: YES)
+Role: DBA (Admin Option: NO)
+
+--- SYSTEM PRIVILEGES ---
+Privilege: UNLIMITED TABLESPACE (Admin Option: NO)
+
+--- OBJECT PRIVILEGES ---
+NONE
+
+--- OWNED TABLES ---
+Table: WS_SQLTEST_LOCK
+Table: WS_SQLTEST_PART
+
+--- END OF REPORT ---
+
+PL/SQL procedure successfully completed.

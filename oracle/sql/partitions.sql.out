@@ -1,0 +1,25 @@
+=== Partition method ===
+
+
+Owner            Name                           Type   Method       Submethod       Parts Locality Alignment  Interval
+---------------- ------------------------------ ------ ------------ ------------ -------- -------- ---------- ----------------------------------------
+SQLTEST          WS_SQLTEST_PART                TABLE  RANGE        NONE                2
+
+=== Partition key columns ===
+
+
+Owner            Name                           Type    Pos Key Column
+---------------- ------------------------------ ------ ---- ------------------------------
+SQLTEST          WS_SQLTEST_PART                TABLE     1 ID
+
+=== Table partition statistics ===
+Empty when the object type is INDEX. HIGH_VALUE is a LONG expression.
+
+
+Owner            Name                           Type     Pos Partition                      Tablespace             High Value                                                   Rows       Blocks Status     Last Analyzed
+---------------- ------------------------------ ------ ----- ------------------------------ ---------------------- ------------------------------------------------ ---------------- ------------ ---------- -------------------
+SQLTEST          WS_SQLTEST_PART                TABLE      1 P_LOW                          SYSTEM                 100                                                                            NONE
+SQLTEST          WS_SQLTEST_PART                TABLE      2 P_HIGH                         SYSTEM                 MAXVALUE                                                                       NONE
+
+=== Index partition statistics ===
+Empty when the object type is TABLE. STATUS is USABLE or UNUSABLE.

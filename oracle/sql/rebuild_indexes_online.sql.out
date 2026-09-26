@@ -1,0 +1,29 @@
+=== Index tablespace and statistics before rebuild ===
+
+
+Owner            Table                        Index                          Unique     Status     Part Tablespace           Blevel    Leaf Blks         Distinct Avg Leaf/Key Avg Data/Key     Clust Factor             Rows Last Analyzed
+---------------- ---------------------------- ------------------------------ ---------- ---------- ---- -------------------- ------ ------------ ---------------- ------------ ------------ ---------------- ---------------- ------------------
+SQLTEST          WS_SQLTEST_LOCK              SYS_C008547                    UNIQUE     VALID      NO   SYSTEM                    0            1                1         1.00         1.00                1                1 2026-09-25 17:12:0
+SQLTEST          WS_SQLTEST_LOCK              WS_SQLTEST_LOCK_IX             NONUNIQUE  VALID      NO   SYSTEM                    0            1                1         1.00         1.00                1                1 2026-09-25 17:12:0
+
+=== Rebuild ONLINE TABLESPACE ===
+
+Rebuild ONLINE TABLESPACE SYSTEM for SQLTEST.WS_SQLTEST_LOCK (index: %)
+------------------------------------------------------------------------------
+ALTER INDEX "SQLTEST"."SYS_C008547" REBUILD ONLINE TABLESPACE "SYSTEM";
+OK
+ALTER INDEX "SQLTEST"."WS_SQLTEST_LOCK_IX" REBUILD ONLINE TABLESPACE "SYSTEM";
+OK
+------------------------------------------------------------------------------
+Attempted: 2
+Succeeded: 2
+Failed:    0
+Skipped:   0
+
+=== Index tablespace and statistics after rebuild ===
+
+
+Owner            Table                        Index                          Unique     Status     Part Tablespace           Blevel    Leaf Blks         Distinct Avg Leaf/Key Avg Data/Key     Clust Factor             Rows Last Analyzed
+---------------- ---------------------------- ------------------------------ ---------- ---------- ---- -------------------- ------ ------------ ---------------- ------------ ------------ ---------------- ---------------- ------------------
+SQLTEST          WS_SQLTEST_LOCK              SYS_C008547                    UNIQUE     VALID      NO   SYSTEM                    0            1                1         1.00         1.00                1                1 2026-09-25 17:12:1
+SQLTEST          WS_SQLTEST_LOCK              WS_SQLTEST_LOCK_IX             NONUNIQUE  VALID      NO   SYSTEM                    0            1                1         1.00         1.00                1                1 2026-09-25 17:12:1

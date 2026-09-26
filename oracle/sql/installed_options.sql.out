@@ -1,0 +1,94 @@
+Option							Installed
+------------------------------------------------------- ----------
+Active Data Guard					TRUE
+Adaptive Execution Plans				TRUE
+Advanced Analytics					TRUE
+Advanced Compression					TRUE
+Advanced Index Compression				TRUE
+Advanced replication					TRUE
+Application Role					TRUE
+Auto SQL Plan Management				TRUE
+Automatic Data Optimization				TRUE
+Automatic Error Mitigation				TRUE
+Automatic Storage Management				TRUE
+Backup Encryption					TRUE
+Basic Compression					TRUE
+Bit-mapped indexes					TRUE
+Block Change Tracking					TRUE
+Block Media Recovery					TRUE
+Cache Fusion Lock Accelerator				TRUE
+Centrally Managed User					TRUE
+Change Data Capture					TRUE
+Coalesce Index						TRUE
+Connection multiplexing 				TRUE
+Connection pooling					TRUE
+Cross Transportable Backups				TRUE
+DICOM							TRUE
+Data Guard for Pluggable Databases			TRUE
+Data Redaction						TRUE
+Database queuing					TRUE
+Database resource manager				TRUE
+Deferred Segment Creation				TRUE
+Duplexed backups					TRUE
+Enterprise User Security				TRUE
+Exadata Discovery					TRUE
+Export transportable tablespaces			TRUE
+Fast-Start Fault Recovery				TRUE
+File Mapping						TRUE
+Fine-grained Auditing					TRUE
+Fine-grained access control				TRUE
+Flashback Data Archive					TRUE
+Flashback Database					TRUE
+Flashback Table 					TRUE
+Global Data Services					TRUE
+Heat Map						TRUE
+In-Memory Aggregation					TRUE
+In-Memory Column Store					TRUE
+Incremental backup and recovery 			TRUE
+Instead-of triggers					TRUE
+Java							TRUE
+Join index						TRUE
+Managed Standby 					TRUE
+Materialized view rewrite				TRUE
+OLAP							TRUE
+OLAP Window Functions					TRUE
+Objects 						TRUE
+Online Index Build					TRUE
+Online Redefinition					TRUE
+Oracle Data Guard					TRUE
+Parallel backup and recovery				TRUE
+Parallel execution					TRUE
+Parallel load						TRUE
+Partitioning						TRUE
+Plan Stability						TRUE
+Point-in-time tablespace recovery			TRUE
+Privilege Analysis					TRUE
+Proxy authentication/authorization			TRUE
+Real Application Security				TRUE
+Real Application Testing				TRUE
+Result Cache						TRUE
+SQL Plan Management					TRUE
+Sample Scan						TRUE
+SecureFiles Encryption					TRUE
+Server Flash Cache					TRUE
+Snapshot time recovery					TRUE
+Spatial 						TRUE
+Streams Capture 					TRUE
+Table Clustering					TRUE
+Transparent Application Failover			TRUE
+Transparent Data Encryption				TRUE
+Transparent Sensitive Data Protection			TRUE
+Trial Recovery						TRUE
+Unified Auditing					TRUE
+Unused Block Compression				TRUE
+XStream 						TRUE
+Zone Maps						TRUE
+ASM Proxy Instance					FALSE
+I/O Server						FALSE
+Management Database					FALSE
+Oracle Database Vault					FALSE
+Oracle Label Security					FALSE
+Real Application Clusters				FALSE
+SQL Firewall						FALSE
+
+90 rows selected.

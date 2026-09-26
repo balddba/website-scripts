@@ -1,0 +1,37 @@
+ASM instance
+============
+
+INSTANCE_NAME    HOST_NAME                      VERSION        STATUS
+---------------- ------------------------------ -------------- ----------
+homelab          oracle26ai.aaronslab.net       23.0.0.0.0     OPEN
+
+1 row selected.
+
+
+ASM disk groups
+===============
+
+Disk Group               STATE        REDUNDANCY         Total GB        Free GB USABLE_FILE_GB REQUIRED_MIRROR_FREE_GB PCT_USED OFFLINE_DISKS COMPATIBILITY  DATABASE_COMPA
+------------------------ ------------ ------------ -------------- -------------- -------------- ----------------------- -------- ------------- -------------- --------------
+DATA                     CONNECTED    EXTERN                 60.0            6.0            6.0                     0.0     90.0             0 23.0.0.0.0     19.0.0.0.0
+RECO                     CONNECTED    EXTERN                 40.0            4.0            4.0                     0.0     90.0             0 23.0.0.0.0     19.0.0.0.0
+
+2 rows selected.
+
+
+ASM disks
+=========
+
+no rows selected
+
+
+ASM clients
+===========
+
+no rows selected
+
+
+Active ASM operations
+=====================
+
+no rows selected

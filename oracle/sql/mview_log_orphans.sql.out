@@ -1,0 +1,15 @@
+=== DISPLAY ONLY: do not DELETE or UNREGISTER from this script ===
+
+=== Mview logs with no registered snapshots ===
+
+
+=== SLOG$ subscribers with no matching registration ===
+
+
+=== Registrations with no SLOG$ subscriber row ===
+
+
+=== Local-site registrations with no matching mview ===
+
+
+=== Leftover SNAPTIME columns on mview log tables ===

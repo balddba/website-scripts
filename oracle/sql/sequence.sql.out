@@ -1,0 +1,3 @@
+Owner              Sequence                 Min      Max        Incr  Cyc Ord Cache Last Num        Pct Remain     Identity               Status
+------------------ ------------------------ -------- ---------- ----- --- --- ----- ------------ ------ ---------- ---------------------- -------
+SQLTEST            WS_SQLTEST_LOCK_SEQ      1        1.00E+28   1     N   N   20    1               0.0 1.00E+28                          VALID

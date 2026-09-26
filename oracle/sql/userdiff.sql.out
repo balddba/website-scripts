@@ -1,0 +1,16 @@
+===========================================
+Comparing privileges between:
+User 1: SQLTEST
+User 2: SQLTEST
+===========================================
+--- SYSTEM PRIVILEGES DIFFERENCES ---
+NONE
+--- ROLE GRANTS DIFFERENCES ---
+NONE
+--- OBJECT PRIVILEGES DIFFERENCES ---
+NONE
+??? Users SQLTEST and SQLTEST have identical privileges.
+--- TABLESPACE QUOTA DIFFERENCES ---
+NONE
+
+PL/SQL procedure successfully completed.

@@ -1,0 +1,33 @@
+=== Cluster identity ===
+
+
+Metric                       Value
+---------------------------- --------------------------------------------------------------------------------
+cluster_database             FALSE
+instance_name                homelab
+host_name                    oracle26ai.aaronslab.net
+db_unique_name               homelab
+database_role                PRIMARY
+open_mode                    READ WRITE
+
+=== Instances (GV$INSTANCE) ===
+
+
+ Inst   Num Instance         Host                             Version           Status       Parallel   Thr Inst Role          DB Role            Started
+----- ----- ---------------- -------------------------------- ----------------- ------------ -------- ----- ------------------ ------------------ -------------------
+    1     1 homelab          oracle26ai.aaronslab.net         23.0.0.0.0        OPEN         NO           1 PRIMARY_INSTANCE   PRIMARY            2026-08-10 08:01:18
+
+=== Active instances ===
+
+
+  Num Active Instance
+----- ----------------------------------------
+    1 oracle26ai.aaronslab.net:homelab
+
+=== Cluster interconnects ===
+
+Empty on most single-instance databases.
+
+=== ASM clients ===
+
+Empty when this instance is not an ASM client.

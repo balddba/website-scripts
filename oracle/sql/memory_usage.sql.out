@@ -1,0 +1,83 @@
+=== Memory management mode ===
+
+
+Memory Mode                  Mem Target GB SGA Target GB PGA Target GB
+---------------------------- ------------- ------------- -------------
+Manual                                0.00          0.00          4.00
+
+=== Memory parameters ===
+
+
+Parameter                            Value
+------------------------------------ ----------------------------------------
+db_cache_size                        0
+inmemory_size                        0
+java_pool_size                       0
+large_pool_size                      0
+lock_sga                             FALSE
+memory_max_target                    0
+memory_target                        0
+pga_aggregate_limit                  8G
+pga_aggregate_target                 4G
+pre_page_sga                         TRUE
+sga_max_size                         8G
+sga_target                           0
+shared_pool_size                     0
+streams_pool_size                    0
+
+=== SGA (V$SGA) ===
+
+
+SGA Component                                 MB          GB
+-------------------------------- --------------- -----------
+Variable Size                           5,264.00        5.14
+Database Buffers                        2,912.00        2.84
+Redo Buffers                                8.45        0.01
+Fixed Size                                  6.42        0.01
+
+=== PGA totals ===
+
+
+PGA Stat                                 Value
+---------------------------------------- ----------------------------
+aggregate PGA auto target                           0.00 MB
+aggregate PGA target parameter                      0.00 MB
+cache hit percentage                       81.30 %
+maximum PGA allocated                             502.72 MB
+over allocation count                                   0
+process count                                           1
+total PGA allocated                                 3.36 MB
+total PGA inuse                                     2.19 MB
+total freeable PGA memory                           0.88 MB
+
+Processes     PGA Used MB    PGA Alloc MB      PGA Max MB
+--------- --------------- --------------- ---------------
+      131          875.00        1,673.29        1,673.75
+
+=== Dynamic memory components ===
+
+
+Component                                 Current MB          Min MB          Max MB    User Spec MB    Opers Last Oper    Mode       Last Oper Time       Granule MB
+------------------------------------ --------------- --------------- --------------- --------------- -------- ------------ ---------- ------------------- -----------
+SGA Target                                  8,192.00        8,192.00        8,192.00        8,192.00        0 STATIC                                            16.00
+shared pool                                 5,152.00        5,056.00        5,152.00            0.00        6 GROW         IMMEDIATE  2026-09-21 09:00:15       16.00
+PGA Target                                  4,096.00        4,096.00        4,096.00        4,096.00        0 STATIC                                            16.00
+DEFAULT buffer cache                        2,784.00        2,784.00        2,880.00            0.00        6 SHRINK       IMMEDIATE  2026-09-21 09:00:15       16.00
+Shared IO Pool                                128.00          128.00          128.00          128.00        0 STATIC                                            16.00
+large pool                                     64.00           64.00           64.00            0.00        0 STATIC                                            16.00
+streams pool                                   32.00           32.00           32.00            0.00        0 STATIC                                            16.00
+
+=== MEMORY_TARGET advice (AMM) ===
+
+
+=== OS memory ===
+
+
+OS Stat                                        Value Unit
+-------------------------------- ------------------- --------
+FREE_MEMORY_BYTES                               1.37 GB
+NUM_CPUS                                        8.00
+NUM_CPU_CORES                                   8.00
+PHYSICAL_MEMORY_BYTES                          30.90 GB
+VM_IN_BYTES                                     0.00 GB
+VM_OUT_BYTES                                    0.00 GB

@@ -1,0 +1,447 @@
+Session altered.
+
+
+===============================================================================
+Data Guard primary snapshot
+===============================================================================
+
+Role check
+==========
+
+ROLE_CHECK                                                   OPEN_MODE_CHECK
+------------------------------------------------------------ ------------------------------------------------------------
+OK                                                           OK
+
+1 row selected.
+
+
+Comparison fingerprint
+======================
+Compare this block with dg_standby.sql. DBID, name, resetlogs, compatible,
+block size, charset, file counts, file# checksum, and redo sizes must match.
+
+Metric                           Value
+-------------------------------- ----------------------------------------------------------------------------------------------------
+collected_at                     2026-09-25 17:11:59
+host_name                        oracle26ai.aaronslab.net
+instance_name                    homelab
+instance_status                  OPEN
+version                          23.0.0.0.0
+startup_time                     2026-08-10 08:01:18
+thread#                          1
+dbid                             1581575902
+name                             HOMELAB
+db_unique_name                   homelab
+database_role                    PRIMARY
+open_mode                        READ WRITE
+log_mode                         ARCHIVELOG
+cdb                              YES
+platform_name                    Linux x86 64-bit
+created                          2026-02-01 14:40:30
+resetlogs_time                   2026-02-01 14:40:30
+resetlogs_change#                2051775
+current_scn                      418284629
+controlfile_type                 CURRENT
+controlfile_change#              418284594
+controlfile_time                 2026-09-25 17:11:57
+incarnation#                     2
+force_logging                    YES
+flashback_on                     YES
+dataguard_broker                 DISABLED
+protection_mode                  MAXIMUM PERFORMANCE
+protection_level                 MAXIMUM PERFORMANCE
+switchover_status                NOT ALLOWED
+guard_status                     NONE
+supplemental_log_min             NO
+supplemental_log_pk              NO
+supplemental_log_ui              NO
+supplemental_log_fk              NO
+supplemental_log_all             NO
+fs_failover_status               DISABLED
+fs_failover_target               (null)
+fs_failover_observer             (null)
+primary_db_unique_name           (null)
+compatible                       23.6.0
+db_block_size                    8192
+cluster_database                 FALSE
+remote_login_passwordfile        EXCLUSIVE
+standby_file_management          MANUAL
+log_archive_config               (null)
+fal_server                       (null)
+fal_client                       (null)
+dg_broker_start                  FALSE
+nls_characterset                 AL32UTF8
+nls_nchar_characterset           AL16UTF16
+nls_length_semantics             BYTE
+timezone_file                    timezlrg_43.dat
+timezone_version                 43
+datafile_count                   3
+datafile_total_gb                1.13
+datafile_bytes_sum               1216348160
+datafile_file#_sum               180
+datafile_max_checkpoint_scn      418271410
+tempfile_count                   1
+tempfile_total_gb                .64
+orl_groups                       3
+orl_size_mb                      200
+srl_groups                       0
+srl_size_mb                      (null)
+log_threads                      1
+
+65 rows selected.
+
+
+Instances
+=========
+
+ Inst INSTANCE_NAME    HOST_NAME                      VERSION           STATUS           INSTANCE_ROLE        Thr STARTUP_TIME
+----- ---------------- ------------------------------ ----------------- ---------------- ------------------ ----- -------------------
+    1 homelab          oracle26ai.aaronslab.net       23.0.0.0.0        OPEN             PRIMARY_INSTANCE       1 2026-08-10 08:01:18
+
+1 row selected.
+
+
+Role and protection
+===================
+
+NAME      DB_UNIQUE_NAME                 DATABASE_ROLE      OPEN_MODE              PROTECTION_MODE        PROTECTION_LEVEL       SWITCHOVER_STATUS    FORCE_LOGGING    FLASHBACK_ON Broker
+--------- ------------------------------ ------------------ ---------------------- ---------------------- ---------------------- -------------------- ---------------- ------------ ----------
+HOMELAB   homelab                        PRIMARY            READ WRITE             MAXIMUM PERFORMANCE    MAXIMUM PERFORMANCE    NOT ALLOWED          YES              YES          DISABLED
+
+1 row selected.
+
+
+Incarnations
+============
+
+  Incarn STATUS           RESETLOGS_TIME         Resetlogs SCN PRIOR_INCARNATION#
+-------- ---------------- ------------------- ---------------- ------------------
+       1 PARENT           2026-01-17 02:59:38                1                  0
+       2 CURRENT          2026-02-01 14:40:30          2051775                  1
+
+2 rows selected.
+
+
+NLS and timezone
+================
+
+PARAMETER                        Value
+-------------------------------- ----------------------------------------------------------------------------------------------------
+NLS_CHARACTERSET                 AL32UTF8
+NLS_LANGUAGE                     AMERICAN
+NLS_LENGTH_SEMANTICS             BYTE
+NLS_NCHAR_CHARACTERSET           AL16UTF16
+NLS_TERRITORY                    AMERICA
+
+5 rows selected.
+
+
+TIMEZONE_FILE        TIMEZONE_VERSION
+-------------------- ----------------
+timezlrg_43.dat                    43
+
+1 row selected.
+
+
+Data Guard configuration
+========================
+
+no rows selected
+
+
+Key parameters
+==============
+
+Name                                 Value
+------------------------------------ ------------------------------------------------------------------------------------------------------------------------
+archive_lag_target                   0
+cluster_database                     FALSE
+compatible                           23.6.0
+control_files                        +DATA/HOMELAB/CONTROLFILE/current.264.1224081631, +RECO/HOMELAB/CONTROLFILE/current.256.1224081631
+db_block_size                        8192
+db_create_file_dest                  +DATA
+db_domain                            (null)
+db_file_name_convert                 (null)
+db_files                             2500
+db_lost_write_protect                AUTO
+db_name                              homelab
+db_recovery_file_dest                +RECO
+db_recovery_file_dest_size           53687091200
+db_unique_name                       homelab
+dg_broker_config_file1               /u01/app/oracle/product/26.0.0.0/dbhome_1/dbs/dr1homelab.dat
+dg_broker_config_file2               /u01/app/oracle/product/26.0.0.0/dbhome_1/dbs/dr2homelab.dat
+dg_broker_start                      FALSE
+enable_pluggable_database            TRUE
+fal_client                           (null)
+fal_server                           (null)
+log_archive_config                   (null)
+log_archive_dest_state_1             enable
+log_archive_dest_state_10            enable
+log_archive_dest_state_11            enable
+log_archive_dest_state_12            enable
+log_archive_dest_state_13            enable
+log_archive_dest_state_14            enable
+log_archive_dest_state_15            enable
+log_archive_dest_state_16            enable
+log_archive_dest_state_17            enable
+log_archive_dest_state_18            enable
+log_archive_dest_state_19            enable
+log_archive_dest_state_2             enable
+log_archive_dest_state_20            enable
+log_archive_dest_state_21            enable
+log_archive_dest_state_22            enable
+log_archive_dest_state_23            enable
+log_archive_dest_state_24            enable
+log_archive_dest_state_25            enable
+log_archive_dest_state_26            enable
+log_archive_dest_state_27            enable
+log_archive_dest_state_28            enable
+log_archive_dest_state_29            enable
+log_archive_dest_state_3             enable
+log_archive_dest_state_30            enable
+log_archive_dest_state_31            enable
+log_archive_dest_state_4             enable
+log_archive_dest_state_5             enable
+log_archive_dest_state_6             enable
+log_archive_dest_state_7             enable
+log_archive_dest_state_8             enable
+log_archive_dest_state_9             enable
+log_archive_format                   %t_%s_%r.dbf
+log_archive_max_processes            4
+log_archive_min_succeed_dest         1
+log_file_name_convert                (null)
+max_string_size                      STANDARD
+memory_target                        0
+open_cursors                         1000
+optimizer_features_enable            23.1.0
+pga_aggregate_target                 4294967296
+processes                            1000
+remote_login_passwordfile            EXCLUSIVE
+sga_target                           0
+spfile                               +DATA/HOMELAB/PARAMETERFILE/spfile.270.1224081727
+standby_file_management              MANUAL
+undo_management                      AUTO
+undo_retention                       900
+undo_tablespace                      UNDOTBS1
+use_large_pages                      TRUE
+
+70 rows selected.
+
+
+Archive destinations
+====================
+
+ Inst  Dest STATUS           TARGET     DB_UNIQUE_NAME                 VALID_ROLE   VALID_TYPE   TRANSMIT_MOD AFFIRM    Delay DESTINATION
+----- ----- ---------------- ---------- ------------------------------ ------------ ------------ ------------ -------- ------ ------------------------------------------------------------
+ERROR
+------------------------------------------------------------
+    1     1 VALID            PRIMARY    (null)                         ALL_ROLES    ALL_LOGFILES SYNCHRONOUS  NO            0 USE_DB_RECOVERY_FILE_DEST
+(null)
+
+
+1 row selected.
+
+
+Archive destination status
+==========================
+On the primary, APPL SEQ is the last sequence applied on that standby.
+
+ Inst  Dest DEST_NAME            STATUS           TYPE             DATABASE_MODE    RECOVERY_MODE                PROTECTION_MODE        DB_UNIQUE_NAME                 Sync     GAP_STATUS         Arch Seq   Appl Seq
+----- ----- -------------------- ---------------- ---------------- ---------------- ---------------------------- ---------------------- ------------------------------ -------- ---------------- ---------- ----------
+ERROR
+------------------------------------------------------------
+    1     1 LOG_ARCHIVE_DEST_1   VALID            LOCAL            OPEN             IDLE                         MAXIMUM PERFORMANCE    (null)                         NO       (null)                 4055          0
+(null)
+
+
+1 row selected.
+
+
+Redo sequence summary
+=====================
+
+  Thr  Last Arch  Last Appl Last Time
+----- ---------- ---------- -------------------
+    1       4055 (null)     2026-09-25 17:00:53
+
+1 row selected.
+
+
+Online redo logs
+================
+
+  Grp   Thr        Seq           MB BLOCKSIZE MEMBERS ARCHIVED STATUS
+----- ----- ---------- ------------ --------- ------- -------- ----------------
+    1     1       4054          200       512       2 YES      INACTIVE
+    2     1       4055          200       512       2 YES      INACTIVE
+    3     1       4056          200       512       2 NO       CURRENT
+
+3 rows selected.
+
+
+Standby redo logs
+=================
+Primary should have standby redo logs sized at least as large as the
+online logs so role reversal does not have to add them later.
+
+no rows selected
+
+
+Redo log members
+================
+
+  Grp TYPE             STATUS           MEMBER
+----- ---------------- ---------------- --------------------------------------------------------------------------------
+    1 ONLINE           (null)           +DATA/HOMELAB/ONLINELOG/group_1.265.1224081631
+    1 ONLINE           (null)           +RECO/HOMELAB/ONLINELOG/group_1.257.1224081631
+    2 ONLINE           (null)           +DATA/HOMELAB/ONLINELOG/group_2.266.1224081631
+    2 ONLINE           (null)           +RECO/HOMELAB/ONLINELOG/group_2.258.1224081631
+    3 ONLINE           (null)           +DATA/HOMELAB/ONLINELOG/group_3.267.1224081631
+    3 ONLINE           (null)           +RECO/HOMELAB/ONLINELOG/group_3.259.1224081631
+
+6 rows selected.
+
+
+Threads
+=======
+
+  Thr STATUS           ENABLED      GROUPS INSTANCE                Seq         Ckpt SCN
+----- ---------------- ------------ ------ ---------------- ---------- ----------------
+    1 OPEN             PUBLIC            3 homelab                4056        418271410
+
+1 row selected.
+
+
+Control files
+=============
+
+STATUS           FRA      Name
+---------------- -------- --------------------------------------------------------------------------------
+(null)           NO       +DATA/HOMELAB/CONTROLFILE/current.264.1224081631
+(null)           YES      +RECO/HOMELAB/CONTROLFILE/current.256.1224081631
+
+2 rows selected.
+
+
+Tablespaces
+===========
+
+  Con   TS# TABLESPACE_NAME                BIGFILE  Files              GB
+----- ----- ------------------------------ -------- ----- ---------------
+    6     0 SYSTEM                         YES          1            0.36
+    6     1 SYSAUX                         YES          1            0.67
+    6     2 UNDOTBS1                       YES          1            0.10
+
+3 rows selected.
+
+
+Datafile inventory
+==================
+Compare FILE#, GB, and STATUS with the standby. Names often differ
+because of db_file_name_convert.
+
+  Con  FILE# STATUS           ENABLED                   GB         Ckpt SCN FILE_NAME
+----- ------ ---------------- ------------ --------------- ---------------- --------------------------------------------------------------------------------
+    6     59 SYSTEM           READ WRITE              0.36        418271410 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/system.333.1244545073
+    6     60 ONLINE           READ WRITE              0.67        418271410 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/sysaux.330.1244545073
+    6     61 ONLINE           READ WRITE              0.10        418271410 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/undotbs1.332.1244545073
+
+3 rows selected.
+
+
+Tempfile inventory
+==================
+Tempfile count and paths can differ on a standby until they are created.
+
+  Con  FILE# STATUS           ENABLED                   GB FILE_NAME
+----- ------ ---------------- ------------ --------------- --------------------------------------------------------------------------------
+    6      9 ONLINE           READ WRITE              0.64 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/TEMPFILE/temp.334.1244545073
+
+1 row selected.
+
+
+Pluggable databases
+===================
+
+ Inst   Con PDB_NAME                       OPEN_MODE              RESTRICTED OPEN_TIME
+----- ----- ------------------------------ ---------------------- ---------- -------------------
+    1     6 SQLTEST                        READ WRITE             NO         2026-09-21 10:58:08
+
+1 row selected.
+
+
+Data Guard processes
+====================
+
+ Inst Name                PID Role               Grp   Thr        Seq Status
+----- ------------ ---------- ---------------- ----- ----- ---------- ----------------
+    1 ARC0               5017 archive local        2     1       4052 CLOSING
+    1 ARC1               5019 archive redo         3     1       4053 CLOSING
+    1 ARC2               5021 archive redo         1     1       4054 CLOSING
+    1 ARC3               5023 archive redo         2     1       4055 CLOSING
+    1 LGWR               4745 log writer           0     0          0 IDLE
+    1 TMON               4924 redo transport m     0     0          0 IDLE
+                              onitor
+
+    1 TT00               5005 gap manager          0     0          0 IDLE
+    1 TT01               5007 redo transport t     0     0          0 IDLE
+                              imer
+
+    1 TT02               5025 heartbeat redo i     0     0          0 IDLE
+                              nformer
+
+
+9 rows selected.
+
+
+Managed standby / transport processes
+=====================================
+
+ Inst PROCESS      PID                      STATUS           CLIENT_PROCE   Thr        Seq  Delay
+----- ------------ ------------------------ ---------------- ------------ ----- ---------- ------
+    1 ARCH         5019                     CLOSING          ARCH             1       4053      0
+    1 ARCH         5023                     CLOSING          ARCH             1       4055      0
+    1 ARCH         5021                     CLOSING          ARCH             1       4054      0
+    1 ARCH         5017                     CLOSING          ARCH             1       4052      0
+    1 DGRD         5025                     ALLOCATED        N/A              0          0      0
+    1 DGRD         5007                     ALLOCATED        N/A              0          0      0
+    1 DGRD         5005                     ALLOCATED        N/A              0          0      0
+
+7 rows selected.
+
+
+Redo shipping summary
+=====================
+Rows with TYPE = PHYSICAL are standbys this primary is shipping to.
+GAP_STATUS and ARCH SEQ vs APPL SEQ show transport and apply lag.
+
+no rows selected
+
+
+Switchover readiness
+====================
+
+SWITCHOVER_STATUS    PROTECTION_MODE        PROTECTION_LEVEL       FORCE_LOGGING    FORCE_LOGGING_CHECK                                                    SRL_CHECK
+-------------------- ---------------------- ---------------------- ---------------- ---------------------------------------------------------------------- -------------------------------------------------------------------
+NOT ALLOWED          MAXIMUM PERFORMANCE    MAXIMUM PERFORMANCE    YES              OK                                                                     WARNING: no standby redo logs on primary (needed for role reversal)
+
+1 row selected.
+
+
+Flashback
+=========
+
+OLDEST_FLASHBACK_SCN OLDEST_FLASHBACK_TI RETENTION_TARGET FLASHBACK_SIZE_GB
+-------------------- ------------------- ---------------- -----------------
+           416725150 2026-09-24 15:27:25             1440              4.88
+
+1 row selected.
+
+
+Recent Data Guard messages
+==========================
+
+no rows selected
+
+
+End of Data Guard primary snapshot

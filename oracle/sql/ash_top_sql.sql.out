@@ -1,0 +1,55 @@
+=== Top SQL and Wait Events from ASH (Last 30 minutes) ===
+
+
+Inst SQL ID        SQL Op          State      Wait Class         Event                             Samples Pct Activity
+---- ------------- --------------- ---------- ------------------ -------------------------------- -------- ------------
+   1 75hh4hpjrngd9 SELECT          ON CPU     CPU                ON CPU                                  5          4.7
+   1 01uqyjyb7xctb SELECT          ON CPU     CPU                ON CPU                                  5          4.7
+   1 famw2p0jmuky9 SELECT          ON CPU     CPU                ON CPU                                  5          4.7
+   1 dgvpafffhmqvq SELECT          ON CPU     CPU                ON CPU                                  4          3.8
+   1 3b6ns51tsd038 SELECT          ON CPU     CPU                ON CPU                                  4          3.8
+   1 5wccj7s862g04 SELECT          ON CPU     CPU                ON CPU                                  4          3.8
+   1 76zaaknd2wm3m SELECT          ON CPU     CPU                ON CPU                                  3          2.8
+   1 11xwc8jsxp3hv SELECT          ON CPU     CPU                ON CPU                                  3          2.8
+   1 0w26sk6t6gq98 SELECT          ON CPU     CPU                ON CPU                                  3          2.8
+   1 182nhvgwnfqqn SELECT          ON CPU     CPU                ON CPU                                  3          2.8
+   1 1vp9dgzxqnxum SELECT          ON CPU     CPU                ON CPU                                  3          2.8
+   1 3qbhmgchmqsaj SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 636vhjq87z0xk SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 gq3w4h4c0vtbw SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 1bnk7y15kycq4 UPDATE          WAITING    Application        enq: TX - row lock contention           2          1.9
+   1 2z3uazp892bnj SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 dq33ppnt3sa0u SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 6xz92x9x8t04p SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 afcz0dh295hzp SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 0swvanast5muu SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 0yy78hw1jptp8 SELECT          ON CPU     CPU                ON CPU                                  2          1.9
+   1 82za4vx7cqsav SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 bcvavm5zxh69f SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 4n5pj342ud4k4 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 92q3sh2vcw50n SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 726m9sax5q1c8 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 23rjfz3pu7gfs SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 d2tswbwu6mkmp SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 6h45pbajv4jsp SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 8w1kqdp4xunja SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 15xh3n8szv6b7 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 4uz0tutmv3d30 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 7022bd05djzbz SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 5hcu403b7rsh1 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 cmn0dprz4gmvu SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 4rvtnu8c1anrm CREATE INDEX    ON CPU     CPU                ON CPU                                  1          0.9
+   1 3w4jjywufwn61 PL/SQL EXECUTE  ON CPU     CPU                ON CPU                                  1          0.9
+   1 4hdyujs45ms8u SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 c9ntjxu25mzc7 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 75krvq9gkrzct SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 754sbjg8msga4 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 1vp9dgzxqnxum SELECT          WAITING    User I/O           db file sequential read                 1          0.9
+   1 0w5ckm7rwv8xv SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 7tbawaqpr5kt5 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 b6r56hq731542 SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 1trz0b07zk7rr CREATE TABLE    WAITING    Other              online DDL delay                        1          0.9
+   1 1qx5kt9tx3ycq SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 a58ruan7zft2q SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 fw0qw4kq6cu7j SELECT          ON CPU     CPU                ON CPU                                  1          0.9
+   1 bscfjz26aqxnz SELECT          ON CPU     CPU                ON CPU                                  1          0.9

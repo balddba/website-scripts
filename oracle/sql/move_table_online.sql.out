@@ -1,0 +1,43 @@
+=== Table tablespace and statistics before move ===
+
+
+Owner            Table                          Part Tablespace                         Rows       Blocks  Avg Row Last Analyzed
+---------------- ------------------------------ ---- ---------------------- ---------------- ------------ -------- -------------------
+SQLTEST          WS_SQLTEST_LOCK                NO   SYSTEM                                1            1       12 2026-09-22 01:19:04
+
+=== Index status before move ===
+Indexes may become UNUSABLE if ONLINE cannot maintain them.
+Rebuild with rebuild_indexes.sql when STATUS is UNUSABLE.
+
+
+Index                          Unique     Status     Index Tablespace
+------------------------------ ---------- ---------- ----------------------
+SYS_C008547                    UNIQUE     VALID      SYSTEM
+WS_SQLTEST_LOCK_IX             NONUNIQUE  VALID      SYSTEM
+
+=== MOVE ONLINE TABLESPACE ===
+
+MOVE ONLINE TABLESPACE SYSTEM for SQLTEST.WS_SQLTEST_LOCK
+------------------------------------------------------------------------------
+ALTER TABLE "SQLTEST"."WS_SQLTEST_LOCK" MOVE ONLINE TABLESPACE "SYSTEM";
+OK
+------------------------------------------------------------------------------
+Attempted: 1
+Succeeded: 1
+Failed:    0
+
+=== Table tablespace and statistics after move ===
+
+
+Owner            Table                          Part Tablespace                         Rows       Blocks  Avg Row Last Analyzed
+---------------- ------------------------------ ---- ---------------------- ---------------- ------------ -------- -------------------
+SQLTEST          WS_SQLTEST_LOCK                NO   SYSTEM                                1            1       12 2026-09-22 01:19:04
+
+=== Index status after move ===
+Rebuild UNUSABLE indexes with rebuild_indexes.sql.
+
+
+Index                          Unique     Status     Index Tablespace
+------------------------------ ---------- ---------- ----------------------
+SYS_C008547                    UNIQUE     VALID      SYSTEM
+WS_SQLTEST_LOCK_IX             NONUNIQUE  VALID      SYSTEM

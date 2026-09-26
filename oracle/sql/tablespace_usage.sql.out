@@ -1,0 +1,7 @@
+TABLESPACE_NAME 		  SIZE_MB    FREE_MB   PCT_USED
+------------------------------ ---------- ---------- ----------
+SYSTEM				      370	   5	   98.5
+SYSAUX				      690	  41	     94
+UNDOTBS1			      100	  78	   22.3
+
+3 rows selected.

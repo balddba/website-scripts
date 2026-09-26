@@ -1,0 +1,20 @@
+=== Instance ===
+
+
+Instance         Host                     Startup             Uptime Hrs
+---------------- ------------------------ ------------------- ----------
+homelab          oracle26ai.aaronslab.net 2026-08-10 08:01:18    1,113.2
+
+=== Buffer cache hit ratio ===
+
+
+   DB Block Gets  Consistent Gets    Logical Reads   Physical Reads       Phys Cache      Phys Direct Classic Hit % Cache Hit %
+---------------- ---------------- ---------------- ---------------- ---------------- ---------------- ------------- -----------
+       6,618,839       19,060,327       25,679,166          671,860           80,703          591,157         97.38       99.68
+
+=== Buffer pool statistics ===
+
+
+Pool         Blk Size        Size MB      Buffers    DB Block Gets  Consistent Gets   Physical Reads Classic Hit % Free Buf Wait Write Cmpl Wait Buf Busy Wait
+------------ -------- -------------- ------------ ---------------- ---------------- ---------------- ------------- ------------- --------------- -------------
+DEFAULT         8,192        2,784.0      340,692      570,308,317   26,029,277,334       21,556,328         99.92             0               0    12,176,134

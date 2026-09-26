@@ -1,0 +1,15 @@
+Remaining undo (used_ublk / used_urec) falls as rollback proceeds.
+Re-run the script to measure progress. Longops and fast-start recovery
+include percent complete when Oracle publishes it.
+
+
+=== Transactions rolling back ===
+
+
+=== Rollback longops (percent complete) ===
+
+
+=== Fast-start transaction recovery ===
+
+
+=== Fast-start recovery servers ===

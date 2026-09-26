@@ -1,0 +1,18 @@
+=== Current DDL locks ===
+
+
+Owner			 Object Name			      Object Type	 Held		Requested	   SID Serial# Username 	    Machine			   Program
+------------------------ ------------------------------------ ------------------ -------------- -------------- ------- ------- -------------------- ------------------------------ -----------------------------------
+Module			       SQL ID
+------------------------------ -------------
+SQLTEST 		 SQLTEST			      18		 Null		None		   968	  8721 SQLTEST		    Aarons-MBP.aaronslab.net	      ?  @Aarons-MBP.aaronslab.net (TN
+SQL*Plus		       3qbhmgchmqsaj
+
+SYS			 DATABASE			      18		 Null		None		   968	  8721 SQLTEST		    Aarons-MBP.aaronslab.net	      ?  @Aarons-MBP.aaronslab.net (TN
+SQL*Plus		       3qbhmgchmqsaj
+
+			 SQLTEST			      73		 Share		None		   968	  8721 SQLTEST		    Aarons-MBP.aaronslab.net	      ?  @Aarons-MBP.aaronslab.net (TN
+SQL*Plus		       3qbhmgchmqsaj
+
+
+3 rows selected.

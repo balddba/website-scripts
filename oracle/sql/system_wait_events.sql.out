@@ -1,0 +1,55 @@
+=== System Non-Idle Wait Events ===
+
+
+Inst Event                                    Wait Class          Total Waits     Timeouts Time Waited (s) Avg Wait (ms) Pct Time
+---- ---------------------------------------- ------------------ ------------ ------------ --------------- ------------- --------
+   1 enq: TX - row lock contention            Application                  69            0          170.08      2,464.88    63.82
+   1 SQL*Net break/reset to client            Application               1,260            0           16.37         12.99     6.14
+   1 db file sequential read                  User I/O                 57,295            0           13.05          0.23     4.90
+   1 online DDL delay                         Other                        46            0           10.99        239.01     4.13
+   1 external table read                      User I/O                      2            0            7.79      3,896.21     2.92
+   1 control file sequential read             System I/O               41,970            0            5.87          0.14     2.20
+   1 ASM file metadata operation              Other                       473            0            4.77         10.08     1.79
+   1 db file parallel read                    User I/O                 21,975            0            4.74          0.22     1.78
+   1 CSS initialization                       Other                       665            0            2.84          4.28     1.07
+   1 enq: WF - contention                     Other                         2            0            2.44      1,218.13     0.91
+   1 library cache: bucket mutex X            Concurrency                 855            0            2.15          2.52     0.81
+   1 library cache: mutex X                   Concurrency               3,681            0            2.08          0.57     0.78
+   1 Allocate UGA memory from OS              Other                   155,053            0            1.75          0.01     0.66
+   1 db file scattered read                   User I/O                  3,592            0            1.74          0.48     0.65
+   1 Disk file operations I/O                 User I/O                  6,946            0            1.34          0.19     0.50
+   1 Non ASM connect ASM                      Other                       124            0            1.22          9.85     0.46
+   1 Free private memory to OS                Other                     2,090            0            1.22          0.58     0.46
+   1 change tracking file synchronous read    Other                     7,046            0            0.88          0.12     0.33
+   1 direct path read temp                    User I/O                  7,106            0            0.82          0.11     0.31
+   1 local write wait                         User I/O                  2,383            0            0.79          0.33     0.30
+   1 direct path read                         User I/O                  2,419            0            0.78          0.32     0.29
+   1 latch: shared pool                       Concurrency               1,349            0            0.75          0.56     0.28
+   1 CSS operation: query                     Other                     3,966            0            0.70          0.18     0.26
+   1 ASM IO for non-blocking poll             User I/O                 95,131            0            0.67          0.01     0.25
+   1 KSV master wait                          Other                       801          313            0.61          0.76     0.23
+   1 log file sync                            Commit                      697            0            0.60          0.86     0.23
+   1 DLM cross inst call completion           Other                        33            0            0.60         18.04     0.22
+   1 PX Deq: Join ACK                         Other                     1,064            0            0.57          0.53     0.21
+   1 CSS operation: action                    Other                       674            0            0.53          0.79     0.20
+   1 Query ASM view                           Other                        78            0            0.50          6.42     0.19
+   1 Allocate CGA memory from OS              Other                    43,688            0            0.48          0.01     0.18
+   1 row cache mutex                          Concurrency                 607            0            0.45          0.75     0.17
+   1 oracle thread bootstrap                  Other                        15            0            0.41         27.32     0.15
+   1 SQL*Net message from dblink              Network                     117            0            0.40          3.41     0.15
+   1 enq: CR - block range reuse ckpt         Other                       965            0            0.39          0.41     0.15
+   1 enq: AE - lock                           Other                        66            0            0.36          5.52     0.14
+   1 Allocate PGA memory from OS              Other                    30,757            0            0.35          0.01     0.13
+   1 direct path write temp                   User I/O                  1,993            0            0.33          0.17     0.13
+   1 undo segment extension                   Configuration                59           58            0.29          4.88     0.11
+   1 CRS call completion                      Other                         1            0            0.24        243.38     0.09
+   1 row cache lock                           Concurrency                  77            0            0.24          3.07     0.09
+   1 PX Deq: Slave Session Stats              Other                     2,123            0            0.23          0.11     0.09
+   1 enq: RO - fast object reuse              Application                 513            0            0.22          0.43     0.08
+   1 enq: PS - contention                     Other                       550            0            0.22          0.40     0.08
+   1 reliable message                         Other                     1,366            0            0.21          0.15     0.08
+   1 direct path write                        User I/O                  2,414            0            0.21          0.09     0.08
+   1 library cache load lock                  Concurrency                  27            0            0.19          6.96     0.07
+   1 latch: lob segment dispenser latch       Other                        43            0            0.18          4.28     0.07
+   1 resmgr:cpu quantum                       Scheduler                    29            0            0.18          6.30     0.07
+   1 enq: KO - fast object checkpoint         Application                 153            0            0.15          1.01     0.06

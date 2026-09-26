@@ -1,0 +1,96 @@
+=== Table summary and statistics ===
+
+
+Property               Value
+---------------------- --------------------------------------------------------------------------------
+Owner                  SQLTEST
+Table name             WS_SQLTEST_LOCK
+Tablespace             SYSTEM
+Partitioned            NO
+Temporary              N
+Compression            DISABLED
+Compress for           (none)
+Estimated rows         1
+Blocks                 1
+Average row length     12
+Sample size            1
+Last analyzed          2026-09-22 01:19:04
+Stale statistics       YES
+Total size (MB)        0.19
+
+=== Allocated storage ===
+
+
+Segment Category         Size MB
+---------------- ---------------
+INDEX                       0.13
+TABLE                       0.06
+TOTAL                       0.19
+
+=== Partition details ===
+
+
+=== LOB details ===
+
+
+=== Columns ===
+
+
+   # COLUMN_NAME                  DATA_TYPE                    NULLABLE Identity Virtual  Default (truncated)
+---- ---------------------------- ---------------------------- -------- -------- -------- ----------------------------------------
+   1 ID                           NUMBER                       NO       NO       NO
+   2 PAYLOAD                      VARCHAR2(64 BYTE)            NO       NO       NO
+
+=== Column statistics and histograms ===
+
+
+Column                           NUM_DISTINCT        NUM_NULLS      DENSITY  Buckets HISTOGRAM               Sample Size Last Analyzed
+---------------------------- ---------------- ---------------- ------------ -------- ------------------ ---------------- -------------------
+ID                                          1                0   1.0000E+00        1 NONE                              1 2026-09-22 01:19:04
+PAYLOAD                                     1                0   1.0000E+00        1 NONE                              1 2026-09-22 01:19:04
+
+=== Object modification statistics ===
+
+
+Partition                             INSERTS          UPDATES          DELETES Last Modified       TRUNCATED
+---------------------------- ---------------- ---------------- ---------------- ------------------- ---------
+(table)                                     0               10                0 2026-09-25 17:07:33 NO
+
+=== Index definitions ===
+
+
+INDEX_OWNER        INDEX_NAME                   INDEX_TYPE       Unique Status   Visible Columns (truncated)                                            INDEX_SIZE_MB
+------------------ ---------------------------- ---------------- ------ -------- ------- ------------------------------------------------------------ ---------------
+SQLTEST            SYS_C008547                  NORMAL           UNIQUE VALID    VISIBLE ID                                                                      0.06
+SQLTEST            WS_SQLTEST_LOCK_IX           NORMAL           NONUNI VALID    VISIBLE PAYLOAD                                                                 0.06
+
+=== Index statistics ===
+
+
+INDEX_NAME                      DISTINCT_KEYS      LEAF_BLOCKS CLUSTERING_FACTOR INDEX_ANALYZED
+---------------------------- ---------------- ---------------- ----------------- -------------------
+SYS_C008547                                 1                1                 1 2026-09-25 17:07:15
+WS_SQLTEST_LOCK_IX                          1                1                 1 2026-09-25 17:07:15
+
+=== Constraints ===
+
+
+CONSTRAINT_NAME              Type         Columns (truncated)                                Status   VALIDATED  DEFERRABLE DEFERRED
+---------------------------- ------------ -------------------------------------------------- -------- ---------- ---------- --------
+SYS_C008547                  PRIMARY KEY  ID                                                 ENABLED  VALIDATED  NOT DEFERR IMMEDIAT
+SYS_C008546                  CHECK        PAYLOAD                                            ENABLED  VALIDATED  NOT DEFERR IMMEDIAT
+
+=== Foreign keys on this table ===
+
+
+=== Foreign keys referencing this table ===
+
+
+=== Triggers ===
+
+
+TRIGGER_NAME                 TRIGGER_TYPE           Triggering Event                    Status   Action     When Clause (truncated)
+---------------------------- ---------------------- ----------------------------------- -------- ---------- --------------------------------------------------
+WS_SQLTEST_LOCK_TRG          BEFORE EACH ROW        INSERT                              ENABLED  PL/SQL
+
+=== Referencing views and materialized views ===

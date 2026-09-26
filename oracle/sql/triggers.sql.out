@@ -1,0 +1,6 @@
+LIST triggers for SQLTEST.WS_SQLTEST_LOCK (category: ALL)
+------------------------------------------------------------------------------
+SQLTEST.WS_SQLTEST_LOCK  WS_SQLTEST_LOCK_TRG  TYPE=BEFORE EACH ROW  EVENT=INSERT
+STATUS=ENABLED
+------------------------------------------------------------------------------
+Matched: 1

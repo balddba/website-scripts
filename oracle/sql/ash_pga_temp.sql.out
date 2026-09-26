@@ -1,0 +1,55 @@
+=== Top PGA and Temp Space Consumers from ASH (Last 30 minutes) ===
+
+
+Inst    SID   Serial# SQL ID        SQL Op               Max PGA MB     Max Temp MB      Avg PGA MB     Avg Temp MB  Samples
+---- ------ --------- ------------- --------------- --------------- --------------- --------------- --------------- --------
+   1     31     26283 2z3uazp892bnj SELECT                    63.94            0.00           46.69            0.00        2
+   1    786     48050                                         63.12            0.00           63.12            0.00        1
+   1     31     38521 1vp9dgzxqnxum SELECT                    54.13            0.00           40.16            0.00        4
+   1    786     48050 0w26sk6t6gq98 SELECT                    53.12            0.00           51.30            0.00        3
+   1     31     14664 5wccj7s862g04 SELECT                    50.38            0.00           43.76            0.00        2
+   1     31     36386 5wccj7s862g04 SELECT                    49.37            0.00           43.62            0.00        2
+   1     31     14664 182nhvgwnfqqn SELECT                    46.76            0.00           33.35            0.00        2
+   1     31     35276 0swvanast5muu SELECT                    45.51            0.00           33.26            0.00        2
+   1    794      6588                                         44.63            0.00           44.63            0.00        1
+   1     24     57570 d2tswbwu6mkmp SELECT                    33.38            0.00           33.38            0.00        1
+   1    968      9044 afcz0dh295hzp SELECT                    31.76            0.00           31.76            0.00        1
+   1     31     52970 avaxaa1fp515f SELECT                    24.94            0.00           24.94            0.00        1
+   1     31      2457 cpzn9vkkwhsfy SELECT                    24.07            0.00           24.07            0.00        1
+   1    968     64672 afcz0dh295hzp SELECT                    24.01            0.00           24.01            0.00        1
+   1     24     23003 famw2p0jmuky9 SELECT                    22.93            0.00           22.93            0.00        1
+   1     24     51657 4uz0tutmv3d30 SELECT                    22.57            0.00           22.57            0.00        1
+   1     24     52577 75hh4hpjrngd9 SELECT                    21.76            0.00           14.98            0.00        5
+   1     24      2634 92q3sh2vcw50n SELECT                    21.69            0.00           21.69            0.00        1
+   1     31     54406 b6r56hq731542 SELECT                    21.57            0.00           21.57            0.00        1
+   1     24     10447 5hcu403b7rsh1 SELECT                    21.07            0.00           21.07            0.00        1
+   1     24     35360 6h45pbajv4jsp SELECT                    20.51            0.00           20.51            0.00        1
+   1   1357     40096                                         20.37            0.00           20.37            0.00        1
+   1     31     14664 famw2p0jmuky9 SELECT                    19.68            0.00           19.08            0.00        2
+   1     31     51586 86147yy9mq9d2 SELECT                    19.44            0.00           19.44            0.00        1
+   1     31     14664 636vhjq87z0xk SELECT                    19.43            0.00           19.43            0.00        1
+   1     31     36386 636vhjq87z0xk SELECT                    18.30            0.00           18.30            0.00        1
+   1     31     14664 01uqyjyb7xctb SELECT                    17.80            0.00           17.37            0.00        3
+   1     31     14664 8ravu0fxfq4c3 SELECT                    16.99            0.00           16.99            0.00        1
+   1     31     57021 11xwc8jsxp3hv SELECT                    16.44            0.00           12.96            0.00        3
+   1     24      6541                                         16.32            0.00           16.32            0.00        1
+   1     24     38861 23rjfz3pu7gfs SELECT                    16.26            0.00           16.26            0.00        1
+   1     31     57021 3b6ns51tsd038 SELECT                    15.88            0.00           11.79            0.00        2
+   1     31     14664 fvmgjrckdb7hr SELECT                    15.80            0.00           15.80            0.00        1
+   1     24     22291 dgvpafffhmqvq SELECT                    15.57            0.00           14.62            0.00        4
+   1    967     55136 76zaaknd2wm3m SELECT                    14.62            0.00           14.62            0.00        1
+   1     31     24434 3kywng531fcxu DELETE                    14.07            0.00           14.07            0.00        1
+   1    960     65482 01uqyjyb7xctb SELECT                    13.55            0.00           13.55            0.00        1
+   1     31     38043 a58ruan7zft2q SELECT                    13.07            0.00           13.07            0.00        1
+   1     24     11448 7022bd05djzbz SELECT                    12.82            0.00           12.82            0.00        1
+   1    960     10764 famw2p0jmuky9 SELECT                    12.30            0.00           12.30            0.00        1
+   1   1186     16680 01uqyjyb7xctb SELECT                    11.68            0.00           11.68            0.00        1
+   1   1186     49791 76zaaknd2wm3m SELECT                    11.68            0.00           11.68            0.00        1
+   1     31     36386 182nhvgwnfqqn SELECT                    11.55            0.00           11.55            0.00        1
+   1    960     35121 3b6ns51tsd038 SELECT                    11.43            0.00           11.43            0.00        1
+   1   1186     57596 3b6ns51tsd038 SELECT                    11.30            0.00           11.30            0.00        1
+   1     31       679 3qbhmgchmqsaj SELECT                    10.32            0.00           10.04            0.00        2
+   1    960     22299 828m9dcrk87w6 SELECT                    10.26            0.00           10.26            0.00        1
+   1   1186     26790 famw2p0jmuky9 SELECT                    10.05            0.00           10.05            0.00        1
+   1     31     38521                                         10.01            0.00           10.01            0.00        1
+   1     31      9187 0w5ckm7rwv8xv SELECT                     8.94            0.00            8.94            0.00        1

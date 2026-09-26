@@ -1,0 +1,50 @@
+=== Database ===
+
+
+DB Name              Log Mode     Flashback
+-------------------- ------------ ------------
+HOMELAB              ARCHIVELOG   YES
+
+=== FRA parameters ===
+
+
+Parameter                            Value
+------------------------------------ --------------------------------------------------------------------------------
+db_flashback_retention_target        1440
+db_recovery_file_dest                +RECO
+db_recovery_file_dest_size           50G
+
+=== FRA space ===
+
+
+FRA Location                                                       Limit GB        Used GB     Reclaim GB    Non-Recl GB        Free GB Pct Used Pct Non-Recl        Files
+------------------------------------------------------------ -------------- -------------- -------------- -------------- -------------- -------- ------------ ------------
++RECO                                                                  50.0           34.8            0.2           34.6           15.2     69.6         69.2          206
+
+=== Usage by file type ===
+
+
+File Type                           Files Pct Used Pct Reclaim Pct Non-Recl
+---------------------------- ------------ -------- ----------- ------------
+ARCHIVED LOG                          177     58.6         0.0         58.6
+FLASHBACK LOG                          25      9.8         0.4          9.4
+REDO LOG                                3      1.2         0.0          1.2
+CONTROL FILE                            1      0.0         0.0          0.0
+AUXILIARY DATAFILE COPY                 0      0.0         0.0          0.0
+BACKUP PIECE                            0      0.0         0.0          0.0
+FOREIGN ARCHIVED LOG                    0      0.0         0.0          0.0
+IMAGE COPY                              0      0.0         0.0          0.0
+
+=== Archive destinations using the FRA ===
+
+
+Dest Dest Name            Status     Binding    Target     Destination                                        Valid Type       Error
+---- -------------------- ---------- ---------- ---------- -------------------------------------------------- ---------------- --------------------------------------------------
+   1 LOG_ARCHIVE_DEST_1   VALID      MANDATORY  PRIMARY    USE_DB_RECOVERY_FILE_DEST                          ALL_LOGFILES
+
+=== Flashback database log ===
+
+
+      Oldest SCN Oldest Flashback    Retain Min   Flashback GB   Estimated GB
+---------------- ------------------- ---------- -------------- --------------
+       416725150 2026-09-24 15:27:25      1,440            4.9            3.5
