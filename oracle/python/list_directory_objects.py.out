@@ -1,0 +1,25 @@
+python oracle/python/list_directory_objects.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1
+
+================================================================================
+ ORACLE DIRECTORY OBJECTS REPORT
+ Generated: 2026-09-26 15:07:28 UTC
+================================================================================
+ Total Directories: 4
+
+DIRECTORY NAME                 OWNER      PATH
+--------------------------------------------------------------------------------
+DATA_PUMP_DIR                  SYS        /opt/oracle/admin/ORCLPDB1/dpdump/
+    Grantee: EXP_FULL_DATABASE    Privilege: READ
+    Grantee: EXP_FULL_DATABASE    Privilege: WRITE
+    Grantee: IMP_FULL_DATABASE    Privilege: READ
+    Grantee: IMP_FULL_DATABASE    Privilege: WRITE
+ORACLE_OCM_CONFIG_DIR          SYS        /opt/oracle/product/21c/dbhome_1/ccr/state
+ORACLE_BASE                    SYS        /opt/oracle
+    Grantee: DBA                  Privilege: READ (ADMIN)
+    Grantee: DBA                  Privilege: WRITE (ADMIN)
+XMLDIR                         SYS        /opt/oracle/product/21c/dbhome_1/rdbms/xml
+    Grantee: PUBLIC               Privilege: READ
+================================================================================

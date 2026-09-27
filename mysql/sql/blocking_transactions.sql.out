@@ -1,0 +1,2 @@
+$ mysql --login-path=root --table < blocking_transactions.sql
+Empty set (0.00 sec)

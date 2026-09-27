@@ -1,0 +1,18 @@
+$ mysql --login-path=root --table < connection_stats.sql
++---------------------------------------------+-------+
+| metric                                      | value |
++---------------------------------------------+-------+
+| Max Connections Limit                       | 100   |
+| Current Connected Threads                   | 1     |
+| Current Connection Usage Pct                | 1.00% |
+| Peak Connections (Max Used)                 | 4     |
+| Peak Connection Usage Pct                   | 4.00% |
+| Active Running Threads                      | 2     |
+| Cached Threads                              | 3     |
+| Thread Cache Size                           | 9     |
+| Total Connections Handled                   | 112   |
+| Threads Created                             | 4     |
+| Aborted Connections (Handshake / Auth)      | 0     |
+| Aborted Clients (Dropped / Timeout)         | 0     |
+| Connection Errors (Max Connections Reached) | 0     |
++---------------------------------------------+-------+

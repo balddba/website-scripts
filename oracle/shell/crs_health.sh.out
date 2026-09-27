@@ -1,0 +1,52 @@
+$ ./crs_health.sh
+=== crsctl check crs ===
+CRS-4638: Oracle High Availability Services is online
+CRS-4537: Cluster Ready Services is online
+CRS-4529: Cluster Synchronization Services is online
+CRS-4533: Event Manager is online
+
+=== crsctl stat res -t ===
+--------------------------------------------------------------------------------
+Name           Target  State        Server                   State details
+--------------------------------------------------------------------------------
+Local Resources
+--------------------------------------------------------------------------------
+ora.LISTENER.lsnr
+               ONLINE  ONLINE       rac01                    STABLE
+               ONLINE  ONLINE       rac02                    STABLE
+ora.chad
+               ONLINE  ONLINE       rac01                    STABLE
+               ONLINE  ONLINE       rac02                    STABLE
+ora.net1.network
+               ONLINE  ONLINE       rac01                    STABLE
+               ONLINE  ONLINE       rac02                    STABLE
+ora.ons
+               ONLINE  ONLINE       rac01                    STABLE
+               ONLINE  ONLINE       rac02                    STABLE
+--------------------------------------------------------------------------------
+Cluster Resources
+--------------------------------------------------------------------------------
+ora.DATA.dg
+      1        ONLINE  ONLINE       rac01                    STABLE
+      2        ONLINE  ONLINE       rac02                    STABLE
+ora.FRA.dg
+      1        ONLINE  ONLINE       rac01                    STABLE
+      2        ONLINE  ONLINE       rac02                    STABLE
+ora.prod.db
+      1        ONLINE  ONLINE       rac01                    Open,HOME=/u01/app/oracle/product/19.0.0/dbhome_1,STABLE
+      2        ONLINE  ONLINE       rac02                    Open,HOME=/u01/app/oracle/product/19.0.0/dbhome_1,STABLE
+ora.scan1.vip
+      1        ONLINE  ONLINE       rac02                    STABLE
+--------------------------------------------------------------------------------
+
+=== oifcfg getif ===
+bond0  10.20.30.0  global  public
+bond1  192.168.10.0  global  cluster_interconnect,asm
+
+=== votedisks ===
+##  STATE    File Universal Id                File Name Disk group
+--  -----    -----------------                --------- ---------
+ 1. ONLINE   8f3a1c7b2d9a4f6fbf1a7c8d91eac201 (/dev/oracleasm/disks/OCR01) [OCR]
+ 2. ONLINE   2b7c9e5f4a1d482ab6039e2a6f0d17aa (/dev/oracleasm/disks/OCR02) [OCR]
+ 3. ONLINE   f4126b0c91be4ce2a71c003c32de7e8d (/dev/oracleasm/disks/OCR03) [OCR]
+Located 3 voting disk(s).

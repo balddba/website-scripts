@@ -1,0 +1,9 @@
+$ ./swap_check.sh
+Redis Host Swap Check
+=====================
+Swap total  : 0 kB
+Swap used   : 0 kB
+Swappiness  : 0
+Active swap:
+  none
+Status       : OK - swap is disabled and vm.swappiness is 0

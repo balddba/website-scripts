@@ -1,0 +1,8 @@
+$ ./intrinsic_latency.sh --duration 30
+Running intrinsic latency test for 30 seconds on redis-01...
+Max latency so far: 1 microseconds.
+Max latency so far: 7 microseconds.
+Max latency so far: 38 microseconds.
+
+915284321 total runs (avg latency: 0.0328 microseconds / 32.78 nanoseconds per run).
+Worst run took 1159x longer than the average latency.

@@ -1,0 +1,30 @@
+python oracle/python/report_invalid_objects.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1
+
+================================================================================
+ ORACLE INVALID OBJECTS REPORT
+ Generated: 2026-09-26 15:07:28 UTC
+================================================================================
+ Total Invalid Objects: 3
+
+--- Breakdown by Object Type ---
+  PACKAGE BODY             : 1
+  SYNONYM                  : 1
+  VIEW                     : 1
+
+--- Breakdown by Owner ---
+  APP_USER                 : 1
+  HR                       : 2
+
+--- Invalid Objects Details ---
+OWNER           TYPE                 OBJECT NAME                    ERRORS
+--------------------------------------------------------------------------------
+HR              PACKAGE BODY         EMP_COMPENSATION_PKG           2 error(s)
+    Line 42, Col 18: PLS-00302: component 'ANNUAL_BONUS' must be declared
+    Line 115, Col 9: PL/SQL: Statement ignored
+HR              VIEW                 DEPT_SALARY_SUMMARY_VW         1 error(s)
+    Line 0, Col 0: ORA-00904: 'REVISED_SALARY': invalid identifier
+APP_USER        SYNONYM              SYN_EMP_COMPENSATION           None
+================================================================================

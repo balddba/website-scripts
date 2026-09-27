@@ -12,7 +12,7 @@ Put these in leading comments, before any code. The importer ignores the rest of
 | `tags:` | yes | Comma-separated chips, e.g. `Performance, Locks` |
 | `id:` | no | Defaults from the filename: `blocking_sessions.sql` → `blocking-sessions` |
 
-Comment prefixes: `#` (shell, python), `/* */` (sql), `//` (rust). Put `Title`, `Tags`, `Purpose`, and `Author` in the leading boxed header.
+Comment prefixes: `#` (shell, python), `/* */` (sql), `//` (rust), `--` (lua). Put `Title`, `Tags`, `Purpose`, and `Author` in the leading boxed header.
 
 Every file includes `Author: Aaron Myers <aaron@balddba.com>`. Third-party files keep the original author and add this as Author/Maintainer.
 
@@ -32,8 +32,8 @@ Every file includes `Author: Aaron Myers <aaron@balddba.com>`. Third-party files
 
 ## Path
 - `{platform}/{language}/{filename}` only.
-- Platforms: `linux`, `mysql`, `oracle`, `postgres`.
-- Languages: `shell` (`.sh`, `.bash`), `sql` (`.sql`), `python` (`.py`), `rust` (`.rs`).
+- Platforms: `linux`, `mysql`, `oracle`, `postgres`, `redis`.
+- Languages: `shell` (`.sh`, `.bash`), `sql` (`.sql`), `python` (`.py`), `rust` (`.rs`), `lua` (`.lua`).
 - Create a language folder only when it has a file.
 
 ## New files
@@ -44,6 +44,7 @@ Start from the matching template in `templates/`. Copy the boxed header and fill
 | Shell scripts | `templates/shell-script.sh` |
 | SQL scripts | `templates/sql-script.sql` |
 | Python scripts | `templates/python-script.py` |
+| Lua scripts | `templates/lua-script.lua` |
 | RMAN command files | `templates/rman-command.rman` |
 | Cron entries | `templates/cron-entry.txt` |
 | Documentation | `templates/README-template.md` |

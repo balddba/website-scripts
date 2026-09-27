@@ -1,0 +1,10 @@
+$ ./mysqlbackup.sh
+MySQL Enterprise Backup version 8.0.39-commercial Linux-6.8.0-x86_64
+Copyright (c) 2003, 2026, Oracle and/or its affiliates.
+
+260926 01:30:00 MAIN    INFO: Establishing connection to server.
+260926 01:30:00 MAIN    INFO: Starting backup to image.
+260926 01:30:01 MAIN    INFO: Backup directory: /mnt/boostfs/mysql/mysql-prod-01/2026-09-26_01-30-00
+260926 01:30:01 MAIN    INFO: Backup image: /mnt/boostfs/mysql/mysql-prod-01/2026-09-26_01-30-00/redcap.mbi
+260926 01:42:18 MAIN    INFO: Full backup completed successfully.
+260926 01:42:18 MAIN    INFO: Backup operation completed with exit code 0.

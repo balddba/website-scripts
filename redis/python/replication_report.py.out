@@ -1,0 +1,30 @@
+$ python replication_report.py --max-lag 10
+Redis Replication Information
+=============================
+Role               : master
+Connected replicas : 2
+Failover state     : no-failover
+Replication ID     : 7c3d90e499817a460f3d72f6ee4c6896a63939ef
+Primary offset     : 184209331
+
+Replicas
+--------
+slave0 10.20.1.21:6379
+  State        : online
+  Offset       : 184209331
+  Offset delta : 0
+  Lag          : 0 seconds
+slave1 10.20.1.22:6379
+  State        : online
+  Offset       : 184207104
+  Offset delta : 2227
+  Lag          : 2 seconds
+
+Backlog
+-------
+Active       : yes
+Size         : 1048576 bytes
+History size : 1048576 bytes
+First offset : 183160756
+
+Status: OK

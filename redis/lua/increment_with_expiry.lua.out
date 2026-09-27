@@ -1,0 +1,13 @@
+$ redis-cli DEL api:requests:minute
+(integer) 0
+
+$ redis-cli --eval increment_with_expiry.lua api:requests:minute , 60 1
+1) (integer) 1
+2) (integer) 60
+
+$ redis-cli --eval increment_with_expiry.lua api:requests:minute , 60 4
+1) (integer) 5
+2) (integer) 60
+
+$ redis-cli GET api:requests:minute
+"5"

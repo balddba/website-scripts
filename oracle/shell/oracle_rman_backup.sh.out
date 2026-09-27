@@ -1,0 +1,7 @@
+$ ./oracle_rman_backup.sh PROD level0
+Starting level0 backup for SID PROD; log: /path/to/oracle/backups/PROD/logs/PROD_level0_20260926_013000.log
+Backup completed successfully. See /path/to/oracle/backups/PROD/logs/PROD_level0_20260926_013000.log
+
+$ ./oracle_rman_backup.sh PROD archivelog
+Starting archivelog backup for SID PROD; log: /path/to/oracle/backups/PROD/logs/PROD_archivelog_20260926_043000.log
+Backup completed successfully. See /path/to/oracle/backups/PROD/logs/PROD_archivelog_20260926_043000.log

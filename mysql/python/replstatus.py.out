@@ -1,0 +1,2 @@
+$ python3 replstatus.py
+(No terminal output; the HTML replication status report is sent by email.)

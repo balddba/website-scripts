@@ -1,0 +1,24 @@
+python oracle/python/dataguard_gaps.py \
+  --connect-string standby01:1521/ORCL_DG \
+  --username system \
+  --password *******
+
+Data Guard Archive Gap Report
+
+=== Database ===
+NAME  DB_UNIQUE_NAME  DATABASE_ROLE    OPEN_MODE            SWITCHOVER_STATUS
+----  --------------  ---------------  -------------------  -----------------
+ORCL  ORCL_DG         PHYSICAL STANDBY  READ ONLY WITH APPLY  NOT ALLOWED
+
+=== Active Archive Gaps ===
+No rows returned.
+
+=== Archive Destinations ===
+INST_ID  DEST_ID  DEST_NAME  DEST_TYPE  STATUS  GAP_STATUS  ARCHIVED_SEQ#  APPLIED_SEQ#  SEQUENCE_DIFF  ERROR
+-------  -------  ---------  ---------  ------  ----------  -------------  ------------  -------------  -----
+1        1        LOG_ARCHIVE_DEST_1  LOCAL      VALID   NO GAP      18462          18460         2
+
+=== Thread Summary ===
+THREAD#  MAX_ARCHIVED_SEQUENCE  MAX_APPLIED_SEQUENCE  SEQUENCE_DIFF  LAST_APPLIED_TIME
+-------  ---------------------  --------------------  -------------  -------------------
+1        18462                  18460                 2              2026-09-26 15:42:18

@@ -1,0 +1,18 @@
+$ mysql --login-path=root --table < innodb_engine_metrics.sql
++----------------+-------------------------------------+---------+
+| category       | metric                              | value   |
++----------------+-------------------------------------+---------+
+| Locking        | Row Lock Waits                      | 1       |
+| Locking        | Total Lock Wait Time (ms)           | 32      |
+| Locking        | Avg Lock Wait Time (ms)             | 32      |
+| Row Activity   | Rows Read                           | 10      |
+| Row Activity   | Rows Inserted                       | 6       |
+| Row Activity   | Rows Updated                        | 2       |
+| Row Activity   | Rows Deleted                        | 0       |
+| Redo Log / I/O | OS Log Bytes Written                | 0.16 MB |
+| Redo Log / I/O | OS Log Fsyncs                       | 126     |
+| Redo Log / I/O | Log Buffer Waits (Flush Contention) | 0       |
+| Page I/O       | Data Pages Read                     | 1085    |
+| Page I/O       | Data Pages Written                  | 344     |
+| Page I/O       | Data Pages Created                  | 169     |
++----------------+-------------------------------------+---------+

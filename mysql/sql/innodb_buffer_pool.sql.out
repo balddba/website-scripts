@@ -1,0 +1,15 @@
+$ mysql --login-path=root --table < innodb_buffer_pool.sql
++-----------------------+------------------+
+| metric                | value            |
++-----------------------+------------------+
+| Buffer Pool Size      | 0.13 GB (128 MB) |
+| Buffer Pool Instances | 1                |
+| Buffer Pool Page Size | 16 KB            |
+| Total Pages           | 8192             |
+| Data Pages            | 1237 (15.10%)    |
+| Free Pages            | 6946 (84.79%)    |
+| Dirty Pages           | 0 (0.00%)        |
+| Logical Read Requests | 22176            |
+| Disk Physical Reads   | 1086             |
+| Buffer Pool Hit Ratio | 95.1028%         |
++-----------------------+------------------+

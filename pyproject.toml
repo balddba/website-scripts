@@ -3,7 +3,9 @@ name = "website-scripts-tests"
 version = "0.0.0"
 description = "Integration tests for the website-scripts catalog"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "rich>=15.0.0",
+]
 
 [dependency-groups]
 dev = [
@@ -54,6 +56,7 @@ ignore = [
     "E501",
     "SIM108",
     "PERF203",
+    "PERF401",
     "RET504",
     "D203",
     "D213",

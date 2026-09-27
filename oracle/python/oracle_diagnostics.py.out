@@ -1,0 +1,103 @@
+python oracle/python/oracle_diagnostics.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1 \
+  --owner HR
+
+=====================================================================================
+ ORACLE DATABASE DIAGNOSTIC & PERFORMANCE REPORT
+ Generated: 2026-09-26 15:07:28 UTC
+=====================================================================================
+
+--- 1. SEQUENTIAL READS & I/O WAIT EVENTS ---
+EVENT                          WAITS        TIMEOUTS   TIME (MS)       AVG WAIT (MS)
+-------------------------------------------------------------------------------------
+db file sequential read        184520       0          461300.00       2.50
+db file scattered read         24150        0          169050.00       7.00
+direct path read               8920         0          13380.00        1.50
+
+--- 2. LOG FILE SYNC & REDO WAITS ---
+EVENT                                    WAITS        TIME (MS)       AVG WAIT (MS)
+-------------------------------------------------------------------------------------
+log file sync                            34200        119700.00       3.50
+log file parallel write                  38100        76200.00        2.00
+
+--- 3. BUFFER QUEUE & DBWR STATISTICS ---
+STATISTIC NAME                                VALUE
+-------------------------------------------------------------------------------------
+dirty buffers inspected                       1420
+free buffer inspected                         8540
+free buffer waits                             0
+write requests                                21450
+DBWR checkpoint buffers written               325000
+
+--- 4. BACKGROUND PROCESS INFORMATION ---
+PROCESS    OS PID     SID/SERIAL     STATUS     CURRENT EVENT
+-------------------------------------------------------------------------------------
+PMON       12401      1,1            ACTIVE     pmon timer
+DBW0       12405      3,1            ACTIVE     rdbms ipc message
+LGWR       12407      4,1            ACTIVE     rdbms ipc message
+CKPT       12409      5,1            ACTIVE     rdbms ipc message
+SMON       12411      6,1            ACTIVE     smon timer
+
+--- 5. USER TABLESPACE QUOTAS ---
+USERNAME             TABLESPACE                USED (MB)       MAX (MB)
+-------------------------------------------------------------------------------------
+HR                   USERS                     50.00           UNLIMITED
+HR                   APPDATA                   100.00          500.00
+
+--- 6. BUFFER POOL STATISTICS ---
+POOL NAME       BLOCK SIZE   SET SIZE     PHYS READS      PHYS WRITES     BUSY WAITS
+-------------------------------------------------------------------------------------
+DEFAULT         8192         65536        217590          45210           14
+
+--- 7. INDEX STATISTICS ---
+OWNER           TABLE                INDEX NAME                STATUS     B-LEVEL  LEAF BLKS  ROWS
+-------------------------------------------------------------------------------------
+HR              EMPLOYEES            EMP_EMP_ID_PK             VALID      1        15         10000
+HR              EMPLOYEES            EMP_EMAIL_UK              VALID      1        22         10000
+HR              EMPLOYEES            EMP_DEPARTMENT_IX         VALID      2        45         10000
+HR              DEPARTMENTS          DEPT_ID_PK                VALID      0        1          27
+
+--- 8. TABLE COLUMN ANALYSIS ---
+TABLE                COLUMN                    TYPE               DISTINCT   NULLS      HISTOGRAM
+-------------------------------------------------------------------------------------
+EMPLOYEES            EMPLOYEE_ID               NUMBER(6,0)        10000      0          NONE
+EMPLOYEES            EMAIL                     VARCHAR2(25)       10000      0          NONE
+EMPLOYEES            DEPARTMENT_ID             NUMBER(4,0)        120        1          FREQUENCY
+EMPLOYEES            SALARY                    NUMBER(8,2)        58         0          HEIGHT BALANCED
+
+--- 9. TABLE STORAGE ANALYSIS ---
+TABLE                     TABLESPACE         ROWS       BLOCKS     SIZE (MB)    CHAINED ROWS
+-------------------------------------------------------------------------------------
+EMPLOYEES                 USERS              10000      128        1.00         0
+DEPARTMENTS               USERS              27         8          0.06         0
+JOB_HISTORY               USERS              10         8          0.06         0
+
+--- 10. TABLE PARTITION ANALYSIS ---
+No table partitions found matching filter criteria.
+
+--- 11. COLUMN HISTOGRAMS ANALYSIS ---
+TABLE                COLUMN                    HISTOGRAM TYPE       BUCKETS    DISTINCT   NULLS
+-------------------------------------------------------------------------------------
+EMPLOYEES            DEPARTMENT_ID             FREQUENCY            11         120        1
+EMPLOYEES            SALARY                    HEIGHT BALANCED      254        58         0
+
+--- 12. LOB SEGMENT STORAGE ANALYSIS ---
+TABLE                COLUMN               LOB SEGMENT               IN-ROW   SIZE (MB)    EXTENTS
+-------------------------------------------------------------------------------------
+EMPLOYEES            RESUME               SYS_LOB0000084521C00012$$ NO       20.00        20
+
+--- 13. ONLINE REDO LOG GROUPS ---
+GRP   THREAD   SEQ#     SIZE (MB)    MEMBERS   STATUS       ARCHIVED
+-------------------------------------------------------------------------------------
+1     1        452      200.00       2         CURRENT      NO
+    Member: /opt/oracle/oradata/ORCLCDB/redo01a.log
+    Member: /opt/oracle/oradata/ORCLCDB/redo01b.log
+2     1        451      200.00       2         INACTIVE     YES
+    Member: /opt/oracle/oradata/ORCLCDB/redo02a.log
+    Member: /opt/oracle/oradata/ORCLCDB/redo02b.log
+3     1        450      200.00       2         INACTIVE     YES
+    Member: /opt/oracle/oradata/ORCLCDB/redo03a.log
+    Member: /opt/oracle/oradata/ORCLCDB/redo03b.log
+=====================================================================================

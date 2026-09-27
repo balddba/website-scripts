@@ -1,0 +1,9 @@
+$ ./alert_log_errors.sh /u01/app/oracle/diag/rdbms/prod/PROD/trace/alert_PROD.log 5000
+Errors in file /u01/app/oracle/diag/rdbms/prod/PROD/trace/PROD_ora_18324.trc:
+ORA-01555: snapshot too old: rollback segment number 12 with name "_SYSSMU12_1854379821$" too small
+WARNING: inbound connection timed out (ORA-3136)
+Errors in file /u01/app/oracle/diag/rdbms/prod/PROD/trace/PROD_j000_19117.trc:
+ORA-12012: error on auto execute of job "SYS"."ORA$AT_SA_SPC_SY_8821"
+ORA-20000: Unable to analyze TABLE "APP"."ORDER_AUDIT", insufficient privileges or does not exist
+Errors in file /u01/app/oracle/diag/rdbms/prod/PROD/trace/PROD_m000_20753.trc:
+ORA-00600: internal error code, arguments: [kdsgrp1], [], [], [], [], [], [], [], [], [], [], []

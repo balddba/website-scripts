@@ -1,0 +1,14 @@
+$ redis-cli SET lock:report:daily worker-123 EX 30 NX
+OK
+
+$ redis-cli --eval compare_and_delete.lua lock:report:daily , wrong-token
+(integer) 0
+
+$ redis-cli GET lock:report:daily
+"worker-123"
+
+$ redis-cli --eval compare_and_delete.lua lock:report:daily , worker-123
+(integer) 1
+
+$ redis-cli EXISTS lock:report:daily
+(integer) 0

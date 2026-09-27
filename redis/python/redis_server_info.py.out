@@ -1,0 +1,55 @@
+$ REDIS_URL='redis://localhost:6379/0' python redis_server_info.py
+Redis Server Information
+========================
+Endpoint : redis://localhost:6379/0
+
+Server
+------
+Redis version    : 8.2.1
+Mode             : standalone
+Operating system : Darwin 25.0.0 arm64
+Architecture     : 64-bit
+Process ID       : 4217
+Uptime           : 12 days
+
+Clients
+-------
+Connected           : 4
+Blocked             : 0
+Tracking            : 0
+Rejected connections : 0
+
+Memory
+------
+Used                : 1.42M
+Peak                : 1.71M
+Maximum             : 256.00M
+Fragmentation ratio : 1.18
+
+Activity
+--------
+Operations/sec     : 27
+Commands processed : 184203
+Keyspace hits      : 92114
+Keyspace misses    : 4582
+Cache hit ratio    : 95.3%
+Expired keys       : 2719
+Evicted keys       : 0
+
+Persistence
+-----------
+RDB changes since save : 12
+RDB save in progress   : no
+Last RDB save          : 2026-09-26T14:32:18+00:00
+Last RDB status        : ok
+AOF enabled            : no
+
+Topology
+--------
+Role               : master
+Connected replicas : 1
+Cluster enabled    : no
+
+Keyspace
+--------
+db0 : 347 keys, 219 expiring

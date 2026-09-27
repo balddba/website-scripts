@@ -1,0 +1,38 @@
+python oracle/python/dataguard_stats.py \
+  --host standby01 \
+  --service-name ORCL_DG \
+  --username system \
+  --password *******
+
+Basic Data Guard Status
+
+=== Database ===
+NAME  DB_UNIQUE_NAME  DATABASE_ROLE    OPEN_MODE            PROTECTION_MODE      PROTECTION_LEVEL     SWITCHOVER_STATUS
+----  --------------  ---------------  -------------------  -------------------  -------------------  -----------------
+ORCL  ORCL_DG         PHYSICAL STANDBY  READ ONLY WITH APPLY  MAXIMUM PERFORMANCE  MAXIMUM PERFORMANCE  NOT ALLOWED
+
+=== Lag Stats ===
+NAME               VALUE             UNIT  TIME_COMPUTED        DATUM_TIME
+-----------------  ----------------  ----  -------------------  -------------------
+apply finish time  +00 00:00:03.000  day   2026-09-26 15:45:50  2026-09-26 15:45:47
+apply lag          +00 00:00:03      day   2026-09-26 15:45:50  2026-09-26 15:45:47
+transport lag      +00 00:00:00      day   2026-09-26 15:45:50  2026-09-26 15:45:50
+
+=== Data Guard Processes ===
+INST_ID  PROCESS_NAME  PID    ROLE                  ACTION                  CLIENT_PID  THREAD#  SEQUENCE#  BLOCK#
+-------  ------------  -----  --------------------  ----------------------  ----------  -------  ---------  ------
+1        DGRD          24108  data guard broker     IDLE                    24108       0        0          0
+1        MRP0          24271  managed recovery      APPLYING_LOG            24271       1        18462      128544
+1        RFS           24266  remote file server    RECEIVING               24266       1        18462      128612
+
+=== Managed Standby ===
+INST_ID  PROCESS_NAME  PID    STATUS         CLIENT_PROCESS  THREAD#  SEQUENCE#  BLOCK#
+-------  ------------  -----  -------------  --------------  -------  ---------  ------
+1        ARCH          24142  CONNECTED      ARCH            0        0          0
+1        MRP0          24271  APPLYING_LOG   N/A             1        18462      128544
+1        RFS           24266  RECEIVING      LGWR            1        18462      128612
+
+=== Archive Destinations ===
+INST_ID  DEST_ID  DEST_NAME           DEST_TYPE  STATUS  SYNCHRONIZED  GAP_STATUS  ARCHIVED_SEQ#  APPLIED_SEQ#  ERROR
+-------  -------  ------------------  ---------  ------  ------------  ----------  -------------  ------------  -----
+1        1        LOG_ARCHIVE_DEST_1  LOCAL      VALID   YES           NO GAP      18462          18460

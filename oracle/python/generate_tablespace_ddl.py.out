@@ -1,0 +1,31 @@
+python oracle/python/generate_tablespace_ddl.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1 \
+  --type PERMANENT
+
+-- ============================================================================
+-- Oracle Tablespace DDL Extraction Script
+-- Generated at: 2026-09-26T14:52:00.124500+00:00
+-- Total Tablespaces: 2
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- Tablespace: USERS (Type: PERMANENT, Status: ONLINE, Method: DBMS_METADATA)
+-- ----------------------------------------------------------------------------
+CREATE TABLESPACE "USERS" DATAFILE 
+  '/opt/oracle/oradata/ORCLCDB/ORCLPDB1/users01.dbf' SIZE 104857600
+  AUTOEXTEND ON NEXT 10485760 MAXSIZE 34359721984
+  LOGGING ONLINE PERMANENT BLOCKSIZE 8192
+  EXTENT MANAGEMENT LOCAL AUTOALLOCATE DEFAULT 
+  NOCOMPRESS  SEGMENT SPACE MANAGEMENT AUTO;
+
+-- ----------------------------------------------------------------------------
+-- Tablespace: APPDATA (Type: PERMANENT, Status: ONLINE, Method: DBMS_METADATA)
+-- ----------------------------------------------------------------------------
+CREATE TABLESPACE "APPDATA" DATAFILE 
+  '/opt/oracle/oradata/ORCLCDB/ORCLPDB1/appdata01.dbf' SIZE 524288000
+  AUTOEXTEND ON NEXT 52428800 MAXSIZE 10737418240
+  LOGGING ONLINE PERMANENT BLOCKSIZE 8192
+  EXTENT MANAGEMENT LOCAL AUTOALLOCATE DEFAULT 
+  NOCOMPRESS  SEGMENT SPACE MANAGEMENT AUTO;

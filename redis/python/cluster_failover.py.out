@@ -1,0 +1,14 @@
+$ python cluster_failover.py --url redis://replica-01.example.com:6379/0
+Redis Cluster Failover Plan
+===========================
+Target replica : redis://replica-01.example.com:6379
+Target node ID : 53aa6883b707cf8618d1f9b6d5f885c02b774c38
+Current role   : slave
+Current primary: primary-01.example.com:6379
+Primary link   : up
+Cluster state  : ok
+Mode           : coordinated
+Command        : CLUSTER FAILOVER
+
+Preflight: PASSED
+Dry run only. Add --execute to perform this role switch.

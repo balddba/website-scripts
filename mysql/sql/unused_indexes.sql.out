@@ -1,0 +1,2 @@
+$ mysql --login-path=root --table < unused_indexes.sql
+Empty set (0.00 sec)

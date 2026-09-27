@@ -1,0 +1,77 @@
+python oracle/python/find_low_cardinality_indexes.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1 \
+  --owner HR \
+  --threshold-pct 5.0 \
+  --min-rows 1000
+
+================================================================================
+ ORACLE LOW-CARDINALITY INDEX ANALYSIS REPORT
+ Generated: 2026-09-26 14:50:00 UTC
+================================================================================
+ Configuration & Filters:
+   - Selectivity Threshold: <= 5.00%
+   - Minimum Table Rows:    1,000
+   - Owner Filter:          HR
+   - Table Filter:          ALL
+   - Index Filter:          ALL
+
+ Summary:
+   - Total Evaluated Indexes: 14
+   - Low-Cardinality Indexes:  3
+
+--------------------------------------------------------------------------------
+ TABULAR SUMMARY
+--------------------------------------------------------------------------------
+INDEX NAME                 TABLE NAME              DIST KEYS   NUM ROWS  SELECTIVITY UNIQUENESS
+-----------------------------------------------------------------------------------------------
+EMP_GENDER_IDX             EMPLOYEES                       2     10,000      0.0200% NONUNIQUE 
+EMP_STATUS_IDX             EMPLOYEES                       3     10,000      0.0300% NONUNIQUE 
+EMP_DEPT_FK_IDX            EMPLOYEES                     120     10,000      1.2000% NONUNIQUE 
+
+--------------------------------------------------------------------------------
+ ACTIONABLE RECOMMENDATIONS & DETAILED BREAKDOWN
+--------------------------------------------------------------------------------
+[1] HR.EMP_GENDER_IDX
+    Table:             HR.EMPLOYEES
+    Columns:           GENDER
+    Type:              NORMAL (NONUNIQUE)
+    Num Rows:          10,000
+    Distinct Keys:     2
+    Selectivity:       0.0200%
+    B-Tree Level:      1
+    Leaf Blocks:       22
+    Clustering Factor: 8,750
+    Recommendations:
+      * Extremely low selectivity (0.0200%); index provides minimal filtering efficiency and the optimizer will likely prefer full table scans.
+      * Candidate for Bitmap index conversion if used in low-DML reporting, data warehouse, or decision-support workloads (avoid on high-concurrency OLTP tables due to row-lock contention).
+      * High clustering factor (8,750 vs 10,000 rows) indicates index row order is scattered across blocks; multi-row index range scans will incur excessive disk I/O.
+
+[2] HR.EMP_STATUS_IDX
+    Table:             HR.EMPLOYEES
+    Columns:           STATUS
+    Type:              NORMAL (NONUNIQUE)
+    Num Rows:          10,000
+    Distinct Keys:     3
+    Selectivity:       0.0300%
+    B-Tree Level:      1
+    Leaf Blocks:       24
+    Clustering Factor: 450
+    Recommendations:
+      * Extremely low selectivity (0.0300%); index provides minimal filtering efficiency and the optimizer will likely prefer full table scans.
+      * Candidate for Bitmap index conversion if used in low-DML reporting, data warehouse, or decision-support workloads (avoid on high-concurrency OLTP tables due to row-lock contention).
+
+[3] HR.EMP_DEPT_FK_IDX
+    Table:             HR.EMPLOYEES
+    Columns:           DEPARTMENT_ID
+    Type:              NORMAL (NONUNIQUE)
+    Num Rows:          10,000
+    Distinct Keys:     120
+    Selectivity:       1.2000%
+    B-Tree Level:      2
+    Leaf Blocks:       45
+    Clustering Factor: 1,200
+    Recommendations:
+      * Candidate for Bitmap index conversion if used in low-DML reporting, data warehouse, or decision-support workloads (avoid on high-concurrency OLTP tables due to row-lock contention).
+

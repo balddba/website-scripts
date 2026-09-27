@@ -11,6 +11,7 @@ linux/{shell,python,rust}/
 mysql/{sql,python,shell}/
 oracle/{sql,python,shell,rust}/
 postgres/{sql,python,shell}/
+redis/{lua,python,shell,rust}/
 ```
 
 Create a language folder only when it has a file.
@@ -21,6 +22,7 @@ Create a language folder only when it has a file.
 | `mysql` | MySQL / InnoDB |
 | `oracle` | Oracle Database, Grid, RMAN |
 | `postgres` | PostgreSQL |
+| `redis` | Redis OSS, Redis Stack, Redis Enterprise |
 
 | Language | Extensions | Comment prefix |
 | --- | --- | --- |
@@ -28,6 +30,7 @@ Create a language folder only when it has a file.
 | `sql` | `.sql` | `/* */` |
 | `python` | `.py` | `#` |
 | `rust` | `.rs` | `//` |
+| `lua` | `.lua` | `--` |
 
 Keep Rust entries as single-file snippets. A real Cargo project belongs in its own repository.
 

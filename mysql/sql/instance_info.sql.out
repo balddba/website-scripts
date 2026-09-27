@@ -1,0 +1,23 @@
+$ mysql --login-path=root --table < instance_info.sql
++------------------------+------------------------------------------+
+| metric                 | value                                    |
++------------------------+------------------------------------------+
+| Version                | 8.0.39                                   |
+| Version Comment        | MySQL Community Server - GPL             |
+| Server ID              | 101                                      |
+| Server UUID            | 4f28c1a7-7b62-11ef-a675-005056a42f19     |
+| Hostname               | mysql-prod-01                            |
+| Port                   | 3306                                     |
+| Socket                 | /var/lib/mysql/mysql.sock                |
+| Data Directory         | /var/lib/mysql/                          |
+| Uptime                 | 37d 14h 22m 8s                           |
+| Read Only              | NO                                       |
+| Super Read Only        | NO                                       |
+| Default Storage Engine | InnoDB                                   |
+| Max Connections        | 500                                      |
+| Current Connections    | 84                                       |
+| Threads Running        | 6                                        |
+| Max Used Connections   | 193                                      |
+| Character Set Server   | utf8mb4                                  |
+| Collation Server       | utf8mb4_0900_ai_ci                       |
++------------------------+------------------------------------------+

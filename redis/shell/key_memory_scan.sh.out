@@ -1,0 +1,13 @@
+$ REDIS_URL='redis://localhost:6379/0' ./key_memory_scan.sh memkeys
+WARNING: this performs a full SCAN of the selected Redis database.
+
+# Scanning the entire keyspace to find biggest keys as well as average sizes per key type.
+
+[00.00%] Biggest string found so far 'session:abc123' with 8421 bytes
+[57.00%] Biggest hash found so far 'user:42:profile' with 12688 bytes
+
+-------- summary -------
+Sampled 347 keys in the keyspace!
+Total key length in bytes is 7421 (avg len 21.39)
+Biggest string found 'session:abc123' has 8421 bytes
+Biggest hash found 'user:42:profile' has 12688 bytes

@@ -1,0 +1,66 @@
+$ python cluster_report.py --url redis://cluster-node-01.example.com:6379/0
+Redis Cluster Information
+=========================
+State             : ok
+Slots assigned    : 16384 / 16384
+Slots OK          : 16384
+Slots PFAIL       : 0
+Slots FAIL        : 0
+Known nodes       : 6
+Primary shards    : 3
+Current epoch     : 19
+Messages sent     : 4821971
+Messages received : 4821644
+
+Nodes
+-----
+10.20.1.11:6379@16379 (this node)
+  ID           : 3c7d6c2f0ac81ef4b7bc4ad777f18ab2ce2973da
+  Role         : primary
+  Primary ID   : -
+  Link         : connected
+  Config epoch : 17
+  Slots        : 0-5460
+  Flags        : master, myself
+10.20.1.21:6379@16379
+  ID           : 53aa6883b707cf8618d1f9b6d5f885c02b774c38
+  Role         : replica
+  Primary ID   : 3c7d6c2f0ac81ef4b7bc4ad777f18ab2ce2973da
+  Link         : connected
+  Config epoch : 17
+  Slots        : none
+  Flags        : slave
+10.20.1.12:6379@16379
+  ID           : 79ad14f899eb35b58cedfa547671e28373f2a138
+  Role         : primary
+  Primary ID   : -
+  Link         : connected
+  Config epoch : 18
+  Slots        : 5461-10922
+  Flags        : master
+10.20.1.22:6379@16379
+  ID           : 8dcbb7f5fc4ebad802e04d77ea6ca7e837f247aa
+  Role         : replica
+  Primary ID   : 79ad14f899eb35b58cedfa547671e28373f2a138
+  Link         : connected
+  Config epoch : 18
+  Slots        : none
+  Flags        : slave
+10.20.1.13:6379@16379
+  ID           : b447c43d7c13db7eb111b28a10e11b65f664b96b
+  Role         : primary
+  Primary ID   : -
+  Link         : connected
+  Config epoch : 19
+  Slots        : 10923-16383
+  Flags        : master
+10.20.1.23:6379@16379
+  ID           : c9e1cc3e9f33e145d85938ee0a387f8dd22bd88a
+  Role         : replica
+  Primary ID   : b447c43d7c13db7eb111b28a10e11b65f664b96b
+  Link         : connected
+  Config epoch : 19
+  Slots        : none
+  Flags        : slave
+
+Status: OK

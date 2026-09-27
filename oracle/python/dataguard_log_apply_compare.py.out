@@ -1,0 +1,28 @@
+python oracle/python/dataguard_log_apply_compare.py \
+  --connect-string primary01:1521/ORCL \
+  --username system \
+  --password *******
+
+Data Guard Primary vs Standby Applied Logs
+
+=== Database ===
+NAME  DB_UNIQUE_NAME  DATABASE_ROLE  OPEN_MODE   PROTECTION_MODE      SWITCHOVER_STATUS
+----  --------------  -------------  ----------  -------------------  -----------------
+ORCL  ORCL_PRI        PRIMARY        READ WRITE  MAXIMUM PERFORMANCE  TO STANDBY
+
+=== Destination Sequences ===
+INST_ID  DEST_ID  DEST_NAME           DEST_TYPE  STATUS  SYNCHRONIZED  GAP_STATUS  ARCHIVED_THREAD#  ARCHIVED_SEQ#  APPLIED_THREAD#  APPLIED_SEQ#  SEQUENCE_DIFF  ERROR
+-------  -------  ------------------  ---------  ------  ------------  ----------  ----------------  -------------  ---------------  ------------  -------------  -----
+1        1        LOG_ARCHIVE_DEST_1  LOCAL      VALID   YES           NO GAP      1                 18462          1                18462         0
+1        2        LOG_ARCHIVE_DEST_2  PHYSICAL   VALID   NO            NO GAP      1                 18462          1                18460         2
+
+=== Local Thread Sequences ===
+THREAD#  HIGHEST_KNOWN_SEQUENCE  HIGHEST_ARCHIVED_SEQUENCE  HIGHEST_APPLIED_SEQUENCE  UNAPPLIED_SEQUENCES  LAST_APPLIED_TIME
+-------  ----------------------  -------------------------  ------------------------  -------------------  -------------------
+1        18462                   18462                      18460                     2                    2026-09-26 15:42:18
+
+=== Recent Unapplied Logs ===
+THREAD#  SEQUENCE#  FIRST_TIME           NEXT_TIME            NAME
+-------  ---------  -------------------  -------------------  --------------------------------------------------
+1        18461      2026-09-26 15:42:18  2026-09-26 15:44:03  /u02/arch/ORCL/thread_1_seq_18461.arc
+1        18462      2026-09-26 15:44:03  2026-09-26 15:45:47  /u02/arch/ORCL/thread_1_seq_18462.arc

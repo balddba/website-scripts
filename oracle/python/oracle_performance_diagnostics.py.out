@@ -1,0 +1,67 @@
+python oracle/python/oracle_performance_diagnostics.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1 \
+  --analyzer all \
+  --top 5
+
+================================================================================
+ORACLE PERFORMANCE DIAGNOSTICS REPORT
+Generated At (UTC): 2026-09-26 14:56:00
+================================================================================
+
+--------------------------------------------------------------------------------
+1. LATCH WAIT AND CONTENTION SUMMARY
+--------------------------------------------------------------------------------
+Latch Name                             Gets     Misses   Sleeps  Wait (ms)  Hit Ratio %
+--------------------------------------------------------------------------------------
+cache buffers chains               14520042       1240       15      45.20       99.99%
+shared pool                         3205001        450        4      12.80       99.99%
+redo allocation                     1200350        110        2       6.40       99.99%
+row cache objects                    890200         75        1       2.10       99.99%
+library cache                       2450100        210        3       8.50       99.99%
+
+--------------------------------------------------------------------------------
+2. BUFFER POOL SIZING AND HIT RATIO SUMMARY
+--------------------------------------------------------------------------------
+Pool Name    Blk Size    Size MB   Phys Reads  DB Blk Gets    Cons Gets Hit Ratio %
+-----------------------------------------------------------------------------------
+DEFAULT          8192    1024.00        42150       150200      3890400      98.96%
+
+--------------------------------------------------------------------------------
+3. BUFFER BUSY WAITS AND WAITSTAT ANALYSIS
+--------------------------------------------------------------------------------
+Block Class Wait Statistics (V$WAITSTAT):
+Block Class                Wait Count   Time Waited (ms)
+--------------------------------------------------------
+data block                         18              54.00
+segment header                      4              16.00
+undo block                          1               2.00
+
+Related System Wait Events (V$SYSTEM_EVENT):
+Event Name                    Total Waits   Time Waited (ms)  Avg Wait (ms)
+--------------------------------------------------------------------------
+buffer busy waits                      23              72.00           3.13
+read by other session                  85             212.50           2.50
+
+Root-Cause Tuning Recommendations:
+  * Data block contention observed (18 waits): Check for hot blocks; consider increasing table PCTFREE, rebuilding with INITRANS >= 4, or hash partitioning high-concurrency tables.
+  * Segment header contention (4 waits): High concurrent INSERT activity; consider using Automatic Segment Space Management (ASSM) tablespaces or increasing freelists.
+
+--------------------------------------------------------------------------------
+4. LOCKED OBJECTS AND BLOCKING LOCK HIERARCHY
+--------------------------------------------------------------------------------
+Locked Objects:
+  SID User         Owner        Object Name          Type       Mode Held        Blocking SID
+-----------------------------------------------------------------------------------
+  142 APPUSER      HR           EMPLOYEES            TABLE      Row-X / SX (3)           None
+  185 REPORTUSER   HR           EMPLOYEES            TABLE      Share / S (4)             142
+
+Blocking Lock Hierarchy Summary:
+  Root Blocker SIDs: 142
+  [+] Blocker SID 142 (User: APPUSER, Program: JDBC Thin Client, SQL_ID: 3x9t210k9g87a)
+      └── Blocks SID 185 (User: REPORTUSER, Wait: 42s)
+
+================================================================================
+END OF DIAGNOSTICS REPORT
+================================================================================

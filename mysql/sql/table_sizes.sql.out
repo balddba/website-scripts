@@ -1,0 +1,43 @@
+$ mysql --login-path=root --table < table_sizes.sql
++-------------+------------------------------------------------------+--------+----------+---------+----------+----------+------------+
+| schema_name | TABLE_NAME                                           | engine | est_rows | data_mb | index_mb | total_mb | row_format |
++-------------+------------------------------------------------------+--------+----------+---------+----------+----------+------------+
+| mysql       | time_zone_transition                                 | InnoDB |   119074 |    4.52 |     0.00 |     4.52 | Dynamic    |
+| mysql       | help_topic                                           | InnoDB |     1359 |    1.52 |     0.09 |     1.61 | Dynamic    |
+| mysql       | time_zone_transition_type                            | InnoDB |     9549 |    0.45 |     0.00 |     0.45 | Dynamic    |
+| mysql       | time_zone_name                                       | InnoDB |     2603 |    0.25 |     0.00 |     0.25 | Dynamic    |
+| mysql       | help_keyword                                         | InnoDB |     1092 |    0.13 |     0.13 |     0.25 | Dynamic    |
+| mysql       | help_relation                                        | InnoDB |     2189 |    0.09 |     0.00 |     0.09 | Dynamic    |
+| mysql       | time_zone                                            | InnoDB |     1836 |    0.08 |     0.00 |     0.08 | Dynamic    |
+| mysql       | global_grants                                        | InnoDB |      115 |    0.06 |     0.00 |     0.06 | Dynamic    |
+| mysql       | replication_group_member_actions                     | InnoDB |        2 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | replication_asynchronous_connection_failover         | InnoDB |        0 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | proxies_priv                                         | InnoDB |        1 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | procs_priv                                           | InnoDB |        0 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | tables_priv                                          | InnoDB |        2 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | help_category                                        | InnoDB |       53 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | db                                                   | InnoDB |        2 |    0.02 |     0.02 |     0.03 | Dynamic    |
+| mysql       | slave_worker_info                                    | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | slave_relay_log_info                                 | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | slave_master_info                                    | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | servers                                              | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | time_zone_leap_second                                | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | columns_priv                                         | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | server_cost                                          | InnoDB |        6 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | role_edges                                           | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | user                                                 | InnoDB |        5 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | replication_group_configuration_version              | InnoDB |        1 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | replication_asynchronous_connection_failover_managed | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | plugin                                               | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | password_history                                     | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | ndb_binlog_index                                     | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | innodb_table_stats                                   | InnoDB |        4 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | innodb_index_stats                                   | InnoDB |       16 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | gtid_executed                                        | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | func                                                 | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | engine_cost                                          | InnoDB |        2 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | default_roles                                        | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | component                                            | InnoDB |        0 |    0.02 |     0.00 |     0.02 | Dynamic    |
+| mysql       | slow_log                                             | CSV    |        2 |    0.00 |     0.00 |     0.00 | Dynamic    |
+| mysql       | general_log                                          | CSV    |        2 |    0.00 |     0.00 |     0.00 | Dynamic    |
++-------------+------------------------------------------------------+--------+----------+---------+----------+----------+------------+

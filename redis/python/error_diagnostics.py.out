@@ -1,0 +1,18 @@
+$ python error_diagnostics.py
+Redis Error Diagnostics
+=======================
+Rejected connections : 17
+Expired keys         : 2719
+Evicted keys         : 1842
+RDB last status      : ok
+AOF last status      : ok
+Replication role     : master
+Connected replicas   : 1
+
+Error counters
+--------------
+ERR                  : 28
+OOM                  : 7
+WRONGTYPE            : 4
+
+Status: WARNING - investigate the counters above

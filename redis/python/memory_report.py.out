@@ -1,0 +1,15 @@
+$ python memory_report.py --doctor
+Redis Memory Report
+===================
+Used memory        : 218.31M
+Peak memory        : 241.72M
+Maximum memory     : 256.00M
+Memory utilization : 85.3%
+Eviction policy    : allkeys-lru
+Evicted keys       : 1842
+Fragmentation      : 1.09
+Status              : WARNING - memory utilization is at or above 80%; Redis has evicted keys
+
+MEMORY DOCTOR
+-------------
+Hi Sam, this instance is using a large percentage of its configured maxmemory. Review eviction activity and inspect large keys.

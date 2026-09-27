@@ -1,0 +1,7 @@
+python oracle/python/tns_ping_hosts.py tnsnames.ora
+
+ORCLPDB1                 db-prod-01.example.com:1521
+ORCLPDB2                 db-prod-02.example.com:1521
+ORCLCDB                  db-cluster-vip.example.com:1521
+SALES_DG                 dg-standby.example.com:1521
+DEV_SANDBOX              localhost:1521

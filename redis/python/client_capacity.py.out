@@ -1,0 +1,10 @@
+$ python client_capacity.py
+Redis Client Capacity
+=====================
+Connected clients    : 8231
+Maximum clients      : 10000
+Capacity utilization : 82.3%
+Blocked clients      : 3
+Tracking clients     : 0
+Rejected connections : 17
+Status               : WARNING - client utilization is at or above 80%; one or more clients are blocked; Redis has rejected connections

@@ -15,7 +15,7 @@ One-paragraph description of what this script or tool does and when to use it.
 
 ## Requirements
 
-- Platform (linux, mysql, oracle, postgres)
+- Platform (linux, mysql, oracle, postgres, redis)
 - Privileges or roles
 - Binaries (`sqlplus`, `rman`, `crsctl`, …)
 
