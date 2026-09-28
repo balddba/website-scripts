@@ -1,0 +1,41 @@
+=== ASM Disk Group Configuration ===
+
+ Grp# Disk Group           State        Redundancy  AU MB Log Sec Phy Sec   Total GB    Free GB Offline ASM Compat     RDBMS Compat
+----- -------------------- ------------ ---------- ------ ------- ------- ---------- ---------- ------- -------------- --------------
+    1 DATA                 MOUNTED      NORMAL        4.0     512     512    2,000.0      500.0       0 19.0.0.0.0     19.0.0.0.0
+    2 RECO                 MOUNTED      NORMAL        4.0     512     512      500.0      160.0       0 19.0.0.0.0     19.0.0.0.0
+    3 VOTE                 MOUNTED      HIGH          1.0     512     512       60.0       55.5       0 19.0.0.0.0     19.0.0.0.0
+
+3 rows selected.
+
+
+=== ASM Disk Group Attributes ===
+
+Disk Group           Attribute Name                       Attribute Value                      RO
+-------------------- ------------------------------------ ------------------------------------ ------
+DATA                 access_control.enabled               false                                N
+DATA                 access_control.umask                 066                                  N
+DATA                 au_size                              4194304                              Y
+DATA                 cell.smart_scan_capable              false                                N
+DATA                 compatible.asm                       19.0.0.0.0                           N
+DATA                 compatible.rdbms                     19.0.0.0.0                           N
+DATA                 content.type                         data                                 N
+DATA                 disk_repair_time                     12.0h                                N
+DATA                 failgroup_repair_time                24.0h                                N
+DATA                 idlemaster.cleanup_delay             5                                    N
+DATA                 phys_meta_replicated                 true                                 Y
+DATA                 sector_size                          512                                  Y
+DATA                 thin_provisioned                     false                                N
+RECO                 au_size                              4194304                              Y
+RECO                 compatible.asm                       19.0.0.0.0                           N
+RECO                 compatible.rdbms                     19.0.0.0.0                           N
+RECO                 content.type                         recovery                             N
+RECO                 disk_repair_time                     12.0h                                N
+RECO                 sector_size                          512                                  Y
+VOTE                 au_size                              1048576                              Y
+VOTE                 compatible.asm                       19.0.0.0.0                           N
+VOTE                 compatible.rdbms                     19.0.0.0.0                           N
+VOTE                 content.type                         quorum                               N
+VOTE                 sector_size                          512                                  Y
+
+24 rows selected.

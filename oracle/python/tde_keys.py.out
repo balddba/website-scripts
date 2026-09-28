@@ -1,0 +1,45 @@
+python oracle/python/tde_keys.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORCLPDB1
+
+================================================================================
+Oracle Transparent Data Encryption (TDE) Key Information (CDB & PDBs)
+Generated At : 2026-09-28 12:00:00 UTC
+================================================================================
+
+--- 1. KEYSTORE / WALLET CONTEXT (GV$ENCRYPTION_WALLET) ---
+Inst  Con   Container / PDB      Type     Status           Wallet Type      Backed Up  Location
+----- ----- -------------------- -------- ---------------- ---------------- ---------- --------------------
+1     1     CDB$ROOT             FILE     OPEN             AUTOLOGIN        YES        /opt/oracle/admin/ORCL/wallet/tde/
+1     3     ORCLPDB1             FILE     OPEN             AUTOLOGIN        YES        /opt/oracle/admin/ORCL/wallet/tde/
+1     4     ORCLPDB2             FILE     OPEN             AUTOLOGIN        YES        /opt/oracle/admin/ORCL/wallet/tde/
+
+--- 2. ACTIVE MASTER ENCRYPTION KEY(S) PER PDB ---
+Container / PDB    Con   Key ID Prefix                    Key Use                 Age Days Backed Up  Tag
+------------------ ----- -------------------------------- ---------------------- --------- ---------- ----------
+CDB$ROOT           1     A1B2C3D4E5F60718293A4B5C6D7E8F.. TDE IN-DATABASE MASTER K     256.1 YES        CDB_KEY_2026
+ORCLPDB1           3     B2C3D4E5F6A10718293A4B5C6D7E8F.. TDE IN-DATABASE MASTER K     256.1 YES        PDB1_KEY_2026
+ORCLPDB2           4     C3D4E5F6A1B20718293A4B5C6D7E8F.. TDE IN-DATABASE MASTER K     239.1 YES        PDB2_KEY_2026
+
+--- 3. KEY LIFECYCLE & REKEY HISTORY PER PDB (V$ENCRYPTION_KEYS) ---
+Container / PDB    Key ID Prefix                    Key Status         Activated            Backed Up  Tag
+------------------ -------------------------------- ------------------ -------------------- ---------- ----------
+CDB$ROOT           A1B2C3D4E5F60718293A4B5C6D7E8F   ACTIVE (CURRENT)   2026-01-15 08:30:00  YES        CDB_KEY_2026
+ORCLPDB1           B2C3D4E5F6A10718293A4B5C6D7E8F   ACTIVE (CURRENT)   2026-01-15 08:35:00  YES        PDB1_KEY_2026
+ORCLPDB1           F9E8D7C6B5A432109876543210FEDC   RETIRED            2025-01-10 09:15:00  YES        PDB1_KEY_2025
+ORCLPDB2           C3D4E5F6A1B20718293A4B5C6D7E8F   ACTIVE (CURRENT)   2026-02-01 10:00:00  YES        PDB2_KEY_2026
+
+--- 4. TABLESPACE ENCRYPTION KEYS & ALGORITHMS ---
+Container / PDB    Tablespace               Algorithm      Key Status   Key Present
+------------------ ------------------------ -------------- ------------ ------------
+ORCLPDB1           SECURE_DATA              AES256         NORMAL       PRESENT
+ORCLPDB1           SECURE_INDEX             AES256         NORMAL       PRESENT
+ORCLPDB2           FIN_DATA                 AES256         NORMAL       PRESENT
+
+--- 5. KEY SECURITY & BACKUP HEALTH CHECKS ---
+Check Name                   Status     Details
+---------------------------- ---------- ----------------------------------------
+Active Keystore Status       OK         All keystore instances and PDBs are OPEN.
+Keystore Full Backup         OK         Keystore has been fully backed up.
+Master Key Backed Up         OK         All master encryption keys (CDB & PDBs) are backed up in keystore.

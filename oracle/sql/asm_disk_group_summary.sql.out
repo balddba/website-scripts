@@ -1,0 +1,11 @@
+=== ASM Disk Group Summary ===
+
+ Grp# Disk Group           State       Redundancy Disks Offline   Total GB    Free GB  Usable GB % Used ASM Compat   RDBMS Compat
+----- -------------------- ----------- ---------- ----- ------- ---------- ---------- ---------- ------ ------------ ------------
+    1 DATA                 MOUNTED     NORMAL         4       0    2,000.0      500.0        0.0   75.0 19.0.0.0.0   19.0.0.0.0
+    2 RECO                 MOUNTED     NORMAL         2       0      500.0      160.0        0.0   68.0 19.0.0.0.0   19.0.0.0.0
+    3 VOTE                 MOUNTED     HIGH           3       0       60.0       55.5       11.8    7.5 19.0.0.0.0   19.0.0.0.0
+                                                                ---------- ---------- ----------
+sum                                                                2,560.0      715.5       11.8
+
+3 rows selected.

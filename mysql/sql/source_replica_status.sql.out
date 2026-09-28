@@ -1,0 +1,19 @@
+$ mysql --login-path=root --table < source_replica_status.sql
++---------------+----------------------------+--------------------------------------+
+| section       | metric                     | value                                |
++---------------+----------------------------+--------------------------------------+
+| Configuration | binlog_format              | ROW                                  |
+| Configuration | gtid_mode                  | ON                                   |
+| Configuration | log_bin                    | ON                                   |
+| Configuration | read_only                  | OFF                                  |
+| Configuration | server_id                  | 101                                  |
+| Configuration | server_uuid                | 4f28c1a7-7b62-11ef-a675-005056a42f19 |
+| Configuration | super_read_only            | OFF                                  |
+| Replica       | Replica_open_temp_tables   | 0                                    |
+| Replica       | Replica_running            | ON                                   |
+| Replica       | Slave_open_temp_tables     | 0                                    |
+| Source        | Binlog_cache_disk_use      | 12                                   |
+| Source        | Binlog_cache_use           | 184920                               |
+| Source        | Binlog_stmt_cache_disk_use | 0                                    |
+| Source        | Binlog_stmt_cache_use      | 47                                   |
++---------------+----------------------------+--------------------------------------+

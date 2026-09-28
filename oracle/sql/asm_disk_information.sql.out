@@ -1,0 +1,26 @@
+=== ASM Disk Information ===
+
+Disk Group         Fail Group       Disk# Disk Name            Mount    Header      Mode    State    Voting   Total GB    Free GB % Used Sector OS Device Path
+------------------ ---------------- ----- -------------------- -------- ----------- ------- -------- ------ ---------- ---------- ------ ------ ----------------------------------------
+DATA               DATA_FG1             0 DATA_0000            CACHED   MEMBER      ONLINE  NORMAL   N           500.0      125.0   75.0    512 /dev/oracleasm/disks/DATA1
+                                        1 DATA_0001            CACHED   MEMBER      ONLINE  NORMAL   N           500.0      125.0   75.0    512 /dev/oracleasm/disks/DATA2
+                   DATA_FG2             2 DATA_0002            CACHED   MEMBER      ONLINE  NORMAL   N           500.0      125.0   75.0    512 /dev/oracleasm/disks/DATA3
+                                        3 DATA_0003            CACHED   MEMBER      ONLINE  NORMAL   N           500.0      125.0   75.0    512 /dev/oracleasm/disks/DATA4
+******************                                                                                              --------   --------
+sum                                                                                                              2,000.0      500.0
+
+RECO               RECO_FG1             0 RECO_0000            CACHED   MEMBER      ONLINE  NORMAL   N           250.0       80.0   68.0    512 /dev/oracleasm/disks/RECO1
+                                        1 RECO_0001            CACHED   MEMBER      ONLINE  NORMAL   N           250.0       80.0   68.0    512 /dev/oracleasm/disks/RECO2
+******************                                                                                              --------   --------
+sum                                                                                                                500.0      160.0
+
+VOTE               VOTE_FG1             0 VOTE_0000            CACHED   MEMBER      ONLINE  NORMAL   Y            20.0       18.5    7.5    512 /dev/oracleasm/disks/VOTE1
+                   VOTE_FG2             1 VOTE_0001            CACHED   MEMBER      ONLINE  NORMAL   Y            20.0       18.5    7.5    512 /dev/oracleasm/disks/VOTE2
+                   VOTE_FG3             2 VOTE_0002            CACHED   MEMBER      ONLINE  NORMAL   Y            20.0       18.5    7.5    512 /dev/oracleasm/disks/VOTE3
+******************                                                                                              --------   --------
+sum                                                                                                                 60.0       55.5
+
+------------------                                                                                              --------   --------
+sum                                                                                                              2,560.0      715.5
+
+9 rows selected.

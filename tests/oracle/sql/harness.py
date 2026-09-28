@@ -137,6 +137,8 @@ SPECS: dict[str, ScriptSpec] = {
     "table_clustering.sql": ScriptSpec(args=_owner_dot_table),
     "table_fragmentation.sql": ScriptSpec(args=_schema),
     "tables_without_pk.sql": ScriptSpec(args=_schema),
+    "tde_keys.sql": ScriptSpec(),
+    "tde_report.sql": ScriptSpec(args=["%"]),
     "triggers.sql": ScriptSpec(args=lambda objects, _settings: ["LIST", f"{objects.schema}.{objects.table}", "ALL"]),
     "unstable_plans.sql": ScriptSpec(args=["VSQL"]),
     "user_details.sql": ScriptSpec(args=_user),

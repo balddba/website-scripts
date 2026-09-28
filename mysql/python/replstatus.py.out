@@ -1,2 +1,9 @@
 $ python3 replstatus.py
-(No terminal output; the HTML replication status report is sent by email.)
++--------------+---------------+------------------+
+| Metric       | Primary       | Standby          |
++--------------+---------------+------------------+
+| Hostname     | mysql-prod-01 | mysql-standby-01 |
+| Binary Log   | binlog.000019 | binlog.000019    |
+| Log Position | 82839086      | 82839086         |
++--------------+---------------+------------------+
+Sync Status: Databases are in sync

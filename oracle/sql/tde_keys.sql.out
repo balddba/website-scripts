@@ -1,0 +1,54 @@
+===============================================================================
+Oracle TDE Encryption Key Information (CDB & PDBs)
+===============================================================================
+
+=== 1. Keystore / Wallet Context (GV$ENCRYPTION_WALLET) ===
+
+ Inst   Con Container / PDB      WRL Type   Keystore Location / Parameter                Status          Wallet Type      Order      Backed Up
+----- ----- -------------------- ---------- -------------------------------------------- --------------- ---------------- ---------- ----------
+    1     1 CDB$ROOT             FILE       /opt/oracle/admin/ORCL/wallet/tde/           OPEN            AUTOLOGIN        PRIMARY    YES
+    1     3 ORCLPDB1             FILE       /opt/oracle/admin/ORCL/wallet/tde/           OPEN            AUTOLOGIN        PRIMARY    YES
+    1     4 ORCLPDB2             FILE       /opt/oracle/admin/ORCL/wallet/tde/           OPEN            AUTOLOGIN        PRIMARY    YES
+
+3 rows selected.
+
+=== 2. Active Master Encryption Key(s) per Container / PDB ===
+
+Container / PDB        Con Key ID                                           Key Use                  Keystore Type  Activated Time      Age (Days) Backed Up  Tag
+-------------------- ----- ------------------------------------------------ ------------------------ -------------- ------------------- ---------- ---------- ------------------
+CDB$ROOT                 1 A1B2C3D4E5F60718293A4B5C6D7E8F90A1B2C3D4E5F6     TDE IN-DATABASE MASTER K FILE           2026-01-15 08:30:00      256.1 YES        CDB_KEY_2026
+ORCLPDB1                 3 B2C3D4E5F6A10718293A4B5C6D7E8F90B2C3D4E5F6A1     TDE IN-DATABASE MASTER K FILE           2026-01-15 08:35:00      256.1 YES        PDB1_KEY_2026
+ORCLPDB2                 4 C3D4E5F6A1B20718293A4B5C6D7E8F90C3D4E5F6A1B2     TDE IN-DATABASE MASTER K FILE           2026-02-01 10:00:00      239.1 YES        PDB2_KEY_2026
+
+3 rows selected.
+
+=== 3. Encryption Key History & Lifecycle per PDB (V$ENCRYPTION_KEYS) ===
+
+Container / PDB      Key ID Prefix                  Key Status        Key Use                  Created Time        Activated Time      Backed Up  Tag
+-------------------- ------------------------------ ----------------- ------------------------ ------------------- ------------------- ---------- ------------------
+CDB$ROOT             A1B2C3D4E5F60718293A4B5C6D7E8F ACTIVE (CURRENT)  TDE IN-DATABASE MASTER K 2026-01-15 08:29:45 2026-01-15 08:30:00 YES        CDB_KEY_2026
+ORCLPDB1             B2C3D4E5F6A10718293A4B5C6D7E8F ACTIVE (CURRENT)  TDE IN-DATABASE MASTER K 2026-01-15 08:34:30 2026-01-15 08:35:00 YES        PDB1_KEY_2026
+ORCLPDB1             F9E8D7C6B5A432109876543210FEDC RETIRED           TDE IN-DATABASE MASTER K 2025-01-10 09:12:10 2025-01-10 09:15:00 YES        PDB1_KEY_2025
+ORCLPDB2             C3D4E5F6A1B20718293A4B5C6D7E8F ACTIVE (CURRENT)  TDE IN-DATABASE MASTER K 2026-02-01 09:55:00 2026-02-01 10:00:00 YES        PDB2_KEY_2026
+
+4 rows selected.
+
+=== 4. Tablespace Encryption Keys & Algorithms ===
+
+Container / PDB      Tablespace               Algorithm      Key Status   Key Present
+-------------------- ------------------------ -------------- ------------ --------------
+ORCLPDB1             SECURE_DATA              AES256         NORMAL       PRESENT
+ORCLPDB1             SECURE_INDEX             AES256         NORMAL       PRESENT
+ORCLPDB2             FIN_DATA                 AES256         NORMAL       PRESENT
+
+3 rows selected.
+
+=== 5. Key Security & Backup Health Checks ===
+
+Check Name                   Status     Details
+---------------------------- ---------- ------------------------------------------------------------
+Active Keystore Status       OK         All keystore instances and PDBs are OPEN.
+Keystore Full Backup         OK         Keystore has been fully backed up.
+Master Key Backed Up         OK         All master encryption keys (CDB & PDBs) are backed up in keystore.
+
+3 rows selected.

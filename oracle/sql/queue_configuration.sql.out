@@ -1,0 +1,42 @@
+=== Queue Tables Configuration ===
+
+Owner              Queue Table              Payload Type                 Sort Order         Recipients Grouping       Compatible Secure
+------------------ ------------------------ ---------------------------- ------------------ ---------- -------------- ---------- ------
+APP_USER           ORDER_EVENT_QT           SYS.XMLTYPE                  ENQ_TIME           MULTIPLE   NONE           10.0.0     NO
+HR                 EMPLOYEE_MSG_QT          RAW                          ENQ_TIME           SINGLE     NONE           8.1        NO
+SYSTEM             DEF$_AQCALL              SYSTEM.DEF$_CALL_RECORD      ENQ_TIME           SINGLE     NONE           8.1        NO
+SYSTEM             DEF$_AQERROR             SYSTEM.DEF$_ERROR_RECORD     ENQ_TIME           SINGLE     NONE           8.1        NO
+
+4 rows selected.
+
+
+=== Queues Configuration ===
+
+Owner              Queue                      Queue Table              Queue Type         Enqueue  Dequeue  Retries Retry Delay Retention      Comment
+------------------ -------------------------- ------------------------ ------------------ -------- -------- ------- ----------- -------------- ------------------------------
+APP_USER           ORDER_EVENT_Q              ORDER_EVENT_QT           NORMAL_QUEUE       YES      YES            5          60 86400          Order processing event queue
+HR                 EMPLOYEE_MSG_Q             EMPLOYEE_MSG_QT          NORMAL_QUEUE       YES      YES            3           0 0              Employee notifications
+SYSTEM             DEF$_AQCALL                DEF$_AQCALL              NORMAL_QUEUE       YES      YES            5           0 0              Deferred RPC queue
+SYSTEM             DEF$_AQERROR               DEF$_AQERROR             EXCEPTION_QUEUE    YES      YES            0           0 0              Deferred RPC error queue
+
+4 rows selected.
+
+
+=== Queue Subscribers ===
+
+Owner              Queue                      Consumer                 Address                        Protocol Delivery       Rule Condition
+------------------ -------------------------- ------------------------ ------------------------------ -------- -------------- ------------------------------
+APP_USER           ORDER_EVENT_Q              BILLING_SERVICE          (null)                                0 PERSISTENT     priority <= 2
+APP_USER           ORDER_EVENT_Q              FULFILLMENT_SVC          (null)                                0 PERSISTENT     (null)
+HR                 EMPLOYEE_MSG_Q             HR_CONSUMER              (null)                                0 PERSISTENT     (null)
+
+3 rows selected.
+
+
+=== Queue Propagation Schedules ===
+
+Owner              Queue                    Destination                  Start               Latency Last Run            Next Run            Failures Disabled
+------------------ ------------------------ ---------------------------- ------------------- ------- ------------------- ------------------- -------- --------
+APP_USER           ORDER_EVENT_Q            WAREHOUSE_DBLINK             2026-01-01 00:00:00      60 2026-09-28 12:00:00 2026-09-28 12:01:00        0 NO
+
+1 row selected.

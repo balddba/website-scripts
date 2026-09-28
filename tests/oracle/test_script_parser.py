@@ -169,3 +169,87 @@ def test_parses_real_last_sql_catalog_file() -> None:
     parsed = parse_sqlplus_script((SQL_DIR / "last_sql.sql").read_text())
     assert parsed.variables["FILTER_SID"].upper().startswith("NUMBER")
     assert any(":filter_sid" in stmt for stmt in parsed.statements)
+
+
+def test_parses_real_tde_report_catalog_file() -> None:
+    """Parse oracle/sql/tde_report.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "tde_report.sql").read_text())
+    assert "C_OWNER" in parsed.new_values
+    assert len(parsed.statements) >= 8
+    assert any("gv$encryption_wallet" in stmt.lower() for stmt in parsed.statements)
+    assert any("v$encryption_keys" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_tablespaces" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_encrypted_columns" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_lobs" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_tde_keys_catalog_file() -> None:
+    """Parse oracle/sql/tde_keys.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "tde_keys.sql").read_text())
+    assert len(parsed.statements) == 5
+    assert any("gv$encryption_wallet" in stmt.lower() for stmt in parsed.statements)
+    assert any("v$encryption_keys" in stmt.lower() for stmt in parsed.statements)
+    assert any("v$encrypted_tablespaces" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_performance_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_performance.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_performance.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert len(parsed.statements) == 3
+    assert any("v$asm_disk_stat" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_queue_configuration_catalog_file() -> None:
+    """Parse oracle/sql/queue_configuration.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "queue_configuration.sql").read_text())
+    assert "C_OWNER" in parsed.new_values
+    assert "C_QNAME" in parsed.new_values
+    assert len(parsed.statements) == 6
+    assert any("dba_queue_tables" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_queues" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_queue_subscribers" in stmt.lower() for stmt in parsed.statements)
+    assert any("dba_queue_schedules" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_information_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_information.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_information.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert "C_DISK" in parsed.new_values
+    assert len(parsed.statements) == 3
+    assert any("v$asm_disk" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_group_information_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_group_information.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_group_information.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert len(parsed.statements) == 4
+    assert any("v$asm_diskgroup" in stmt.lower() for stmt in parsed.statements)
+    assert any("v$asm_attribute" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_performance_metrics_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_performance_metrics.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_performance_metrics.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert len(parsed.statements) == 3
+    assert any("v$asm_disk_iostat" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_group_capacity_analysis_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_group_capacity_analysis.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_group_capacity_analysis.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert len(parsed.statements) == 4
+    assert any("v$asm_diskgroup" in stmt.lower() for stmt in parsed.statements)
+    assert any("v$asm_disk" in stmt.lower() for stmt in parsed.statements)
+
+
+def test_parses_real_asm_disk_group_summary_catalog_file() -> None:
+    """Parse oracle/sql/asm_disk_group_summary.sql without a database."""
+    parsed = parse_sqlplus_script((SQL_DIR / "asm_disk_group_summary.sql").read_text())
+    assert "C_DG" in parsed.new_values
+    assert len(parsed.statements) == 3
+    assert any("v$asm_diskgroup" in stmt.lower() for stmt in parsed.statements)

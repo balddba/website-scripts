@@ -1,2 +1,11 @@
 Enter value for 1:
-no rows selected
+
+Owner                Table Name                     Extension Name                 Extension Expression / Columns                    Creator    Droppable
+-------------------- ------------------------------ ------------------------------ -------------------------------------------------- ---------- ----------
+APP                  ORDER_ITEMS                    SYS_STU6P2D8H4K9M5#           ("ORDER_ID","PRODUCT_ID","WAREHOUSE_ID")          SYSTEM     NO
+HR                   EMPLOYEES                      SYS_STU3N7B4L2A8Y1#           (UPPER("EMAIL"))                                   USER       YES
+OE                   ORDERS                         SYS_STU9M5Q2W8R1P6#           ("CUSTOMER_ID","ORDER_MODE")                       USER       YES
+SH                   SALES                          SYS_STU1K7C9XQ9V3U#           ("CUST_ID","PROD_ID")                              USER       YES
+SH                   SALES                          SYS_STU4TX8B7G5N2Z#           ("CHANNEL_ID","PROMO_ID")                          USER       YES
+
+5 rows selected.

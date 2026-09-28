@@ -1,0 +1,22 @@
+=== ASM Disk Group Capacity & Safety Analysis ===
+
+Disk Group         State       Redundancy Raw Total GB Raw Free GB Raw % Used Req Mirror GB Usable File GB Safe Free % Offline
+------------------ ----------- ---------- ------------ ----------- ---------- ------------- -------------- ----------- -------
+DATA               MOUNTED     NORMAL          2,000.0       500.0       75.0         500.0            0.0         0.0       0
+RECO               MOUNTED     NORMAL            500.0       160.0       68.0         250.0            0.0         0.0       0
+VOTE               MOUNTED     HIGH               60.0        55.5        7.5          20.0           11.8        59.0       0
+                                          ------------ -----------            ------------- --------------
+sum                                            2,560.0       715.5                    770.0           11.8
+
+3 rows selected.
+
+
+=== Member Disk Distribution and Skew Analysis ===
+
+Disk Group         Disks Min Disk % Max Disk % Avg Disk % Skew/Diff %
+------------------ ----- ---------- ---------- ---------- -----------
+DATA                   4       74.8       75.2       75.0         0.4
+RECO                   2       67.9       68.1       68.0         0.2
+VOTE                   3        7.4        7.6        7.5         0.2
+
+3 rows selected.

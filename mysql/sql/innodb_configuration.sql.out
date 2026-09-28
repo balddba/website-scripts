@@ -1,0 +1,25 @@
+$ mysql --login-path=root --table < innodb_configuration.sql
++--------------------------------+-----------------------+---------------------+
+| variable_name                  | variable_value        | category            |
++--------------------------------+-----------------------+---------------------+
+| innodb_buffer_pool_chunk_size  | 134217728             | Buffer Pool         |
+| innodb_buffer_pool_instances   | 8                     | Buffer Pool         |
+| innodb_buffer_pool_size        | 8589934592            | Buffer Pool         |
+| innodb_autoinc_lock_mode       | 2                     | General             |
+| innodb_file_per_table          | ON                    | General             |
+| innodb_stats_persistent        | ON                    | General             |
+| innodb_flush_method            | O_DIRECT              | I/O and Flushing    |
+| innodb_flush_neighbors         | 0                     | I/O and Flushing    |
+| innodb_io_capacity             | 2000                  | I/O and Flushing    |
+| innodb_io_capacity_max         | 4000                  | I/O and Flushing    |
+| innodb_read_io_threads         | 4                     | I/O and Flushing    |
+| innodb_write_io_threads        | 4                     | I/O and Flushing    |
+| innodb_deadlock_detect         | ON                    | Locking             |
+| innodb_lock_wait_timeout       | 50                    | Locking             |
+| innodb_flush_log_at_trx_commit | 1                     | Redo and Durability |
+| innodb_log_file_size           | 1073741824            | Redo and Durability |
+| innodb_log_files_in_group      | 2                     | Redo and Durability |
+| innodb_redo_log_capacity       | 2147483648            | Redo and Durability |
+| innodb_temp_data_file_path     | ibtmp1:12M:autoextend | Temporary and Undo  |
+| innodb_undo_tablespaces        | 2                     | Temporary and Undo  |
++--------------------------------+-----------------------+---------------------+

@@ -1,0 +1,17 @@
+$ mysql --login-path=root --table < plugin_inventory.sql
++-----------------------+----------------+---------------+----------------+-------------+---------+
+| plugin_name           | plugin_version | plugin_status | plugin_type    | load_option | license |
++-----------------------+----------------+---------------+----------------+-------------+---------+
+| caching_sha2_password | 1.0            | ACTIVE        | AUTHENTICATION | FORCE       | GPL     |
+| mysql_native_password | 1.1            | ACTIVE        | AUTHENTICATION | FORCE       | GPL     |
+| sha256_password       | 1.1            | ACTIVE        | AUTHENTICATION | FORCE       | GPL     |
+| mysqlx                | 1.0            | ACTIVE        | DAEMON         | ON          | GPL     |
+| ngram                 | 0.1            | ACTIVE        | FTPARSER       | ON          | GPL     |
+| ARCHIVE               | 3.0            | ACTIVE        | STORAGE ENGINE | ON          | GPL     |
+| BLACKHOLE             | 1.0            | ACTIVE        | STORAGE ENGINE | ON          | GPL     |
+| CSV                   | 1.0            | ACTIVE        | STORAGE ENGINE | FORCE       | GPL     |
+| FEDERATED             | 1.0            | DISABLED      | STORAGE ENGINE | OFF         | GPL     |
+| InnoDB                | 8.0            | ACTIVE        | STORAGE ENGINE | FORCE       | GPL     |
+| MEMORY                | 1.0            | ACTIVE        | STORAGE ENGINE | FORCE       | GPL     |
+| MyISAM                | 1.0            | ACTIVE        | STORAGE ENGINE | FORCE       | GPL     |
++-----------------------+----------------+---------------+----------------+-------------+---------+

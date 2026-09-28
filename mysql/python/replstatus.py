@@ -4,11 +4,12 @@
 # Script Name: replstatus.py
 # Title: MySQL replication status
 # Tags: Replication, Monitoring
-# Purpose: Compare primary and standby binary log positions and email the result
+# Purpose: Compare primary and standby binary log positions and report the result
 #
 # Description:
 #   Connects with login-path primary and standby, reads log_status and
-#   slave_relay_log_info, then sends an HTML status email.
+#   slave_relay_log_info, prints a terminal report, then sends an HTML status
+#   email.
 #
 # Parameters:
 #   None.
@@ -20,7 +21,8 @@
 #   - SMTP access to smtp.gmail.com
 #
 # Output Format:
-#   - HTML email with host, binary log, position, and sync status
+#   - Plain-text terminal table with host, binary log, position, and sync status
+#   - HTML email with the same replication status details
 #
 # Example Usage:
 #   python replstatus.py
@@ -28,6 +30,8 @@
 # Author: Aaron Myers <aaron@balddba.com>
 #
 #===============================================================================
+"""Compare MySQL primary and standby replication coordinates."""
+
 import json
 import smtplib
 from datetime import datetime
@@ -37,9 +41,28 @@ from email.mime.text import MIMEText
 import myloginpath
 import mysql.connector
 
+
+def sync_status_message(primary_log: str, primary_pos: int, standby_log: str, standby_pos: int) -> str:
+    """Return a plain-text synchronization status."""
+    primary_log_number = int(primary_log.split(".")[1])
+    standby_log_number = int(standby_log.split(".")[1])
+
+    status_messages = {
+        (True, True): "Databases are in sync",
+        (True, False): "Binary logs are in sync, log positions are not",
+        (False, True): "Binlogs are off by 1 log; the standby may be lagging",
+        (False, False): "Databases are out of sync",
+    }
+
+    logs_in_sync = primary_log_number == standby_log_number
+    positions_in_sync = primary_pos == standby_pos or (
+        primary_log_number != standby_log_number and primary_pos - standby_pos < 2
+    )
+    return status_messages[(logs_in_sync, positions_in_sync)]
+
+
 def sync_status(primary_log: str, primary_pos: int, standby_log: str, standby_pos: int) -> str:
-    """
-    Determines the synchronization status between primary and standby databases.
+    """Determine the synchronization status between primary and standby databases.
 
     Args:
         primary_log (str): The binary log file name of the primary database.
@@ -50,33 +73,52 @@ def sync_status(primary_log: str, primary_pos: int, standby_log: str, standby_po
     Returns:
         str: An HTML string indicating the synchronization status with a color-coded message.
     """
-    # Extract the numeric part of the log file names for comparison
-    primary_log_number: int = int(primary_log.split(".")[1])
-    standby_log_number: int = int(standby_log.split(".")[1])
-
-    # Define status messages for different synchronization scenarios
-    status_messages = {
-        (True, True): '<div style="color: green;">Databases are in sync</div>',
-        (True, False): '<div style="color: blue;">Binary logs are in sync, log positions are not.</div>',
-        (False, True): '<div style="color: yellow;">Binlogs are off by 1 log, this could just be the standby lagging</div>',
-        (False, False): '<div style="color: red;">Databases are out of sync</div>'
+    message = sync_status_message(primary_log, primary_pos, standby_log, standby_pos)
+    status_colors = {
+        "Databases are in sync": "green",
+        "Binary logs are in sync, log positions are not": "blue",
+        "Binlogs are off by 1 log; the standby may be lagging": "yellow",
+        "Databases are out of sync": "red",
     }
+    return f'<div style="color: {status_colors[message]};">{message}</div>'
 
-    # Determine if logs and positions are in sync
-    logs_in_sync = primary_log_number == standby_log_number
-    positions_in_sync = primary_pos == standby_pos or (primary_log_number != standby_log_number and primary_pos - standby_pos < 2)
 
-    # Return the appropriate status message based on the sync conditions
-    return status_messages[(logs_in_sync, positions_in_sync)]
+def terminal_report(
+    primary_host: str,
+    primary_log: str,
+    primary_pos: int,
+    standby_host: str,
+    standby_log: str,
+    standby_pos: int,
+) -> str:
+    """Render replication details as a plain-text terminal report."""
+    rows = [
+        ("Hostname", primary_host, standby_host),
+        ("Binary Log", primary_log, standby_log),
+        ("Log Position", str(primary_pos), str(standby_pos)),
+    ]
+    headers = ("Metric", "Primary", "Standby")
+    widths = [
+        max(len(headers[index]), *(len(row[index]) for row in rows))
+        for index in range(len(headers))
+    ]
+    separator = "+" + "+".join("-" * (width + 2) for width in widths) + "+"
 
-def main():
-    """
-    Main function to check the synchronization status between primary and standby databases
-    and send an email notification with the status details.
+    def format_row(row: tuple[str, str, str]) -> str:
+        return "| " + " | ".join(value.ljust(widths[index]) for index, value in enumerate(row)) + " |"
 
-    This function connects to both primary and standby databases to retrieve binary log
-    information, constructs an HTML email body with the synchronization status, and sends
-    the email to specified recipients.
+    status = sync_status_message(primary_log, primary_pos, standby_log, standby_pos)
+    table = [separator, format_row(headers), separator]
+    table.extend(format_row(row) for row in rows)
+    table.append(separator)
+    table.append(f"Sync Status: {status}")
+    return "\n".join(table)
+
+def main() -> None:
+    """Check primary and standby synchronization and report the results.
+
+    Connect to both databases, print their binary log coordinates, construct an
+    HTML report, and email it to the configured recipients.
     """
     debugging: bool = False
     # Parse database connection configurations for primary and standby databases
@@ -101,6 +143,16 @@ def main():
     standby_bin_log = str(standby_bin_log_b)
     c.close()
 
+    print(
+        terminal_report(
+            primary_conf["host"],
+            primary_bin_log,
+            primary_bin_log_position,
+            standby_conf["host"],
+            standby_bin_log,
+            standby_bin_log_position,
+        )
+    )
 
     # Construct the HTML email body with synchronization status details
     email_body: str = f"""
@@ -161,6 +213,7 @@ def main():
     # Send the email using SMTP
     with smtplib.SMTP("smtp.gmail.com") as s:
         s.sendmail(from_addr=from_address, to_addrs=to_list, msg=msg.as_string())
+
 
 if __name__ == "__main__":
     # execute only if run as a script
