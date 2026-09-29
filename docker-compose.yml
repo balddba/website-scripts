@@ -19,7 +19,7 @@ services:
       - --innodb-buffer-pool-size=128M
       - --max-connections=100
     volumes:
-      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+      - ./tests/mysql/fixtures/01-seed.sql:/docker-entrypoint-initdb.d/01-seed.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
