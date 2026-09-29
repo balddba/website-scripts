@@ -1,4 +1,11 @@
+SQL> @redundant_indexes.sql HR
+
 === Redundant indexes ===
 PREFIX = leading columns match a wider index. DUPLICATE = same columns.
 KEEP UNIQUE = unique index is a prefix of a non-unique index; do not drop
 it if it enforces uniqueness.
+
+Owner            Table                        Redundant Index                Redundant Columns                        Red. Uniq Covering Index                 Covering Columns                         Cov. Uniq  Note
+---------------- ---------------------------- ------------------------------ ---------------------------------------- --------- ------------------------------ ---------------------------------------- ---------- --------------
+HR               EMPLOYEES                    EMP_DEPT_IX                    DEPARTMENT_ID                            NONUNIQUE EMP_DEPT_JOB_IX                DEPARTMENT_ID, JOB_ID                    NONUNIQUE  PREFIX
+HR               ORDERS                       ORD_CUST_IX                    CUSTOMER_ID                              NONUNIQUE ORD_CUST_DATE_IX               CUSTOMER_ID, ORDER_DATE                  NONUNIQUE  PREFIX

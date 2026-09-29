@@ -1,4 +1,14 @@
+SQL> @sql_patches_profiles.sql
+
 === SQL Profiles (DBA_SQL_PROFILES) ===
+
+Name                           Category        Status     Type       Force    Created          Modified         SQL Text
+------------------------------ --------------- ---------- ---------- -------- ---------------- ---------------- ------------------------------------------------------------
+SYS_SQLPROF_0148920194820000   DEFAULT         ENABLED    MANUAL     NO       2026-05-10 11:20 2026-05-10 11:20 SELECT /*+ gather_plan_statistics */ e.employee_id, e.last_
 
 
 === SQL Patches (DBA_SQL_PATCHES) ===
+
+Name                           Category        Status     Force    Created          Modified         SQL Text
+------------------------------ --------------- ---------- -------- ---------------- ---------------- ------------------------------------------------------------
+PATCH_OPT_ESTIMATE_8zxfktj5    DEFAULT         ENABLED    YES      2026-08-14 16:05 2026-08-14 16:05 SELECT /*+ OPT_ESTIMATE */ count(*) FROM orders o JOIN order

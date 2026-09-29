@@ -22,7 +22,7 @@ def test_unified_audit_summary(run_oracle_sql) -> None:
     """Execute unified_audit_summary.sql and verify unified audit policy columns.
 
     Args:
-        run_oracle_sql: Fixture to execute a SQL script.
+        run_oracle_sql (Callable[..., ScriptResult]): Fixture to execute a SQL script.
     """
     try:
         result = run_oracle_sql("unified_audit_summary.sql")

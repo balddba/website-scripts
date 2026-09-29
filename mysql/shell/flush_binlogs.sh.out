@@ -1,2 +1,4 @@
 $ ./flush_binlogs.sh
-(No terminal output on success.)
+Flushing MySQL binary logs...
+Binary logs flushed successfully.
+Elapsed time: 0.042s

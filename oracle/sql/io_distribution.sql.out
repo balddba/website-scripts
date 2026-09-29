@@ -1,3 +1,4 @@
+SQL> @io_distribution.sql
 === I/O distribution (FILE) ===
 
 Times are hundredths of a second. Avg Rd/Wr are milliseconds.

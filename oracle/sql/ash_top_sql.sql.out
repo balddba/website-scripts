@@ -1,3 +1,4 @@
+SQL> @ash_top_sql.sql
 === Top SQL and Wait Events from ASH (Last 30 minutes) ===
 
 

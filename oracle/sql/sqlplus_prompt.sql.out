@@ -1,1 +1,2 @@
-
+SQL> @sqlplus_prompt.sql
+SYS@ORCLPDB1> 

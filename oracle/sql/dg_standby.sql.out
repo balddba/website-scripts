@@ -1,3 +1,4 @@
+SQL> @dg_standby.sql
 Session altered.
 
 
@@ -147,7 +148,12 @@ timezlrg_43.dat                    43
 Data Guard configuration
 ========================
 
-no rows selected
+DB_UNIQUE_NAME       PARENT_DBUN          DEST_ROLE
+-------------------- -------------------- --------------------
+homelab              NONE                 PRIMARY DATABASE
+homelab_stby         homelab              PHYSICAL STANDBY
+
+2 rows selected.
 
 
 Key parameters
@@ -297,7 +303,14 @@ Standby redo logs
 Standby redo logs should exist, one more group per thread than the
 primary online logs, and at least as large as the largest online log.
 
-no rows selected
+  Grp   Thr        Seq           MB       USED ARCHIVED STATUS
+----- ----- ---------- ------------ ---------- -------- ----------------
+    4     1       1205          200      12400 YES      ACTIVE
+    5     1          0          200          0 YES      UNASSIGNED
+    6     1          0          200          0 YES      UNASSIGNED
+    7     1          0          200          0 YES      UNASSIGNED
+
+4 rows selected.
 
 
 Redo log members
@@ -426,7 +439,13 @@ Managed standby / apply processes
 Apply and transport lag
 =======================
 
-no rows selected
+Name                             Value                            UNIT             TIME_COMPUTED       DATUM_TIME
+-------------------------------- -------------------------------- ---------------- ------------------- -------------------
+apply finish time                +00 00:00:00.000                 day(2) to second 2026-09-28 12:00:00 2026-09-28 12:00:00
+apply lag                        +00 00:00:00                     day(2) to second 2026-09-28 12:00:00 2026-09-28 12:00:00
+transport lag                    +00 00:00:00                     day(2) to second 2026-09-28 12:00:00 2026-09-28 12:00:00
+
+3 rows selected.
 
 
 MRP and standby redo check
@@ -434,7 +453,7 @@ MRP and standby redo check
 
 MRP_CHECK                                                              SRL_CHECK
 ---------------------------------------------------------------------- ----------------------------------------------------------------------
-WARNING: no MRP apply process found                                    WARNING: no standby redo logs; real-time apply cannot use SRLs
+OK: MRP is running                                                     OK: standby redo logs present
 
 1 row selected.
 
@@ -449,7 +468,13 @@ no rows selected
 Recovery progress
 =================
 
-no rows selected
+START_TIME          TYPE                 ITEM                             UNITS                     SOFAR      TOTAL TIMESTAMP
+------------------- -------------------- -------------------------------- -------------------- ---------- ---------- -------------------
+2026-09-28 08:00:00 Media Recovery       Average Apply Rate               KB_per_sec                 3450       3450 2026-09-28 12:00:00
+2026-09-28 08:00:00 Media Recovery       Last Applied Redo                SCN+time              416801940          0 2026-09-28 12:00:00
+2026-09-28 08:00:00 Media Recovery       Redo Applied                     Megabytes                  1850          0 2026-09-28 12:00:00
+
+3 rows selected.
 
 
 Flashback
@@ -465,7 +490,10 @@ OLDEST_FLASHBACK_SCN OLDEST_FLASHBACK_TI RETENTION_TARGET FLASHBACK_SIZE_GB
 Recent Data Guard messages
 ==========================
 
-no rows selected
+Timestamp           SEVERITY     ERROR_CODE MESSAGE
+------------------- ------------ ---------- --------------------------------------------------------------------------------------------------------------------------------------------
+2026-09-28 12:00:05 Informational         0 Media Recovery Log /u01/app/oracle/archivelog/1_1205_1102948.dbf
+2026-09-28 12:00:00 Informational         0 Managed Standby Recovery not using Real Time Apply
 
 
 End of Data Guard standby snapshot

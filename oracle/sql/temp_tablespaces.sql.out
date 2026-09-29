@@ -1,3 +1,4 @@
+SQL> @temp_tablespaces.sql
 === Temporary tablespaces ===
 
 

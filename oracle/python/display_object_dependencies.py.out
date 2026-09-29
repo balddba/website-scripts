@@ -1,4 +1,4 @@
-python oracle/python/display_object_dependencies.py \
+$ python oracle/python/display_object_dependencies.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1 \

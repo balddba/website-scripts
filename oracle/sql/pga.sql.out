@@ -1,0 +1,62 @@
+SQL> @pga.sql
+
+=== PGA parameters ===
+
+
+Parameter                            Value
+------------------------------------ ----------------------------------------
+pga_aggregate_limit                  4G
+pga_aggregate_target                 1G
+
+2 rows selected.
+
+
+=== V$PGASTAT ===
+
+
+PGA Stat                                     Value
+-------------------------------------------- --------------------------------
+aggregate PGA target parameter               1,073,741,824 bytes
+aggregate PGA auto target                    842,915,840 bytes
+global memory bound                          104,857,600 bytes
+total PGA allocated                          312,475,648 bytes
+total freeable PGA memory                     48,234,496 bytes
+maximum PGA allocated                        642,810,880 bytes
+total PGA used for auto workareas             12,582,912 bytes
+maximum PGA used for auto workareas          145,227,776 bytes
+cache hit percentage                               98.42 %
+
+9 rows selected.
+
+
+=== Process PGA totals ===
+
+
+Processes        Used MB       Alloc MB    Freeable MB         Max MB
+--------- -------------- -------------- -------------- --------------
+       72         245.20         312.48          48.23         642.81
+
+1 row selected.
+
+
+=== PGA_TARGET advice ===
+
+
+ Target MB Factor Status       Bytes Proc MB  Estd Extra MB Estd Hit % Estd Overalloc
+---------- ------ ---------- --------------- -------------- ---------- --------------
+       512   0.50 ON           1,425,820,100     45,210,000      96.20              0
+      1024   1.00 ON           1,425,820,100              0      98.42              0
+      2048   2.00 ON           1,425,820,100              0     100.00              0
+
+3 rows selected.
+
+
+=== Top PGA consumers ===
+
+
+  SID   Serial# OS PID       Username                 Program                      Process          Status      Used MB   Alloc MB    Freeable MB     Max MB
+----- --------- ------------ ------------------------ ---------------------------- ---------------- -------- ---------- ---------- -------------- ----------
+  142     33891 18492        APP_USER                 python@phxdbjab68            oracle@homelab   ACTIVE        34.50      42.10           4.20      64.20
+   88     19402 18501        SYS                      sqlplus@phxdbjab68           oracle@homelab   ACTIVE        18.20      24.50           2.10      32.10
+
+2 rows selected.

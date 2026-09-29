@@ -1,9 +1,10 @@
+SQL> @asm_storage_info.sql
 ASM instance
 ============
 
 INSTANCE_NAME    HOST_NAME                      VERSION        STATUS
 ---------------- ------------------------------ -------------- ----------
-homelab          oracle26ai.aaronslab.net       23.0.0.0.0     OPEN
++ASM1            oracle26ai.aaronslab.net       23.0.0.0.0     OPEN
 
 1 row selected.
 
@@ -22,16 +23,31 @@ RECO                     CONNECTED    EXTERN                 40.0            4.0
 ASM disks
 =========
 
-no rows selected
+Disk Group                Disk# Disk Name                Fail Group           Mount    Header       Mode    State        Total GB      Free GB Path
+------------------------ ------ ------------------------ -------------------- -------- ------------ ------- -------- ------------ ------------ --------------------------------------------------
+DATA                          0 DATA_0000                DATA_0000            CACHED   MEMBER       ONLINE  NORMAL           30.0          3.0 /dev/oracleasm/disks/DATA1
+DATA                          1 DATA_0001                DATA_0001            CACHED   MEMBER       ONLINE  NORMAL           30.0          3.0 /dev/oracleasm/disks/DATA2
+RECO                          0 RECO_0000                RECO_0000            CACHED   MEMBER       ONLINE  NORMAL           40.0          4.0 /dev/oracleasm/disks/RECO1
+
+3 rows selected.
 
 
 ASM clients
 ===========
 
-no rows selected
+Disk Group               CLIENT_INSTANCE    DB_NAME      STATUS     SOFTWARE_VERSION COMPATIBLE_VERSI
+------------------------ ------------------ ------------ ---------- ---------------- ----------------
+DATA                     homelab            homelab      CONNECTED  23.0.0.0.0       19.0.0.0.0
+RECO                     homelab            homelab      CONNECTED  23.0.0.0.0       19.0.0.0.0
+
+2 rows selected.
 
 
 Active ASM operations
 =====================
 
-no rows selected
+Disk Group               OPERATION    STATE         POWER ACTUAL        SOFAR     EST_WORK EST_MINUTES ERROR_CODE
+------------------------ ------------ ------------ ------ ------ ------------ ------------ ----------- ------------
+DATA                     REBAL        RUN               4      4        12400        25000         3.5 (null)
+
+1 row selected.

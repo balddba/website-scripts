@@ -1,4 +1,4 @@
-python oracle/python/dataguard_stats.py \
+$ python oracle/python/dataguard_stats.py \
   --host standby01 \
   --service-name ORCL_DG \
   --username system \

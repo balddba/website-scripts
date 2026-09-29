@@ -1,3 +1,4 @@
+SQL> @desc.sql SQLTEST.WS_SQLTEST_LOCK
 === Table summary and statistics ===
 
 

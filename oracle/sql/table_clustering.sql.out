@@ -1,3 +1,4 @@
+SQL> @table_clustering.sql HR.EMPLOYEES
 === Table clustering context ===
 
 

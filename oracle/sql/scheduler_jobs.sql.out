@@ -1,3 +1,4 @@
+SQL> @scheduler_jobs.sql
 === Scheduler attributes ===
 
 

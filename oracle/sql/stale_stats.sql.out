@@ -1,2 +1,7 @@
-Enter value for 1:
-no rows selected
+SQL> @stale_stats.sql HR
+
+Owner                Table Name                     Partition Name            Object Type         Num Rows      Blocks Last Analyzed       Stale Stats Locked
+-------------------- ------------------------------ ------------------------- ------------ --------------- ----------- ------------------- ----------- ----------
+HR                   ORDERS                         (null)                    TABLE                145,200       2,840 2026-08-15 02:00:10 YES         (null)
+HR                   ORDER_ITEMS                    (null)                    TABLE                580,400       6,120 2026-08-15 02:00:12 YES         (null)
+HR                   EMPLOYEES                      (null)                    TABLE                    107           8 2026-09-01 10:15:00 YES         (null)

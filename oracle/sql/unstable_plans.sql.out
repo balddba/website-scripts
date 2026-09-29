@@ -1,0 +1,17 @@
+SQL> @unstable_plans.sql VSQL
+
+=== Unstable plans from V$SQL (no Diagnostic Pack required) ===
+
+
+SQL ID        Plan Hash Plans       Execs    Elapsed S   Ela/Exec      Gets/Exec    Min Ela    Max Ela Schema               SQL Text
+------------- --------- ----- ----------- ------------ ---------- -------------- ---------- ---------- -------------------- --------------------------------------------------
+4uz0tutmv3d30 284910284     2      14,500        145.2     0.0100            450     0.0020     0.0500 APP_USER             SELECT id, name, balance FROM accounts WHERE statu
+4uz0tutmv3d30 192847291     2         200         12.0     0.0600          2,400     0.0500     0.0800 APP_USER             SELECT id, name, balance FROM accounts WHERE statu
+
+2 rows selected.
+
+
+=== Unstable plans from AWR (requires Diagnostic Pack license) ===
+
+Querying DBA_HIST_SQLSTAT is a Diagnostic Pack feature. Pass VSQL to skip
+this section unless the database is licensed for that pack.

@@ -1,3 +1,4 @@
+SQL> @invalid_objects_summary.sql
 === Invalid Objects Summary ===
 
 

@@ -1,3 +1,4 @@
+SQL> @rebuild_indexes_online.sql HR EMPLOYEES INDX
 === Index tablespace and statistics before rebuild ===
 
 

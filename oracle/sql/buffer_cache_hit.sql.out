@@ -1,3 +1,4 @@
+SQL> @buffer_cache_hit.sql
 === Instance ===
 
 

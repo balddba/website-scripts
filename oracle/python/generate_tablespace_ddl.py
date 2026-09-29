@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: generate_tablespace_ddl.py
 # Title: Generate Oracle tablespace DDL
@@ -24,20 +24,20 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Generate DDL scripts for Oracle tablespaces."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -183,7 +183,7 @@ class OracleDriver:
         """Initialize driver with connection configuration.
 
         Args:
-            config: Validated database connection configuration.
+            config (OracleConnectionConfig): Validated database connection configuration.
         """
         self._config = config
 
@@ -234,7 +234,7 @@ class TablespaceDdlGenerator:
         """Initialize generator with an Oracle driver.
 
         Args:
-            driver: Oracle database connection driver.
+            driver (OracleDriver): Oracle database connection driver.
         """
         self._driver = driver
 
@@ -246,8 +246,8 @@ class TablespaceDdlGenerator:
         """Query tablespace definitions and datafiles from data dictionary views.
 
         Args:
-            tablespace_filter: Optional specific tablespace name to filter by.
-            type_filter: Optional type filter (e.g. PERMANENT, TEMPORARY, UNDO).
+            tablespace_filter (str | None): Optional specific tablespace name to filter by.
+            type_filter (str | None): Optional type filter (e.g. PERMANENT, TEMPORARY, UNDO).
 
         Returns:
             list[TablespaceMetadata]: List of tablespaces with associated datafiles.
@@ -267,9 +267,9 @@ class TablespaceDdlGenerator:
         """Fetch base tablespace headers from DBA_TABLESPACES or USER_TABLESPACES.
 
         Args:
-            cursor: Active database cursor.
-            tablespace_filter: Optional tablespace name filter.
-            type_filter: Optional tablespace type filter.
+            cursor (oracledb.Cursor): Active database cursor.
+            tablespace_filter (str | None): Optional tablespace name filter.
+            type_filter (str | None): Optional tablespace type filter.
 
         Returns:
             dict[str, TablespaceMetadata]: Map of tablespace name to metadata object.
@@ -382,8 +382,8 @@ class TablespaceDdlGenerator:
         """Fetch and attach data files from DBA_DATA_FILES.
 
         Args:
-            cursor: Active database cursor.
-            ts_dict: Map of tablespace name to metadata object.
+            cursor (oracledb.Cursor): Active database cursor.
+            ts_dict (dict[str, TablespaceMetadata]): Map of tablespace name to metadata object.
         """
         if not ts_dict:
             return
@@ -439,8 +439,8 @@ class TablespaceDdlGenerator:
         """Fetch and attach temporary files from DBA_TEMP_FILES.
 
         Args:
-            cursor: Active database cursor.
-            ts_dict: Map of tablespace name to metadata object.
+            cursor (oracledb.Cursor): Active database cursor.
+            ts_dict (dict[str, TablespaceMetadata]): Map of tablespace name to metadata object.
         """
         if not ts_dict:
             return
@@ -492,7 +492,7 @@ class TablespaceDdlGenerator:
         """Extract tablespace DDL using DBMS_METADATA package.
 
         Args:
-            tablespace_name: Name of the tablespace.
+            tablespace_name (str): Name of the tablespace.
 
         Returns:
             str: Generated DDL statement.
@@ -557,8 +557,8 @@ class TablespaceDdlGenerator:
         """Construct synthetic CREATE TABLESPACE DDL statement from metadata.
 
         Args:
-            metadata: Populated tablespace metadata.
-            include_drop: Whether to prepend DROP TABLESPACE statement.
+            metadata (TablespaceMetadata): Populated tablespace metadata.
+            include_drop (bool): Whether to prepend DROP TABLESPACE statement.
 
         Returns:
             str: Synthesized DDL statement.
@@ -654,10 +654,10 @@ class TablespaceDdlGenerator:
         """Generate DDL statements for all matching tablespaces.
 
         Args:
-            tablespace_filter: Optional tablespace name filter.
-            type_filter: Optional tablespace type filter (PERMANENT, TEMPORARY, UNDO, ALL).
-            method: Generation method ('dbms_metadata', 'synthetic', or 'auto').
-            include_drop: Whether to include DROP statements before CREATE.
+            tablespace_filter (str | None): Optional tablespace name filter.
+            type_filter (str | None): Optional tablespace type filter (PERMANENT, TEMPORARY, UNDO, ALL).
+            method (str): Generation method ('dbms_metadata', 'synthetic', or 'auto').
+            include_drop (bool): Whether to include DROP statements before CREATE.
 
         Returns:
             TablespaceDdlReport: Aggregated report of generated DDL statements.
@@ -721,8 +721,8 @@ def format_ddl_output(report: TablespaceDdlReport, include_comments: bool = True
     """Format the report into runnable SQL script text.
 
     Args:
-        report: Populated tablespace DDL report.
-        include_comments: Whether to include metadata header comments.
+        report (TablespaceDdlReport): Populated tablespace DDL report.
+        include_comments (bool): Whether to include metadata header comments.
 
     Returns:
         str: Formatted SQL script text.
@@ -749,117 +749,77 @@ def format_ddl_output(report: TablespaceDdlReport, include_comments: bool = True
     return "\n".join(sections).strip() + "\n"
 
 
-def parse_arguments(args: list[str]) -> argparse.Namespace:
-    """Parse command-line arguments.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Args:
-        args: Command line argument list.
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
 
-    Returns:
-        argparse.Namespace: Parsed CLI options.
-    """
-    parser = argparse.ArgumentParser(
-        description="Generate DDL definitions for Oracle database tablespaces.",
-    )
-    parser.add_argument("--host", default=os.getenv("ORACLE_HOST", "localhost"), help="Oracle host")
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
-        help="Oracle listener port",
-    )
-    parser.add_argument(
-        "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
-        help="Oracle service name",
-    )
-    parser.add_argument("--sid", default=os.getenv("ORACLE_SID"), help="Oracle SID")
-    parser.add_argument(
-        "-u",
-        "--user",
-        default=os.getenv("ORACLE_USER"),
-        help="Oracle username",
-    )
-    parser.add_argument(
-        "-p",
-        "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
-        help="Oracle password",
-    )
-    parser.add_argument(
-        "--sysdba",
-        action="store_true",
-        default=os.getenv("ORACLE_SYSDBA", "0").lower() in ("1", "true", "yes"),
-        help="Connect as SYSDBA",
-    )
-    parser.add_argument(
-        "-t",
-        "--tablespace",
-        default=None,
-        help="Filter by specific tablespace name",
-    )
-    parser.add_argument(
-        "--type",
-        choices=["ALL", "PERMANENT", "TEMPORARY", "UNDO"],
-        default="ALL",
-        help="Filter by tablespace type (default: ALL)",
-    )
-    parser.add_argument(
-        "--method",
-        choices=["auto", "dbms_metadata", "synthetic"],
-        default="auto",
-        help="DDL generation method (auto: DBMS_METADATA with synthetic fallback)",
-    )
-    parser.add_argument(
-        "--include-drop",
-        action="store_true",
-        help="Prepend DROP TABLESPACE statement before CREATE",
-    )
-    parser.add_argument(
-        "--no-comments",
-        action="store_true",
-        help="Exclude informational comments from SQL output",
-    )
-    parser.add_argument(
-        "-f",
-        "--format",
-        choices=["sql", "json"],
-        default="sql",
-        help="Output format (sql or json)",
-    )
-    parser.add_argument(
-        "-o",
-        "--output-file",
-        default=None,
-        help="Write generated DDL to file instead of stdout",
-    )
-    return parser.parse_args(args)
+        Args:
+            args (Sequence[str] | None): Argument list to parse.
+
+        Returns:
+            SimpleNamespace: Parsed arguments as a namespace.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("generate_tablespace_ddl", list(args) if args is not None else sys.argv[1:])
+        return SimpleNamespace(**ctx.params)
 
 
-def main(args: list[str] | None = None) -> int:
+app = TyperApp(add_completion=False, help="Generate DDL definitions for Oracle database tablespaces.")
+
+
+@app.command()
+def run(
+    host: str = typer.Option("localhost", "--host", envvar="ORACLE_HOST", help="Oracle host"),
+    port: int = typer.Option(1521, "--port", envvar="ORACLE_PORT", help="Oracle listener port"),
+    service_name: str | None = typer.Option(None, "--service-name", envvar="ORACLE_SERVICE_NAME", help="Oracle service name"),
+    sid: str | None = typer.Option(None, "--sid", envvar="ORACLE_SID", help="Oracle SID"),
+    user: str | None = typer.Option(None, "-u", "--user", envvar="ORACLE_USER", help="Oracle username"),
+    password: str | None = typer.Option(None, "-p", "--password", envvar="ORACLE_PASSWORD", help="Oracle password"),
+    sysdba: bool = typer.Option(False, "--sysdba", envvar="ORACLE_SYSDBA", help="Connect as SYSDBA"),
+    tablespace: str | None = typer.Option(None, "-t", "--tablespace", help="Filter by specific tablespace name"),
+    type: str = typer.Option("ALL", "--type", help="Filter by tablespace type (ALL, PERMANENT, TEMPORARY, UNDO)"),
+    method: str = typer.Option("auto", "--method", help="DDL generation method (auto, dbms_metadata, synthetic)"),
+    include_drop: bool = typer.Option(False, "--include-drop", help="Prepend DROP TABLESPACE statement before CREATE"),
+    no_comments: bool = typer.Option(False, "--no-comments", help="Exclude informational comments from SQL output"),
+    format: str = typer.Option("sql", "-f", "--format", help="Output format (sql or json)"),
+    output_file: str | None = typer.Option(None, "-o", "--output-file", help="Write generated DDL to file instead of stdout"),
+) -> int:
     """Execute the tablespace DDL generator command line interface.
 
     Args:
-        args: Optional list of CLI arguments (defaults to sys.argv[1:]).
+        host (str): Oracle host.
+        port (int): Oracle listener port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        user (str | None): Oracle username.
+        password (str | None): Oracle password.
+        sysdba (bool): Connect as SYSDBA.
+        tablespace (str | None): Specific tablespace name.
+        type (str): Tablespace type filter.
+        method (str): DDL generation method.
+        include_drop (bool): Prepend DROP statement.
+        no_comments (bool): Exclude informational comments.
+        format (str): Output format.
+        output_file (str | None): File path for output.
 
     Returns:
-        int: Exit status code (0 for success, non-zero for error).
+        int: Exit status code.
     """
-    opts = parse_arguments(args or sys.argv[1:])
-
-    if not opts.user or not opts.password:
+    if not user or not password:
         logger.error("Missing required credentials: username and password must be specified")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=opts.host,
-            port=opts.port,
-            service_name=opts.service_name,
-            sid=opts.sid,
-            username=opts.user,
-            password=SecretStr(opts.password),
-            is_sysdba=opts.sysdba,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
         )
     except ValidationError as err:
         logger.error("Configuration validation error: {}", err)
@@ -870,28 +830,27 @@ def main(args: list[str] | None = None) -> int:
 
     try:
         report = generator.generate_all(
-            tablespace_filter=opts.tablespace,
-            type_filter=opts.type,
-            method=opts.method,
-            include_drop=opts.include_drop,
+            tablespace_filter=tablespace,
+            type_filter=type,
+            method=method,
+            include_drop=include_drop,
         )
     except (oracledb.DatabaseError, ValueError, RuntimeError, OSError) as exc:
         logger.error("Error executing tablespace DDL generator: {}", exc)
         return 1
 
-    output_text = ""
-    if opts.format == "json":
+    if format == "json":
         output_text = report.model_dump_json(indent=2)
     else:
-        output_text = format_ddl_output(report, include_comments=not opts.no_comments)
+        output_text = format_ddl_output(report, include_comments=not no_comments)
 
-    if opts.output_file:
+    if output_file:
         try:
-            with open(opts.output_file, "w", encoding="utf-8") as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("DDL output written to {}", opts.output_file)
+            logger.info("DDL output written to {}", output_file)
         except OSError as err:
-            logger.error("Failed to write output to {}: {}", opts.output_file, err)
+            logger.error("Failed to write output to {}: {}", output_file, err)
             return 1
     else:
         sys.stdout.write(output_text)
@@ -899,5 +858,37 @@ def main(args: list[str] | None = None) -> int:
     return 0
 
 
+def parse_arguments(args: list[str]) -> SimpleNamespace:
+    """Parse command-line arguments using Typer.
+
+    Args:
+        args (list[str]): Command line argument list.
+
+    Returns:
+        SimpleNamespace: Parsed CLI options.
+    """
+    return app.parse_args(args)
+
+
+def main(args: list[str] | None = None) -> int:
+    """Execute the tablespace DDL generator command line interface entrypoint.
+
+    Args:
+        args (list[str] | None): Optional list of CLI arguments (defaults to sys.argv[1:]).
+
+    Returns:
+        int: Exit status code (0 for success, non-zero for error).
+    """
+    try:
+        cmd_args = list(args) if args is not None else None
+        ret = app(args=cmd_args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

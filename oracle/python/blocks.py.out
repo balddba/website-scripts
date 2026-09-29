@@ -1,0 +1,22 @@
+python oracle/python/blocks.py \
+  --user c##admin \
+  --password ******* \
+  --service-name ORDERPROD \
+  --once
+
+Database: ORDERPROD   Captured: 2026-09-28 16:46:41 EDT   Sessions: 3
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Blocking Session Trees                                                                                                                   │
+│ └── [BLOCKER] inst=1 sid=100,200 user=APP_USER status=INACTIVE                                                                           │
+│     ├── Wait event: SQL*Net message from client                                                                                          │
+│     ├── Client: app01 | orders-api                                                                                                       │
+│     ├── SQL [abc123]: UPDATE orders SET status = :status WHERE order_id = :id                                                            │
+│     └── [WAITER] inst=1 sid=142,24151 user=APP_USER status=ACTIVE wait=87s                                                               │
+│         ├── Wait event: enq: TX - row lock contention                                                                                    │
+│         ├── Client: app02 | order-worker                                                                                                 │
+│         ├── SQL [def456]: UPDATE order_items SET quantity = quantity + 1 WHERE order_id = :id                                            │
+│         └── [WAITER] inst=2 sid=318,9021 user=REPORT_USER status=ACTIVE wait=42s                                                         │
+│             ├── Wait event: enq: TX - row lock contention                                                                                │
+│             ├── Client: report01 | month-end-report                                                                                      │
+│             └── SQL [ghi789]: DELETE FROM order_summary WHERE order_id = :id                                                             │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯

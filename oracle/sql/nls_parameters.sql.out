@@ -1,3 +1,4 @@
+SQL> @nls_parameters.sql
 === Session NLS parameters ===
 
 

@@ -1,0 +1,11 @@
+SQL> @locks.sql
+
+=== Database locks (TM / TX / UL) ===
+
+
+  SID   Serial# Username             Program                  Type Held             Requested               ID1        ID2     Secs Blocker  Object
+----- --------- -------------------- ------------------------ ---- ---------------- ---------------- ---------- ---------- -------- -------- --------------------------------------------
+  142     33891 APP_USER             python@phxdbjab68        TM   Row-X (SX)       None                  78291          0       45 NONE     HR.EMPLOYEES
+  142     33891 APP_USER             python@phxdbjab68        TX   Exclusive        None                 131084       4821       45 NONE     (transaction rollback/undo)
+
+2 rows selected.

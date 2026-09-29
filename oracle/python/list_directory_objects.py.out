@@ -1,4 +1,4 @@
-python oracle/python/list_directory_objects.py \
+$ python oracle/python/list_directory_objects.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1

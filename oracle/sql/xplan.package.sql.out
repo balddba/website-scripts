@@ -1,0 +1,9 @@
+SQL> @xplan.package.sql
+
+Type created.
+
+Type created.
+
+Package created.
+
+Package body created.

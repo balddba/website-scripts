@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: oracle_diagnostics.py
 # Title: Oracle database diagnostics
@@ -24,20 +24,20 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Oracle database performance, storage, and catalog diagnostics analyzer."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -437,7 +437,7 @@ class OracleDriver:
         """Initialize driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -505,10 +505,10 @@ class OracleDiagnosticsAnalyzer:
         """Initialize the diagnostics analyzer service.
 
         Args:
-            driver: Database session driver.
-            owner: Optional schema owner filter.
-            table_name: Optional table filter.
-            tablespace_name: Optional tablespace filter.
+            driver (OracleDriver): Database session driver.
+            owner (str | None): Optional schema owner filter.
+            table_name (str | None): Optional table filter.
+            tablespace_name (str | None): Optional tablespace filter.
         """
         self._driver = driver
         self._owner = owner.upper() if owner else None
@@ -542,7 +542,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze sequential read and single block I/O wait statistics.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[WaitEventMetric]: List of sequential read wait event statistics.
@@ -579,7 +579,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze redo log and log file sync wait events.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[WaitEventMetric]: List of log file sync and write events.
@@ -617,7 +617,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze dirty buffer write queue and inspection statistics.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[StatMetric]: Buffer queue performance metrics.
@@ -646,7 +646,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze background processes and their session status.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[BackgroundProcessInfo]: Background process details.
@@ -688,7 +688,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze user tablespace quota limits and consumption.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[TablespaceQuotaInfo]: Tablespace quota allocations.
@@ -743,7 +743,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze buffer pool sizing, block sizes, and wait statistics.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[BufferPoolMetric]: Buffer pool performance metrics.
@@ -778,7 +778,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze index statistics, b-tree levels, and clustering factors.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[IndexStatInfo]: Index statistics.
@@ -847,7 +847,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze table column data types, distinct values, and histograms.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[TableColumnInfo]: Table column statistics.
@@ -910,7 +910,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze table physical space, block allocations, and row chaining.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[TableStorageInfo]: Table storage metrics.
@@ -985,7 +985,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze table partition metadata, storage blocks, and high values.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[TablePartitionInfo]: Partition storage and boundary metrics.
@@ -1048,7 +1048,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze column histograms and bucket distribution.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[HistogramInfo]: Column histogram metadata.
@@ -1107,7 +1107,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze LOB segments, in-row storage, and physical space usage.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[LobSegmentInfo]: LOB segment storage metrics.
@@ -1174,7 +1174,7 @@ class OracleDiagnosticsAnalyzer:
         """Analyze online redo log groups, multiplexing, and status.
 
         Args:
-            conn: Active database connection.
+            conn (oracledb.Connection): Active database connection.
 
         Returns:
             list[RedoLogInfo]: Online redo log metrics.
@@ -1235,9 +1235,9 @@ class OracleDiagnosticsAnalyzer:
         """Execute a SQL query wrapped in safe error handling.
 
         Args:
-            conn: Active database connection.
-            sql: SQL statement string.
-            params: Bind parameters.
+            conn (oracledb.Connection): Active database connection.
+            sql (str): SQL statement string.
+            params (dict[str, Any]): Bind parameters.
 
         Returns:
             list[tuple[Any, ...]]: Result rows.
@@ -1263,10 +1263,10 @@ class OracleDiagnosticsAnalyzer:
         """Execute query falling back from DBA_ to ALL_/USER_ views on ORA-00942.
 
         Args:
-            conn: Active connection.
-            primary_sql: Primary DBA view query.
-            fallback_sql: Fallback catalog view query.
-            params: Bind parameters.
+            conn (oracledb.Connection): Active connection.
+            primary_sql (str): Primary DBA view query.
+            fallback_sql (str): Fallback catalog view query.
+            params (dict[str, Any]): Bind parameters.
 
         Returns:
             list[tuple[Any, ...]]: Result rows.
@@ -1297,7 +1297,7 @@ def format_report_text(report: DiagnosticsReport) -> str:
     """Format full diagnostics report into a human-readable text document.
 
     Args:
-        report: Compiled diagnostic report.
+        report (DiagnosticsReport): Compiled diagnostic report.
 
     Returns:
         str: Formatted report text.
@@ -1487,110 +1487,89 @@ def format_report_text(report: DiagnosticsReport) -> str:
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build and return CLI argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured parser.
-    """
-    parser = argparse.ArgumentParser(description="Comprehensive Oracle performance, storage, and catalog diagnostics analyzer.")
-    parser.add_argument(
-        "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
-        help="Oracle database host (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
-        help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
-        "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
-        help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
-        "--sid",
-        default=os.getenv("ORACLE_SID"),
-        help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
-        "--user",
-        default=os.getenv("ORACLE_USER"),
-        help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
-        "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
-        help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
-        "--sysdba",
-        action="store_true",
-        help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
-        "--owner",
-        default=os.getenv("ORACLE_OWNER"),
-        help="Filter by schema owner",
-    )
-    parser.add_argument(
-        "--table",
-        dest="table_name",
-        default=os.getenv("ORACLE_TABLE"),
-        help="Filter by table name",
-    )
-    parser.add_argument(
-        "--tablespace",
-        dest="tablespace_name",
-        default=os.getenv("ORACLE_TABLESPACE"),
-        help="Filter by tablespace name",
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        dest="json_output",
-        help="Output report in JSON format",
-    )
-    parser.add_argument(
-        "--output",
-        help="File path to save the output report",
-    )
-    return parser
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Argument list to parse.
+
+        Returns:
+            SimpleNamespace: Parsed arguments as a namespace.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("oracle_diagnostics", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "table_name") and not hasattr(ns, "table"):
+            ns.table = ns.table_name
+        if hasattr(ns, "tablespace_name") and not hasattr(ns, "tablespace"):
+            ns.tablespace = ns.tablespace_name
+        if hasattr(ns, "json_output") and not hasattr(ns, "json"):
+            ns.json = ns.json_output
+        return ns
 
 
-def main() -> int:
-    """CLI execution entrypoint.
+app = TyperApp(add_completion=False, help="Comprehensive Oracle performance, storage, and catalog diagnostics analyzer.")
+
+
+@app.command()
+def run(
+    host: str = typer.Option("localhost", "--host", envvar="ORACLE_HOST", help="Oracle database host"),
+    port: int = typer.Option(1521, "--port", envvar="ORACLE_PORT", help="Oracle database port"),
+    service_name: str | None = typer.Option(None, "--service-name", envvar="ORACLE_SERVICE_NAME", help="Oracle service name"),
+    sid: str | None = typer.Option(None, "--sid", envvar="ORACLE_SID", help="Oracle SID"),
+    user: str | None = typer.Option(None, "--user", envvar="ORACLE_USER", help="Database username"),
+    password: str | None = typer.Option(None, "--password", envvar="ORACLE_PASSWORD", help="Database password"),
+    sysdba: bool = typer.Option(False, "--sysdba", help="Connect with SYSDBA privilege"),
+    owner: str | None = typer.Option(None, "--owner", envvar="ORACLE_OWNER", help="Filter by schema owner"),
+    table_name: str | None = typer.Option(None, "--table", envvar="ORACLE_TABLE", help="Filter by table name"),
+    tablespace_name: str | None = typer.Option(None, "--tablespace", envvar="ORACLE_TABLESPACE", help="Filter by tablespace name"),
+    json_output: bool = typer.Option(False, "--json", help="Output report in JSON format"),
+    output: str | None = typer.Option(None, "--output", help="File path to save the output report"),
+) -> int:
+    """Comprehensive Oracle performance, storage, and catalog diagnostics analyzer.
+
+    Args:
+        host (str): Database host.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        user (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Connect with SYSDBA privilege.
+        owner (str | None): Schema owner filter.
+        table_name (str | None): Table name filter.
+        tablespace_name (str | None): Tablespace name filter.
+        json_output (bool): Output in JSON format.
+        output (str | None): Output file path.
 
     Returns:
         int: Exit status code.
     """
-    parser = build_parser()
-    args = parser.parse_args()
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via --user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via --password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
-            owner=args.owner,
-            table_name=args.table_name,
-            tablespace_name=args.tablespace_name,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
+            owner=owner,
+            table_name=table_name,
+            tablespace_name=tablespace_name,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
@@ -1610,18 +1589,18 @@ def main() -> int:
         logger.error("Database error during diagnostic collection: {}", exc)
         return 1
 
-    if args.json_output:
+    if json_output:
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_report_text(report)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Diagnostics report saved to {}", args.output)
+            logger.info("Diagnostics report saved to {}", output)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output, exc)
+            logger.error("Failed to write report to {}: {}", output, exc)
             return 1
     else:
         sys.stdout.write(output_text + "\n")
@@ -1629,5 +1608,34 @@ def main() -> int:
     return 0
 
 
+def build_parser() -> TyperApp:
+    """Build and return CLI argument parser.
+
+    Returns:
+        TyperApp: Configured parser.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (Sequence[str] | None): Optional command-line arguments.
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        args = list(argv) if argv is not None else None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

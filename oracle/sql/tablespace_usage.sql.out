@@ -1,3 +1,4 @@
+SQL> @tablespace_usage.sql
 TABLESPACE_NAME 		  SIZE_MB    FREE_MB   PCT_USED
 ------------------------------ ---------- ---------- ----------
 SYSTEM				      370	   5	   98.5

@@ -1,3 +1,4 @@
+SQL> @queue_configuration.sql
 === Queue Tables Configuration ===
 
 Owner              Queue Table              Payload Type                 Sort Order         Recipients Grouping       Compatible Secure

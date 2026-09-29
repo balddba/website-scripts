@@ -1,3 +1,4 @@
+SQL> @asm_disk_performance_metrics.sql
 === ASM Disk Performance Metrics (V$ASM_DISK_IOSTAT) ===
 
 Disk Group         Fail Group       Disk# Disk Name                     Reads        Writes        Read MB       Write MB Read Time(s) Write Time(s) Avg Rd ms Avg Wr ms     Cold Rds      Hot Rds Rd Errs Wr Errs

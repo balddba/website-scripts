@@ -1,0 +1,53 @@
+SQL> @user_expiry_report.sql
+
+===============================================================================
+User Password Expiry Report
+===============================================================================
+
+=== Account Status Distribution ===
+
+
+Account Status         User Count
+---------------------- ----------
+OPEN                            4
+EXPIRED                         1
+LOCKED                          2
+
+3 rows selected.
+
+
+=== Accounts Expiring Soon (Within 30 Days, Default: 30) ===
+
+
+Username                       Profile              Expiry Date          Days Left Lock Date           Created Date
+------------------------------ -------------------- ------------------- ---------- ------------------- -------------------
+APP_USER                       DEFAULT              2026-10-15 14:00:00       17.1 (null)              2026-01-15 08:30:00
+
+1 row selected.
+
+
+=== Expired and Locked Accounts ===
+
+
+Username                       Profile              Account Status         Expiry Date         Lock Date           Created Date
+------------------------------ -------------------- ---------------------- ------------------- ------------------- -------------------
+DEMO_USER                      DEFAULT              EXPIRED                2026-09-01 00:00:00 (null)              2026-03-01 10:00:00
+OLD_ADMIN                      DEFAULT              LOCKED                 (null)              2026-08-15 12:00:00 2025-11-20 09:15:00
+TEST_ACCOUNT                   DEFAULT              LOCKED                 (null)              2026-07-10 16:30:00 2026-02-14 11:00:00
+
+3 rows selected.
+
+
+=== Profile Password Policy Limits ===
+
+
+Profile              Resource Name             Limit
+-------------------- ------------------------- --------------------
+DEFAULT              PASSWORD_LIFE_TIME        180
+DEFAULT              PASSWORD_GRACE_TIME       7
+DEFAULT              PASSWORD_REUSE_TIME       UNLIMITED
+DEFAULT              PASSWORD_REUSE_MAX        UNLIMITED
+DEFAULT              FAILED_LOGIN_ATTEMPTS     10
+DEFAULT              PASSWORD_LOCK_TIME        1
+
+6 rows selected.

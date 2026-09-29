@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: oracle_system_metrics_diagnostics.py
 # Title: Oracle system metrics diagnostics
@@ -24,7 +24,7 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Oracle database system metrics and SQL parse diagnostics analyzer.
 
 Provides diagnostics for buffer pool statistics with cache advice, CPU usage
@@ -34,14 +34,14 @@ and misses, and high SQL parse rates with root-cause offending SQL diagnosis.
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -1472,166 +1472,185 @@ def format_system_metrics_report_text(report: SystemMetricsDiagnosticsReport) ->
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Construct CLI argument parser for system metrics diagnostics analyzer.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured argument parser.
-    """
-    parser = argparse.ArgumentParser(description="Oracle database system metrics and SQL parse diagnostics analyzer.")
-    parser.add_argument(
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("oracle_system_metrics_diagnostics", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "output") and not hasattr(ns, "output_file"):
+            ns.output_file = ns.output
+        elif hasattr(ns, "output_file") and not hasattr(ns, "output"):
+            ns.output = ns.output_file
+        return ns
+
+
+app = TyperApp(add_completion=False, help="Oracle database system metrics and SQL parse diagnostics analyzer.")
+
+
+@app.command()
+def run(
+    user: str | None = typer.Option(
+        None,
         "-u",
         "--user",
-        default=os.getenv("ORACLE_USER"),
+        envvar="ORACLE_USER",
         help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
+    ),
+    password: str | None = typer.Option(
+        None,
         "-p",
         "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
+        envvar="ORACLE_PASSWORD",
         help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
+    ),
+    host: str = typer.Option(
+        "localhost",
         "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
+        envvar="ORACLE_HOST",
         help="Oracle database host (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
+    ),
+    port: int = typer.Option(
+        1521,
         "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
+        envvar="ORACLE_PORT",
         help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
+    ),
+    service_name: str | None = typer.Option(
+        None,
         "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
+        envvar="ORACLE_SERVICE_NAME",
         help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
+    ),
+    sid: str | None = typer.Option(
+        None,
         "--sid",
-        default=os.getenv("ORACLE_SID"),
+        envvar="ORACLE_SID",
         help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
+    ),
+    sysdba: bool = typer.Option(
+        False,
         "--sysdba",
-        action="store_true",
         help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
+    ),
+    analyzer: str = typer.Option(
+        "all",
         "--analyzer",
-        choices=[
-            "buffer_pool",
-            "cpu_usage",
-            "io_stats",
-            "latch_stats",
-            "high_parse_sql",
-            "all",
-        ],
-        default="all",
         help="Select analyzer module to run (default: all)",
-    )
-    parser.add_argument(
+    ),
+    top: int = typer.Option(
+        20,
         "--top",
-        type=int,
-        default=20,
         help="Top N rows to return for ranked metrics (default: 20)",
-    )
-    parser.add_argument(
+    ),
+    min_parses: int = typer.Option(
+        100,
         "--min-parses",
-        type=int,
-        default=100,
         help="Minimum parse count threshold for offending SQL queries (default: 100)",
-    )
-    parser.add_argument(
+    ),
+    format: str = typer.Option(
+        "text",
         "--format",
-        choices=["text", "json"],
-        default="text",
         help="Output report format (default: text)",
-    )
-    parser.add_argument(
+    ),
+    output_file: str | None = typer.Option(
+        None,
         "-o",
         "--output",
         "--output-file",
-        dest="output_file",
         help="File path to save the output report",
-    )
-    return parser
-
-
-def main(argv: list[str] | None = None) -> int:
-    """CLI execution entrypoint.
+    ),
+) -> int:
+    """Execute system metrics analysis and output the report.
 
     Args:
-        argv (list[str] | None): Command-line argument list, or None for sys.argv[1:].
+        user (str | None): Database username.
+        password (str | None): Database password.
+        host (str): Database hostname.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        sysdba (bool): Whether to connect with SYSDBA privilege.
+        analyzer (str): Analyzer module to run.
+        top (int): Top N rows to return for ranked metrics.
+        min_parses (int): Minimum parse count threshold.
+        format (str): Output report format (text or json).
+        output_file (str | None): File path to save output report.
 
     Returns:
         int: Exit status code.
     """
-    parser = build_parser()
-    args = parser.parse_args(argv)
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via -u/--user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via -p/--password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
         return 1
 
     driver = OracleDriver(config)
-    analyzer = OracleSystemMetricsAnalyzer(
+    metrics_analyzer = OracleSystemMetricsAnalyzer(
         driver=driver,
-        top_n=args.top,
-        min_parses=args.min_parses,
+        top_n=top,
+        min_parses=min_parses,
     )
 
     try:
-        if args.analyzer == "all":
-            report = analyzer.run_all()
+        if analyzer == "all":
+            report = metrics_analyzer.run_all()
         else:
             report = SystemMetricsDiagnosticsReport()
-            if args.analyzer == "buffer_pool":
-                report.buffer_pool = analyzer.analyze_buffer_pool()
-            elif args.analyzer == "cpu_usage":
-                report.cpu_usage = analyzer.analyze_cpu_usage()
-            elif args.analyzer == "io_stats":
-                report.io_stats = analyzer.analyze_io_stats()
-            elif args.analyzer == "latch_stats":
-                report.latch_stats = analyzer.analyze_latch_stats()
-            elif args.analyzer == "high_parse_sql":
-                report.high_parse_sql = analyzer.analyze_high_parse_sql()
+            if analyzer == "buffer_pool":
+                report.buffer_pool = metrics_analyzer.analyze_buffer_pool()
+            elif analyzer == "cpu_usage":
+                report.cpu_usage = metrics_analyzer.analyze_cpu_usage()
+            elif analyzer == "io_stats":
+                report.io_stats = metrics_analyzer.analyze_io_stats()
+            elif analyzer == "latch_stats":
+                report.latch_stats = metrics_analyzer.analyze_latch_stats()
+            elif analyzer == "high_parse_sql":
+                report.high_parse_sql = metrics_analyzer.analyze_high_parse_sql()
     except oracledb.DatabaseError as exc:
         logger.error("Database error during system metrics collection: {}", exc)
         return 1
 
-    if args.format == "json":
+    if format == "json":
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_system_metrics_report_text(report)
 
-    if args.output_file:
+    if output_file:
         try:
-            with open(args.output_file, "w", encoding="utf-8") as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Diagnostics report saved to {}", args.output_file)
+            logger.info("Diagnostics report saved to {}", output_file)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output_file, exc)
+            logger.error("Failed to write report to {}: {}", output_file, exc)
             return 1
     else:
         sys.stdout.write(output_text + "\n")
@@ -1639,5 +1658,39 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def build_parser() -> TyperApp:
+    """Construct CLI argument parser for system metrics diagnostics analyzer.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (Sequence[str] | None): Command-line argument list, or None for sys.argv[1:].
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

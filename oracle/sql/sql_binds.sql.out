@@ -1,3 +1,4 @@
+SQL> @sql_binds.sql
 === In-Memory Bind Capture (GV$SQL_BIND_CAPTURE) ===
 
 

@@ -1,3 +1,4 @@
+SQL> @partitions.sql SH SALES
 === Partition method ===
 
 

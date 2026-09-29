@@ -1,3 +1,4 @@
+SQL> @dg_primary.sql
 Session altered.
 
 
@@ -146,7 +147,12 @@ timezlrg_43.dat                    43
 Data Guard configuration
 ========================
 
-no rows selected
+DB_UNIQUE_NAME       PARENT_DBUN          DEST_ROLE
+-------------------- -------------------- --------------------
+homelab              NONE                 PRIMARY DATABASE
+homelab_stby         homelab              PHYSICAL STANDBY
+
+2 rows selected.
 
 
 Key parameters
@@ -284,7 +290,14 @@ Standby redo logs
 Primary should have standby redo logs sized at least as large as the
 online logs so role reversal does not have to add them later.
 
-no rows selected
+  Grp   Thr        Seq           MB       USED ARCHIVED STATUS
+----- ----- ---------- ------------ ---------- -------- ----------------
+    4     1          0          200          0 YES      UNASSIGNED
+    5     1          0          200          0 YES      UNASSIGNED
+    6     1          0          200          0 YES      UNASSIGNED
+    7     1          0          200          0 YES      UNASSIGNED
+
+4 rows selected.
 
 
 Redo log members
@@ -415,7 +428,11 @@ Redo shipping summary
 Rows with TYPE = PHYSICAL are standbys this primary is shipping to.
 GAP_STATUS and ARCH SEQ vs APPL SEQ show transport and apply lag.
 
-no rows selected
+ Inst  Dest DB_UNIQUE_NAME       STATUS       TYPE             DATABASE_MODE    RECOVERY_MODE                Sync     GAP_STATUS         Arch Seq   Appl Seq    SEQ_GAP ERROR
+----- ----- -------------------- ------------ ---------------- ---------------- ---------------------------- -------- ---------------- ---------- ---------- ---------- ----------------------------------------
+    1     2 homelab_stby         VALID        PHYSICAL         MOUNTED          MANAGED REAL TIME APPLY      YES      NONE                   1205       1205          0 (null)
+
+1 row selected.
 
 
 Switchover readiness
@@ -423,7 +440,7 @@ Switchover readiness
 
 SWITCHOVER_STATUS    PROTECTION_MODE        PROTECTION_LEVEL       FORCE_LOGGING    FORCE_LOGGING_CHECK                                                    SRL_CHECK
 -------------------- ---------------------- ---------------------- ---------------- ---------------------------------------------------------------------- -------------------------------------------------------------------
-NOT ALLOWED          MAXIMUM PERFORMANCE    MAXIMUM PERFORMANCE    YES              OK                                                                     WARNING: no standby redo logs on primary (needed for role reversal)
+TO STANDBY           MAXIMUM PERFORMANCE    MAXIMUM PERFORMANCE    YES              OK                                                                     OK: standby redo logs present
 
 1 row selected.
 
@@ -441,7 +458,10 @@ OLDEST_FLASHBACK_SCN OLDEST_FLASHBACK_TI RETENTION_TARGET FLASHBACK_SIZE_GB
 Recent Data Guard messages
 ==========================
 
-no rows selected
+Timestamp           SEVERITY     ERROR_CODE MESSAGE
+------------------- ------------ ---------- --------------------------------------------------------------------------------------------------------------------------------------------
+2026-09-28 12:00:05 Informational         0 Primary database is in MAXIMUM PERFORMANCE mode
+2026-09-28 12:00:00 Informational         0 Redo shipping destination 2 (homelab_stby) is synchronized with primary
 
 
 End of Data Guard primary snapshot

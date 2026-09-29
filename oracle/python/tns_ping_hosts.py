@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: tns_ping_hosts.py
 # Title: tnsnames host inventory
@@ -25,7 +25,7 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Resolve TNS host:port pairs from a tnsnames.ora-style file and print them.
 
 This does not open database sessions. It is a quick inventory of connect
@@ -36,7 +36,12 @@ from __future__ import annotations
 
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Annotated
+
+import typer
 
 # Regular expressions to extract connection endpoints and aliases from tnsnames.ora content
 # Matches the host name or IP address defined in a HOST parameter
@@ -73,23 +78,87 @@ def parse_tnsnames(text: str) -> list[tuple[str, str, str]]:
     return rows
 
 
-def main() -> int:
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
+
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("tns_ping_hosts", list(args) if args is not None else sys.argv[1:])
+        return SimpleNamespace(**ctx.params)
+
+
+app = TyperApp(
+    add_completion=False,
+    help="Resolve TNS host:port pairs from a tnsnames.ora-style file and print them.",
+)
+
+
+@app.command()
+def run(
+    path: Annotated[
+        Path,
+        typer.Argument(
+            help="Path to tnsnames.ora file (default: tnsnames.ora in CWD)",
+        ),
+    ] = Path("tnsnames.ora"),
+) -> int:
     """Print alias, host, and port from a tnsnames file.
+
+    Args:
+        path (Path): Path to tnsnames.ora file.
 
     Returns:
         int: Process exit code.
     """
-    # Default to 'tnsnames.ora' in the working directory unless overridden via CLI argument
-    path = Path(sys.argv[1] if len(sys.argv) > 1 else "tnsnames.ora")
-    # Verify file existence to prevent runtime crashes and provide early feedback
     if not path.is_file():
         print(f"File not found: {path}", file=sys.stderr)
         return 1
-    # Process the file and print aligned columns for downstream readability and tooling
     for alias, host, port in parse_tnsnames(path.read_text()):
         print(f"{alias:24} {host}:{port}")
     return 0
 
 
+def build_parser() -> TyperApp:
+    """Build and return the CLI argument parser.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Execute the CLI application.
+
+    Args:
+        argv (Sequence[str] | None): Optional list of command-line arguments.
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    app()

@@ -1,0 +1,44 @@
+SQL> @access.sql HR.EMPLOYEES
+
+=== Object ===
+
+
+Owner                Object                         Type                     Status   Created             Last DDL            Grantee Filter                 Owner Access
+-------------------- ------------------------------ ------------------------ -------- ------------------- ------------------- ------------------------------ --------------------------------------------------------------------------------
+HR                   EMPLOYEES                      TABLE                    VALID    2026-01-15 08:30:00 2026-02-01 10:15:22 (ALL)                          FULL (Object Owner)
+
+1 row selected.
+
+
+=== Direct grants ===
+
+
+Grantee                        Privilege                        Column                         Grantor                        Grantable Hierarchy
+------------------------------ -------------------------------- ------------------------------ ------------------------------ --------- ---------
+APP_USER                       SELECT                           (ALL)                          HR                             NO        NO
+APP_USER                       UPDATE                           SALARY                         HR                             NO        NO
+REPORT_ROLE                    SELECT                           (ALL)                          HR                             NO        NO
+
+3 rows selected.
+
+
+=== Grants via roles ===
+
+
+Grantee                        Privilege                        Column                         Grantor                        Grantable Path
+------------------------------ -------------------------------- ------------------------------ ------------------------------ --------- --------------------------------------------------------------------------------
+HR_ANALYST                     SELECT                           (ALL)                          HR                             NO        REPORT_ROLE
+DBA                            SELECT                           (ALL)                          HR                             YES       DBA
+
+2 rows selected.
+
+
+=== System privileges ===
+
+
+Grantee                        Privilege                        Admin Path
+------------------------------ -------------------------------- ----- --------------------------------------------------------------------------------
+SYS                            SELECT ANY TABLE                 YES   (DIRECT)
+DBA                            SELECT ANY TABLE                 YES   (DIRECT)
+
+2 rows selected.

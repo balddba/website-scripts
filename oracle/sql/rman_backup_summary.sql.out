@@ -1,1 +1,11 @@
-no rows selected
+SQL> @rman_backup_summary.sql
+
+SESSION_KEY INPUT_TYPE    STATUS                 START_TIME END_TIME   ELAPSED_MIN  OUTPUT_GB
+----------- ------------- ---------------------- ---------- ---------- ----------- ----------
+       1420 ARCHIVELOG    COMPLETED              28-SEP-26  28-SEP-26          1.2        2.45
+       1418 ARCHIVELOG    COMPLETED              28-SEP-26  28-SEP-26          1.1        2.10
+       1415 DB INCR       COMPLETED              28-SEP-26  28-SEP-26         18.5       45.20
+       1410 ARCHIVELOG    COMPLETED              27-SEP-26  27-SEP-26          1.3        2.80
+       1402 DB FULL       COMPLETED              26-SEP-26  26-SEP-26         84.2      182.50
+
+5 rows selected.

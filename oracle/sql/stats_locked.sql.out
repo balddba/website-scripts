@@ -1,2 +1,6 @@
-Enter value for 1:
-no rows selected
+SQL> @stats_locked.sql HR
+
+Owner                Table Name                     Partition Name            Object Type  Locked Type  Stale Stats         Num Rows      Blocks Last Analyzed
+-------------------- ------------------------------ ------------------------- ------------ ------------ ----------- ---------------- ----------- -------------------
+HR                   AUDIT_CONFIGURATION            (null)                    TABLE        ALL          NO                        12           4 2026-01-10 14:00:00
+HR                   SYSTEM_LOOKUPS                 (null)                    TABLE        ALL          NO                       450          16 2026-01-10 14:00:05

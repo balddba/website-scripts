@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: report_invalid_objects.py
 # Title: Report invalid Oracle objects
@@ -24,21 +24,21 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Report invalid database objects and their compilation errors in Oracle database."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
 from collections import Counter
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -134,7 +134,7 @@ class OracleDriver:
         """Initialize the Oracle driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -196,8 +196,8 @@ class InvalidObjectsReporter:
         """Initialize the reporter service.
 
         Args:
-            driver: Oracle database session driver.
-            owner_filter: Optional schema owner to filter objects by.
+            driver (OracleDriver): Oracle database session driver.
+            owner_filter (str | None): Optional schema owner to filter objects by.
         """
         self._driver = driver
         self._owner_filter = owner_filter.upper() if owner_filter else None
@@ -231,7 +231,7 @@ class InvalidObjectsReporter:
         """Fetch invalid objects from DBA_OBJECTS or ALL_OBJECTS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[InvalidObject]: List of invalid objects found.
@@ -271,7 +271,7 @@ class InvalidObjectsReporter:
         """Fetch compilation errors from DBA_ERRORS or ALL_ERRORS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             dict[tuple[str, str, str], list[ObjectCompileError]]: Errors indexed by (owner, type, name).
@@ -317,10 +317,10 @@ class InvalidObjectsReporter:
         """Execute a query with fallback to ALL_ views if DBA_ views are inaccessible.
 
         Args:
-            conn: Active Oracle connection.
-            primary_sql: Primary SQL referencing DBA_ view.
-            fallback_sql: Fallback SQL referencing ALL_ view.
-            params: Bind parameters dictionary.
+            conn (oracledb.Connection): Active Oracle connection.
+            primary_sql (str): Primary SQL referencing DBA_ view.
+            fallback_sql (str): Fallback SQL referencing ALL_ view.
+            params (dict[str, Any]): Bind parameters dictionary.
 
         Returns:
             list[tuple[Any, ...]]: Result rows.
@@ -352,7 +352,7 @@ def format_report_text(report: ReportSummary) -> str:
     """Format report summary as a human-readable text table.
 
     Args:
-        report: Compiled report summary.
+        report (ReportSummary): Compiled report summary.
 
     Returns:
         str: Formatted report text.
@@ -396,96 +396,128 @@ def format_report_text(report: ReportSummary) -> str:
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build and return the CLI argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured parser.
-    """
-    parser = argparse.ArgumentParser(description="Inspect and report invalid objects in an Oracle database.")
-    parser.add_argument(
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("report_invalid_objects", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "json_output"):
+            ns.json = ns.json_output
+        elif hasattr(ns, "json"):
+            ns.json_output = ns.json
+        return ns
+
+
+app = TyperApp(add_completion=False, help="Inspect and report invalid objects in an Oracle database.")
+
+
+@app.command()
+def run(
+    host: str = typer.Option(
+        "localhost",
         "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
+        envvar="ORACLE_HOST",
         help="Oracle database host (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
+    ),
+    port: int = typer.Option(
+        1521,
         "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
+        envvar="ORACLE_PORT",
         help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
+    ),
+    service_name: str | None = typer.Option(
+        None,
         "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
+        envvar="ORACLE_SERVICE_NAME",
         help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
+    ),
+    sid: str | None = typer.Option(
+        None,
         "--sid",
-        default=os.getenv("ORACLE_SID"),
+        envvar="ORACLE_SID",
         help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
+    ),
+    user: str | None = typer.Option(
+        None,
         "--user",
-        default=os.getenv("ORACLE_USER"),
+        envvar="ORACLE_USER",
         help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
+    ),
+    password: str | None = typer.Option(
+        None,
         "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
+        envvar="ORACLE_PASSWORD",
         help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
+    ),
+    sysdba: bool = typer.Option(
+        False,
         "--sysdba",
-        action="store_true",
         help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
+    ),
+    owner: str | None = typer.Option(
+        None,
         "--owner",
-        default=os.getenv("ORACLE_OWNER"),
+        envvar="ORACLE_OWNER",
         help="Filter by schema owner (default: all schemas accessible)",
-    )
-    parser.add_argument(
+    ),
+    json_output: bool = typer.Option(
+        False,
         "--json",
-        action="store_true",
-        dest="json_output",
         help="Output report in JSON format",
-    )
-    parser.add_argument(
+    ),
+    output: str | None = typer.Option(
+        None,
         "--output",
         help="File path to save the output report",
-    )
-    return parser
+    ),
+) -> int:
+    """Execute invalid objects reporting.
 
-
-def main() -> int:
-    """CLI execution entrypoint.
+    Args:
+        host (str): Database hostname.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        user (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Whether to connect with SYSDBA privilege.
+        owner (str | None): Optional schema owner filter.
+        json_output (bool): Output report in JSON format.
+        output (str | None): File path to save output report.
 
     Returns:
         int: Exit status code.
     """
-    parser = build_parser()
-    args = parser.parse_args()
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via --user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via --password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
-            owner=args.owner,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
+            owner=owner,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
@@ -500,18 +532,18 @@ def main() -> int:
         logger.error("Database error while generating report: {}", exc)
         return 1
 
-    if args.json_output:
+    if json_output:
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_report_text(report)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Report saved to {}", args.output)
+            logger.info("Report saved to {}", output)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output, exc)
+            logger.error("Failed to write report to {}: {}", output, exc)
             return 1
     else:
         # Output directly to stdout for CLI consumption
@@ -520,5 +552,39 @@ def main() -> int:
     return 0 if report.total_invalid_objects == 0 else 2
 
 
+def build_parser() -> TyperApp:
+    """Construct CLI argument parser for the report script.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (Sequence[str] | None): Command-line arguments.
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

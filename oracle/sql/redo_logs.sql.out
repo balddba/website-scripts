@@ -1,3 +1,4 @@
+SQL> @redo_logs.sql
 === Threads ===
 
 

@@ -21,7 +21,7 @@ def test_flashback_retention(run_oracle_sql) -> None:
     """Execute flashback_retention.sql and verify flashback retention columns.
 
     Args:
-        run_oracle_sql: Fixture to execute a SQL script.
+        run_oracle_sql (Callable[..., ScriptResult]): Fixture to execute a SQL script.
     """
     try:
         result = run_oracle_sql("flashback_retention.sql")

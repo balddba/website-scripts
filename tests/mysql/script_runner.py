@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from loguru import logger
+from pydantic import BaseModel, ConfigDict, Field
 
 from tests.mysql.script_parser import ParsedMySQLScript, parse_mysql_script
 from tests.mysql.settings import MySQLTestSettings
@@ -17,14 +17,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SQL_DIR = REPO_ROOT / "mysql" / "sql"
 
 
-@dataclass(frozen=True)
-class QueryResult:
+class QueryResult(BaseModel):
     """One SELECT result set from a MySQL catalog script.
 
     Attributes:
         columns (list[str]): Column names from the cursor description.
         rows (list[tuple[object, ...]]): Fetched rows.
     """
+
+    model_config = ConfigDict(frozen=True, extra="forbid", arbitrary_types_allowed=True)
 
     columns: list[str]
     rows: list[tuple[object, ...]]
@@ -60,8 +61,7 @@ class QueryResult:
         return [row[index] for row in self.rows]
 
 
-@dataclass
-class ScriptResult:
+class ScriptResult(BaseModel):
     """Outcome of running a MySQL catalog SQL script.
 
     Attributes:
@@ -69,8 +69,10 @@ class ScriptResult:
         queries (list[QueryResult]): SELECT result sets in execution order.
     """
 
+    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+
     statements: list[str]
-    queries: list[QueryResult] = field(default_factory=list)
+    queries: list[QueryResult] = Field(default_factory=list)
 
 
 @contextmanager

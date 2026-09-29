@@ -1,3 +1,9 @@
+SQL> @instance_parameters.sql sga%
+
 === Instance parameters (non-hidden) ===
 
-Enter value for 1:
+Name                                     Value                                    Display                                  Default   Sys Mod      Inst Mod   Description
+---------------------------------------- ---------------------------------------- ---------------------------------------- --------- ------------ ---------- ----------------------------------------------------------------------
+sga_max_size                             4294967296                               4G                                       FALSE     FALSE        FALSE      max size of SGA
+sga_min_size                             0                                        0                                        TRUE      IMMEDIATE    TRUE       Minimum size of SGA
+sga_target                               4294967296                               4G                                       FALSE     IMMEDIATE    TRUE       Target size of SGA

@@ -1,3 +1,4 @@
+SQL> @block_change_tracking.sql
 Enter value for 2:
 
 

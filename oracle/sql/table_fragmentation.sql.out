@@ -1,3 +1,4 @@
+SQL> @table_fragmentation.sql
 === Table Space Fragmentation ===
 
 

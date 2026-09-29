@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: oracle_performance_diagnostics.py
 # Title: Oracle performance diagnostics
@@ -24,7 +24,7 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Oracle database performance diagnostics analyzer.
 
 Provides diagnostics for latch waits, buffer pool statistics, buffer busy waits
@@ -33,15 +33,15 @@ with root-cause tuning recommendations, and locked objects with blocking lock hi
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -309,7 +309,7 @@ class OracleDriver:
         """Initialize driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -378,8 +378,8 @@ class OraclePerformanceAnalyzer:
         """Initialize analyzer with driver and analysis parameters.
 
         Args:
-            driver: Database driver providing session management.
-            top_n: Maximum number of rows to return for ranked metrics.
+            driver (OracleDriver): Database driver providing session management.
+            top_n (int): Maximum number of rows to return for ranked metrics.
         """
         self._driver = driver
         self._top_n = top_n
@@ -593,8 +593,8 @@ class OraclePerformanceAnalyzer:
         """Generate tuning recommendations based on wait statistics.
 
         Args:
-            wait_stats: Block class wait statistics.
-            system_events: System wait events.
+            wait_stats (list[WaitStatMetric]): Block class wait statistics.
+            system_events (list[WaitEventStat]): System wait events.
 
         Returns:
             list[str]: Root-cause recommendations.
@@ -749,8 +749,8 @@ class OraclePerformanceAnalyzer:
         """Construct blocking chains and determine root blockers.
 
         Args:
-            session_rows: Raw rows from V$SESSION containing blocker and waiter information.
-            locked_objects: List of parsed locked object details.
+            session_rows (list[tuple[Any, ...]]): Raw rows from V$SESSION containing blocker and waiter information.
+            locked_objects (list[LockedObjectDetail]): List of parsed locked object details.
 
         Returns:
             tuple[list[BlockingHierarchyNode], list[int]]: Blocking nodes and root blocker SIDs.
@@ -948,150 +948,173 @@ def format_performance_report_text(report: PerformanceDiagnosticsReport) -> str:
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Construct CLI argument parser for performance diagnostics analyzer.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured argument parser.
-    """
-    parser = argparse.ArgumentParser(description="Oracle database performance diagnostics analyzer.")
-    parser.add_argument(
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("oracle_performance_diagnostics", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "output") and not hasattr(ns, "output_file"):
+            ns.output_file = ns.output
+        elif hasattr(ns, "output_file") and not hasattr(ns, "output"):
+            ns.output = ns.output_file
+        return ns
+
+
+app = TyperApp(add_completion=False, help="Oracle database performance diagnostics analyzer.")
+
+
+@app.command()
+def run(
+    user: str | None = typer.Option(
+        None,
         "-u",
         "--user",
-        default=os.getenv("ORACLE_USER"),
+        envvar="ORACLE_USER",
         help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
+    ),
+    password: str | None = typer.Option(
+        None,
         "-p",
         "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
+        envvar="ORACLE_PASSWORD",
         help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
+    ),
+    host: str = typer.Option(
+        "localhost",
         "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
+        envvar="ORACLE_HOST",
         help="Oracle database host (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
+    ),
+    port: int = typer.Option(
+        1521,
         "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
+        envvar="ORACLE_PORT",
         help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
+    ),
+    service_name: str | None = typer.Option(
+        None,
         "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
+        envvar="ORACLE_SERVICE_NAME",
         help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
+    ),
+    sid: str | None = typer.Option(
+        None,
         "--sid",
-        default=os.getenv("ORACLE_SID"),
+        envvar="ORACLE_SID",
         help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
+    ),
+    sysdba: bool = typer.Option(
+        False,
         "--sysdba",
-        action="store_true",
         help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
+    ),
+    analyzer: str = typer.Option(
+        "all",
         "--analyzer",
-        choices=[
-            "latch_summary",
-            "buffer_pool",
-            "buffer_busy_waits",
-            "locked_objects",
-            "all",
-        ],
-        default="all",
         help="Select analyzer module to run (default: all)",
-    )
-    parser.add_argument(
+    ),
+    top: int = typer.Option(
+        20,
         "--top",
-        type=int,
-        default=20,
         help="Top N rows to return for ranked metrics (default: 20)",
-    )
-    parser.add_argument(
+    ),
+    format: str = typer.Option(
+        "text",
         "--format",
-        choices=["text", "json"],
-        default="text",
         help="Output report format (default: text)",
-    )
-    parser.add_argument(
+    ),
+    output_file: str | None = typer.Option(
+        None,
         "-o",
         "--output",
         "--output-file",
-        dest="output_file",
         help="File path to save the output report",
-    )
-    return parser
+    ),
+) -> int:
+    """Execute performance diagnostics analysis and output the report.
 
-
-def main() -> int:
-    """CLI execution entrypoint.
+    Args:
+        user (str | None): Database username.
+        password (str | None): Database password.
+        host (str): Database hostname.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        sysdba (bool): Whether to connect with SYSDBA privilege.
+        analyzer (str): Analyzer module to run.
+        top (int): Top N rows to return for ranked metrics.
+        format (str): Output report format (text or json).
+        output_file (str | None): File path to save output report.
 
     Returns:
         int: Exit status code.
     """
-    parser = build_parser()
-    args = parser.parse_args()
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via -u/--user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via -p/--password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
         return 1
 
     driver = OracleDriver(config)
-    analyzer = OraclePerformanceAnalyzer(driver=driver, top_n=args.top)
+    perf_analyzer = OraclePerformanceAnalyzer(driver=driver, top_n=top)
 
     try:
-        if args.analyzer == "all":
-            report = analyzer.run_all()
+        if analyzer == "all":
+            report = perf_analyzer.run_all()
         else:
             report = PerformanceDiagnosticsReport()
-            if args.analyzer == "latch_summary":
-                report.latch_summary = analyzer.analyze_latch_summary()
-            elif args.analyzer == "buffer_pool":
-                report.buffer_pool_summary = analyzer.analyze_buffer_pool()
-            elif args.analyzer == "buffer_busy_waits":
-                report.buffer_busy_waits = analyzer.analyze_buffer_busy_waits()
-            elif args.analyzer == "locked_objects":
-                report.locked_objects_report = analyzer.analyze_locked_objects()
+            if analyzer == "latch_summary":
+                report.latch_summary = perf_analyzer.analyze_latch_summary()
+            elif analyzer == "buffer_pool":
+                report.buffer_pool_summary = perf_analyzer.analyze_buffer_pool()
+            elif analyzer == "buffer_busy_waits":
+                report.buffer_busy_waits = perf_analyzer.analyze_buffer_busy_waits()
+            elif analyzer == "locked_objects":
+                report.locked_objects_report = perf_analyzer.analyze_locked_objects()
     except oracledb.DatabaseError as exc:
         logger.error("Database error during performance diagnostic collection: {}", exc)
         return 1
 
-    if args.format == "json":
+    if format == "json":
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_performance_report_text(report)
 
-    if args.output_file:
+    if output_file:
         try:
-            with open(args.output_file, "w", encoding="utf-8") as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Diagnostics report saved to {}", args.output_file)
+            logger.info("Diagnostics report saved to {}", output_file)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output_file, exc)
+            logger.error("Failed to write report to {}: {}", output_file, exc)
             return 1
     else:
         sys.stdout.write(output_text + "\n")
@@ -1099,5 +1122,39 @@ def main() -> int:
     return 0
 
 
+def build_parser() -> TyperApp:
+    """Construct CLI argument parser for performance diagnostics analyzer.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (Sequence[str] | None): Command-line arguments.
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

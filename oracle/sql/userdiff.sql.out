@@ -1,3 +1,4 @@
+SQL> @userdiff.sql SQLTEST SQLTEST
 ===========================================
 Comparing privileges between:
 User 1: SQLTEST

@@ -1,3 +1,4 @@
+SQL> @ash_pga_temp.sql
 === Top PGA and Temp Space Consumers from ASH (Last 30 minutes) ===
 
 

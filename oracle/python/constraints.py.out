@@ -1,0 +1,75 @@
+python oracle/python/constraints.py LIST MVADMIN.ORDERS ALL \
+  --user c##admin \
+  --password ******* \
+  --service-name ORDERPROD
+
+================================================================================
+ Oracle Table Constraint Report
+================================================================================
+
+Database   : ORDERPROD
+Schema     : MVADMIN
+Table      : ORDERS
+Type       : ALL
+Generated  : 2026-09-28 16:31:22
+
+--------------------------------------------------------------------------------
+ Constraint Summary
+--------------------------------------------------------------------------------
+
+Table                    Constraint                     Type        Status
+------------------------ ------------------------------ ----------- ---------
+ORDERS                   ORDERS_PK                      PRIMARY KEY ENABLED
+ORDERS                   ORDERS_CUSTOMER_FK             FOREIGN KEY ENABLED
+ORDERS                   ORDERS_AMOUNT_CK               CHECK       DISABLED
+
+Constraints: 3
+Enabled    : 2
+Disabled   : 1
+
+================================================================================
+ Constraint: ORDERS_PK
+================================================================================
+Status       : ENABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Type         : PRIMARY KEY
+Columns      : ORDER_ID
+Validated    : VALIDATED
+Deferrable   : NOT DEFERRABLE
+Deferred     : IMMEDIATE
+
+================================================================================
+ Constraint: ORDERS_CUSTOMER_FK
+================================================================================
+Status       : ENABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Type         : FOREIGN KEY
+Columns      : CUSTOMER_ID
+Validated    : VALIDATED
+Deferrable   : NOT DEFERRABLE
+Deferred     : IMMEDIATE
+Delete Rule  : CASCADE
+References   : MVADMIN.CUSTOMERS.CUSTOMERS_PK
+Ref Columns  : CUSTOMER_ID
+
+================================================================================
+ Constraint: ORDERS_AMOUNT_CK
+================================================================================
+Status       : DISABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Type         : CHECK
+Columns      : AMOUNT
+Validated    : NOT VALIDATED
+Deferrable   : NOT DEFERRABLE
+Deferred     : IMMEDIATE
+--------------------------------------------------------------------------------
+ Search Condition
+--------------------------------------------------------------------------------
+AMOUNT >= 0
+
+================================================================================
+ End of Report
+================================================================================

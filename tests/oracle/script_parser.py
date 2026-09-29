@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+
+from pydantic import BaseModel, ConfigDict, Field
 
 _SQLPLUS_CMD = re.compile(
     r"^(SET|PROMPT|TTITLE|BTITLE|BREAK|COMPUTE|WHENEVER|SPOOL|EXIT|QUIT|PAUSE|ACCEPT|HOST|SHOW|CONNECT|DISCONNECT|UNDEFINE|CLEAR|REPHEADER|REPFOOTER|STORE|SAVE|GET|START|RUN|LIST|DEL|INPUT|CHANGE|APPEND|EDIT|PRINT|REM)\b",
@@ -33,8 +34,7 @@ _PLSQL_CREATE = re.compile(
 )
 
 
-@dataclass(frozen=True)
-class ParsedScript:
+class ParsedScript(BaseModel):
     """SQL and PL/SQL remaining after SQL*Plus client commands are removed.
 
     Attributes:
@@ -44,10 +44,12 @@ class ParsedScript:
         defines (dict[str, str]): DEFINE name (upper) to literal value.
     """
 
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
     statements: list[str]
-    new_values: dict[str, str] = field(default_factory=dict)
-    variables: dict[str, str] = field(default_factory=dict)
-    defines: dict[str, str] = field(default_factory=dict)
+    new_values: dict[str, str] = Field(default_factory=dict)
+    variables: dict[str, str] = Field(default_factory=dict)
+    defines: dict[str, str] = Field(default_factory=dict)
 
 
 def parse_sqlplus_script(text: str) -> ParsedScript:
@@ -138,6 +140,14 @@ def apply_substitutions(sql: str, args: list[str], defines: dict[str, str]) -> s
     """
 
     def replace_positional(match: re.Match[str]) -> str:
+        """Replace positional substitution variables with arguments.
+
+        Args:
+            match (re.Match[str]): Regular expression match object.
+
+        Returns:
+            str: Replacement string.
+        """
         index = int(match.group(1)) - 1
         if 0 <= index < len(args):
             return args[index]
@@ -146,6 +156,14 @@ def apply_substitutions(sql: str, args: list[str], defines: dict[str, str]) -> s
     replaced = _POSITIONAL.sub(replace_positional, sql)
 
     def replace_named(match: re.Match[str]) -> str:
+        """Replace named substitution variables with defined values.
+
+        Args:
+            match (re.Match[str]): Regular expression match object.
+
+        Returns:
+            str: Replacement string.
+        """
         name = match.group(1).upper()
         return defines.get(name, "")
 

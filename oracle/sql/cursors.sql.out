@@ -1,3 +1,4 @@
+SQL> @cursors.sql
 Enter value for 1:
 
 

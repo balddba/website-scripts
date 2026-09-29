@@ -1,3 +1,4 @@
+SQL> @parallel_queries.sql
 === Current PX sessions (QC and slaves) ===
 
 

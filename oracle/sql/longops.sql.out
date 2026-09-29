@@ -1,1 +1,8 @@
+SQL> @longops.sql
+
 === In-progress long operations ===
+
+Inst    SID   Serial# Username             Program                      SQL ID        Event                            Operation                    Target                              Sofar        Total Units          Pct  Elapsed    ETA S Message
+---- ------ --------- -------------------- ---------------------------- ------------- -------------------------------- ---------------------------- ------------------------------ ---------- ------------ ------------ ----- -------- -------- ------------------------------------------------------------
+   1    482     30912 SYS                  rman@backup01 (TNS V1-V3)    6x4d8a1k2n5p8 db file sequential read          RMAN: aggregate input                                           1245000      2500000 Blocks        49.8      320      322 RMAN: aggregate input: 1245000 out of 2500000 Blocks done
+   1   1025     14201 HR                   sqlplus@dbclient             9a7g2m5z1t8v3 direct path read                 Table Scan                   HR.SALES_HISTORY                    348900       850000 Blocks        41.0       85      122 Table Scan: HR.SALES_HISTORY: 348900 out of 850000 Blocks do

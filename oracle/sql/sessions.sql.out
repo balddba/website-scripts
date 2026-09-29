@@ -1,3 +1,4 @@
+SQL> @sessions.sql
 === Current sessions ===
 
 

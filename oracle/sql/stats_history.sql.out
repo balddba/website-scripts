@@ -1,2 +1,7 @@
-Enter value for 1:
-no rows selected
+SQL> @stats_history.sql EMPLOYEES
+
+Owner                Table Name                     Partition Name            Subpartition Name         Stats Update Time
+-------------------- ------------------------------ ------------------------- ------------------------- -----------------------------------
+HR                   EMPLOYEES                      (null)                    (null)                    2026-09-20 22:15:30.412000 -04:00
+HR                   EMPLOYEES                      (null)                    (null)                    2026-09-13 22:14:18.105000 -04:00
+HR                   EMPLOYEES                      (null)                    (null)                    2026-09-06 22:12:05.892000 -04:00

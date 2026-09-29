@@ -1,3 +1,4 @@
+SQL> @asm_disk_group_summary.sql
 === ASM Disk Group Summary ===
 
  Grp# Disk Group           State       Redundancy Disks Offline   Total GB    Free GB  Usable GB % Used ASM Compat   RDBMS Compat

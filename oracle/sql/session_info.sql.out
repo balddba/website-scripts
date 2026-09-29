@@ -1,5 +1,7 @@
-Enter value for 1:
-
-
+SQL> @session_info.sql 142
 
 === Session information ===
+
+   SID   Serial# Username             OS User          Machine                      Program                      Status   Type       Logon Time            Last Call Event                            Wait Class     SQL ID        Service              Module               Action               Schema
+------ --------- -------------------- ---------------- ---------------------------- ---------------------------- -------- ---------- ------------------- ----------- -------------------------------- -------------- ------------- -------------------- -------------------- -------------------- --------------------
+   142     24151 APP_USER             appmgr           appserver01.lab.net          JDBC Thin Client             ACTIVE   USER       2026-09-28 08:30:12          14 SQL*Net message from client      Idle           4m9y1t0x8d9qz orclpdb1             OrderService         ProcessOrder         APP_USER

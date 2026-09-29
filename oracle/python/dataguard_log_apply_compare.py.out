@@ -1,4 +1,4 @@
-python oracle/python/dataguard_log_apply_compare.py \
+$ python oracle/python/dataguard_log_apply_compare.py \
   --connect-string primary01:1521/ORCL \
   --username system \
   --password *******

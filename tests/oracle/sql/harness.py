@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
 
 import oracledb
 import pytest
+from pydantic import BaseModel, ConfigDict, Field
 
 from tests.oracle.bootstrap import FixtureObjects
 from tests.oracle.script_runner import ScriptResult
@@ -16,8 +16,7 @@ ArgsFactory = Callable[[FixtureObjects, OracleTestSettings], list[str]]
 DefinesFactory = Callable[[FixtureObjects, OracleTestSettings], dict[str, str]]
 
 
-@dataclass(frozen=True)
-class ScriptSpec:
+class ScriptSpec(BaseModel):
     """How to invoke one catalog SQL file under pytest.
 
     Attributes:
@@ -33,35 +32,82 @@ class ScriptSpec:
         allow_no_output (bool): Permit DDL-only scripts verified by catalog side effects.
     """
 
-    args: list[str] | ArgsFactory = field(default_factory=list)
-    defines: dict[str, str] | DefinesFactory = field(default_factory=dict)
+    model_config = ConfigDict(frozen=True, extra="forbid", arbitrary_types_allowed=True)
+
+    args: list[str] | ArgsFactory = Field(default_factory=list)
+    defines: dict[str, str] | DefinesFactory = Field(default_factory=dict)
     skip_reason: str | None = None
     requires_instance_ddl: bool = False
     requires_part_table: bool = False
     requires_xplan: bool = False
     requires_tablespace: bool = False
-    expected_columns: set[str] = field(default_factory=set)
-    expected_values: dict[str, str | Callable[[FixtureObjects, OracleTestSettings], object]] = field(default_factory=dict)
+    expected_columns: set[str] = Field(default_factory=set)
+    expected_values: dict[str, str | Callable[[FixtureObjects, OracleTestSettings], object]] = Field(default_factory=dict)
     allow_no_output: bool = False
 
 
 def _schema(_objects: FixtureObjects, _settings: OracleTestSettings) -> list[str]:
+    """Return fixture schema name as a positional argument.
+
+    Args:
+        _objects (FixtureObjects): Fixture objects container.
+        _settings (OracleTestSettings): Oracle test settings.
+
+    Returns:
+        list[str]: Single-element list containing the schema name.
+    """
     return [_objects.schema]
 
 
 def _schema_table(objects: FixtureObjects, _settings: OracleTestSettings) -> list[str]:
+    """Return schema and table names as positional arguments.
+
+    Args:
+        objects (FixtureObjects): Fixture objects container.
+        _settings (OracleTestSettings): Oracle test settings.
+
+    Returns:
+        list[str]: List containing schema and table names.
+    """
     return [objects.schema, objects.table]
 
 
 def _owner_dot_table(objects: FixtureObjects, _settings: OracleTestSettings) -> list[str]:
+    """Return owner.table string as a positional argument.
+
+    Args:
+        objects (FixtureObjects): Fixture objects container.
+        _settings (OracleTestSettings): Oracle test settings.
+
+    Returns:
+        list[str]: Single-element list containing owner.table.
+    """
     return [f"{objects.schema}.{objects.table}"]
 
 
 def _user(_objects: FixtureObjects, settings: OracleTestSettings) -> list[str]:
+    """Return configured test username as a positional argument.
+
+    Args:
+        _objects (FixtureObjects): Fixture objects container.
+        settings (OracleTestSettings): Oracle test settings.
+
+    Returns:
+        list[str]: Single-element list containing test username.
+    """
     return [settings.user]
 
 
 def _user_pair(_objects: FixtureObjects, settings: OracleTestSettings) -> list[str]:
+    """Return configured test username repeated as two positional arguments.
+
+    Args:
+        _objects (FixtureObjects): Fixture objects container.
+        settings (OracleTestSettings): Oracle test settings.
+
+    Returns:
+        list[str]: Two-element list containing test username twice.
+    """
     return [settings.user, settings.user]
 
 
@@ -139,7 +185,6 @@ SPECS: dict[str, ScriptSpec] = {
     "tables_without_pk.sql": ScriptSpec(args=_schema),
     "tde_keys.sql": ScriptSpec(),
     "tde_report.sql": ScriptSpec(args=["%"]),
-    "triggers.sql": ScriptSpec(args=lambda objects, _settings: ["LIST", f"{objects.schema}.{objects.table}", "ALL"]),
     "unstable_plans.sql": ScriptSpec(args=["VSQL"]),
     "user_details.sql": ScriptSpec(args=_user),
     "user_grant_copy.sql": ScriptSpec(
@@ -209,7 +254,15 @@ def _assert_result_contract(
     script_name: str,
     spec: ScriptSpec,
 ) -> None:
-    """Require observable output and any fixture-specific values for a script."""
+    """Require observable output and any fixture-specific values for a script.
+
+    Args:
+        result (ScriptResult): Script execution result.
+        objects (FixtureObjects): Fixture objects container.
+        settings (OracleTestSettings): Oracle test settings.
+        script_name (str): Script filename.
+        spec (ScriptSpec): Expected script specification.
+    """
     assert result.statements, f"{script_name} did not execute any SQL statements"
     assert spec.allow_no_output or result.queries or result.dbms_output, f"{script_name} produced no query or DBMS_OUTPUT results"
     for query in result.queries:
@@ -225,9 +278,7 @@ def _assert_result_contract(
     for column, raw_expected in spec.expected_values.items():
         expected_values[column] = raw_expected(objects, settings) if callable(raw_expected) else raw_expected
     indexes = {column: query.column_index(column) for column in expected_values}
-    assert any(
-        all(row[indexes[column]] == value for column, value in expected_values.items()) for row in query.rows
-    ), f"{script_name} did not return expected row values {expected_values!r}"
+    assert any(all(row[indexes[column]] == value for column, value in expected_values.items()) for row in query.rows), f"{script_name} did not return expected row values {expected_values!r}"
 
 
 def sid_values(result: ScriptResult, column: str = "SID") -> list[int]:

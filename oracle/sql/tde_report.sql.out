@@ -1,3 +1,4 @@
+SQL> @tde_report.sql
 ===============================================================================
 Oracle Transparent Data Encryption (TDE) Report
 Filter Schema: %

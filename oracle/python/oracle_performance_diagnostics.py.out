@@ -1,4 +1,4 @@
-python oracle/python/oracle_performance_diagnostics.py \
+$ python oracle/python/oracle_performance_diagnostics.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1 \

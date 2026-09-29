@@ -1,3 +1,4 @@
+SQL> @autoextend_report.sql
 TS Type    Tablespace		     File# File Name								  Status    Autoextend	      Size MB	     Next MB	     Max MB
 ---------- ------------------------- ----- ---------------------------------------------------------------------- --------- ---------- -------------- -------------- --------------
 PERMANENT  SYSAUX			60 +DATA/HOMELAB/5C00796684B8BB6FE0631A04010AE1F6/DATAFILE/sysaux.330.124 AVAILABLE YES 		690.0		10.0   33,554,432.0

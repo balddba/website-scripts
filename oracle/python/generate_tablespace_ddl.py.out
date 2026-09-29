@@ -1,4 +1,4 @@
-python oracle/python/generate_tablespace_ddl.py \
+$ python oracle/python/generate_tablespace_ddl.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1 \

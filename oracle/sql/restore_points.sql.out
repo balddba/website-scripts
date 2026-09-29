@@ -1,1 +1,8 @@
+SQL> @restore_points.sql
+
 === Restore points ===
+
+Name                                                 SCN Time                Guaranteed    Storage MB  Incarn Preserved
+---------------------------------------- --------------- ------------------- ---------- ------------- ------- ----------
+BEFORE_APP_UPGRADE_20260920                 148920194821 2026-09-20 22:00:15 YES              4,096.0       2 NO
+BEFORE_BATCH_RUN_20260927                   149301948502 2026-09-27 23:30:00 NO                   0.0       2 NO

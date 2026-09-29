@@ -1,7 +1,11 @@
+SQL> @recyclebin_summary.sql
+
 === Recyclebin Space Summary ===
 
 
 Owner                    Tablespace                Objects   Tables  Indexes Total Blocks    Space MB     Space GB
 ------------------------ ------------------------ -------- -------- -------- ------------ ----------- ------------
+APP_DATA                 APP_DATA                        8        3        5       65,536      512.00        0.500
+HR                       USERS                          14        6        8       32,768      256.00        0.250
                                                   -------- -------- -------- ------------ ----------- ------------
-sum
+sum                                                     22        9       13       98,304      768.00        0.750

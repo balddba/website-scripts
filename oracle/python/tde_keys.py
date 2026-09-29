@@ -42,14 +42,14 @@
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -231,7 +231,7 @@ class OracleDriver:
         """Initialize the Oracle driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -293,7 +293,7 @@ class TdeKeyReporter:
         """Initialize the TDE key reporter.
 
         Args:
-            driver: Oracle database session driver.
+            driver (OracleDriver): Oracle database session driver.
         """
         self._driver = driver
 
@@ -323,7 +323,7 @@ class TdeKeyReporter:
         """Fetch keystore wallet status from GV$ENCRYPTION_WALLET.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[KeystoreWallet]: Keystore wallet records.
@@ -369,7 +369,7 @@ class TdeKeyReporter:
         """Fetch currently active master encryption keys per PDB / container.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[ActiveMasterKey]: Active master key records.
@@ -433,7 +433,7 @@ class TdeKeyReporter:
         """Fetch complete key history and lifecycle from V$ENCRYPTION_KEYS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[KeyLifecycleRecord]: Key lifecycle records.
@@ -487,7 +487,7 @@ class TdeKeyReporter:
         """Fetch tablespace encryption key mapping from V$ENCRYPTED_TABLESPACES.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[TablespaceKeyRecord]: Tablespace key mapping records.
@@ -529,7 +529,7 @@ class TdeKeyReporter:
         """Evaluate key management and backup health checks.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[KeyHealthCheck]: Health evaluation results.
@@ -605,7 +605,7 @@ def format_report_text(report: TdeKeyReport) -> str:
     """Format the TDE key report into human-readable plain text.
 
     Args:
-        report: Structured TDE key report data.
+        report (TdeKeyReport): Structured TDE key report data.
 
     Returns:
         str: Formatted report text.
@@ -683,7 +683,7 @@ def format_report_json(report: TdeKeyReport) -> str:
     """Format the TDE key report as JSON.
 
     Args:
-        report: Structured TDE key report data.
+        report (TdeKeyReport): Structured TDE key report data.
 
     Returns:
         str: JSON-encoded report text.
@@ -691,104 +691,129 @@ def format_report_json(report: TdeKeyReport) -> str:
     return report.model_dump_json(indent=2)
 
 
-def build_arg_parser() -> argparse.ArgumentParser:
-    """Build and return the CLI argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured argument parser.
-    """
-    parser = argparse.ArgumentParser(
-        description="Audit and report Oracle Transparent Data Encryption (TDE) keys and keystores.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    conn_group = parser.add_argument_group("Oracle Connection")
-    conn_group.add_argument(
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("tde_keys", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "hostname") and not hasattr(ns, "host"):
+            ns.host = ns.hostname
+        elif hasattr(ns, "host") and not hasattr(ns, "hostname"):
+            ns.hostname = ns.host
+        if hasattr(ns, "username") and not hasattr(ns, "user"):
+            ns.user = ns.username
+        elif hasattr(ns, "user") and not hasattr(ns, "username"):
+            ns.username = ns.user
+        return ns
+
+
+app = TyperApp(
+    add_completion=False,
+    help="Audit and report Oracle Transparent Data Encryption (TDE) keys and keystores.",
+)
+
+
+@app.command()
+def run(
+    hostname: str = typer.Option(
+        "localhost",
         "--host",
-        dest="hostname",
-        default=os.getenv("ORACLE_HOST", "localhost"),
+        envvar="ORACLE_HOST",
         help="Database hostname or IP (default: localhost / $ORACLE_HOST)",
-    )
-    conn_group.add_argument(
+    ),
+    port: int = typer.Option(
+        1521,
         "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
+        envvar="ORACLE_PORT",
         help="Database listener port (default: 1521 / $ORACLE_PORT)",
-    )
-    conn_group.add_argument(
+    ),
+    service_name: str | None = typer.Option(
+        None,
         "--service-name",
-        dest="service_name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
+        envvar="ORACLE_SERVICE_NAME",
         help="Oracle service name (e.g. ORCLPDB1 / $ORACLE_SERVICE_NAME)",
-    )
-    conn_group.add_argument(
+    ),
+    sid: str | None = typer.Option(
+        None,
         "--sid",
-        default=os.getenv("ORACLE_SID"),
+        envvar="ORACLE_SID",
         help="Oracle SID (e.g. ORCL / $ORACLE_SID)",
-    )
-    conn_group.add_argument(
+    ),
+    username: str | None = typer.Option(
+        None,
         "-u",
         "--user",
-        dest="username",
-        default=os.getenv("ORACLE_USER"),
+        envvar="ORACLE_USER",
         help="Database username ($ORACLE_USER)",
-    )
-    conn_group.add_argument(
+    ),
+    password: str | None = typer.Option(
+        None,
         "-p",
         "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
+        envvar="ORACLE_PASSWORD",
         help="Database password ($ORACLE_PASSWORD)",
-    )
-    conn_group.add_argument(
+    ),
+    sysdba: bool = typer.Option(
+        False,
         "--sysdba",
-        action="store_true",
-        default=os.getenv("ORACLE_SYSDBA", "").lower() in ("1", "true", "yes"),
+        envvar="ORACLE_SYSDBA",
         help="Connect with SYSDBA administrative privilege",
-    )
-
-    out_group = parser.add_argument_group("Output Options")
-    out_group.add_argument(
+    ),
+    json: bool = typer.Option(
+        False,
         "--json",
-        action="store_true",
         help="Output report in JSON format",
-    )
-    out_group.add_argument(
+    ),
+    output: str | None = typer.Option(
+        None,
         "-o",
         "--output",
         help="Save report output to specified file path",
-    )
-
-    return parser
-
-
-def main(argv: list[str] | None = None) -> int:
+    ),
+) -> int:
     """Execute the CLI application.
 
     Args:
-        argv: Optional list of command-line arguments.
+        hostname (str): Database hostname or IP.
+        port (int): Database listener port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        username (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Connect with SYSDBA privilege.
+        json (bool): Output report in JSON format.
+        output (str | None): Save report output to specified file path.
 
     Returns:
         int: Exit status code (0 for success, non-zero for failure).
     """
-    parser = build_arg_parser()
-    args = parser.parse_args(argv)
-
-    if not args.username:
+    if not username:
         logger.error("Missing database username. Provide via --user or $ORACLE_USER.")
         return 1
 
-    if not args.password:
+    if not password:
         logger.error("Missing database password. Provide via --password or $ORACLE_PASSWORD.")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.hostname,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.username,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
+            hostname=hostname,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=username,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
         )
     except ValidationError as exc:
         logger.error("Invalid configuration: {}", exc)
@@ -803,15 +828,15 @@ def main(argv: list[str] | None = None) -> int:
         logger.error("Failed to generate TDE key report: {}", exc)
         return 2
 
-    output_text = format_report_json(report) if args.json else format_report_text(report)
+    output_text = format_report_json(report) if json else format_report_text(report)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text + "\n")
-            logger.info("Report saved to {}", args.output)
+            logger.info("Report saved to {}", output)
         except OSError as exc:
-            logger.error("Could not write to output file {}: {}", args.output, exc)
+            logger.error("Could not write to output file {}: {}", output, exc)
             return 3
     else:
         sys.stdout.write(output_text + "\n")
@@ -819,5 +844,39 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def build_arg_parser() -> TyperApp:
+    """Build and return the CLI argument parser.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Execute the CLI application.
+
+    Args:
+        argv (Sequence[str] | None): Optional list of command-line arguments.
+
+    Returns:
+        int: Exit status code (0 for success, non-zero for failure).
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

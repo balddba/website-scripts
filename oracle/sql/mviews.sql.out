@@ -1,0 +1,20 @@
+SQL> @mviews.sql
+
+=== Materialized views ===
+
+
+Owner                MView Name                     Container Name                 Rewrite Updatable Refresh Mode Refresh Type Last Refresh        Staleness
+-------------------- ------------------------------ ------------------------------ ------- --------- ------------ ------------ ------------------- -------------------
+HR                   MV_EMP_SALARY_SUMMARY          MV_EMP_SALARY_SUMMARY          N       N         DEMAND       FORCE        2026-09-28 01:00:00 FRESH
+
+1 row selected.
+
+
+=== Materialized view logs ===
+
+
+Log Owner            Master Table                   Log Table                      Type     Rowids   PK       Filter Columns Last Purge          Purge Job
+-------------------- ------------------------------ ------------------------------ -------- -------- -------- -------------- ------------------- ----------
+HR                   EMPLOYEES                      MLOG$_EMPLOYEES                ROWID    YES      YES      NO             2026-09-28 01:00:00          0
+
+1 row selected.

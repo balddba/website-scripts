@@ -1,3 +1,4 @@
+SQL> @constraints.sql LIST HR.% ALL
 LIST constraints for SQLTEST.WS_SQLTEST_LOCK (type: ALL)
 ------------------------------------------------------------------------------
 SQLTEST.WS_SQLTEST_LOCK  SYS_C008546  TYPE=C  STATUS=ENABLED

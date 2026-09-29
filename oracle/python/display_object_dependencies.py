@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: display_object_dependencies.py
 # Title: Display Oracle object dependencies
@@ -20,24 +20,23 @@
 #   - Dependency report written to standard output or the requested output file
 #
 # Example Usage:
-#   python display_object_dependencies.py --help
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Analyze and display object dependencies in Oracle database."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -151,7 +150,7 @@ class OracleDriver:
         """Initialize driver with connection configuration.
 
         Args:
-            config: Validated database connection configuration.
+            config (OracleConnectionConfig): Validated database connection configuration.
         """
         self._config = config
 
@@ -202,7 +201,7 @@ class ObjectDependencyAnalyzer:
         """Initialize analyzer with an Oracle driver.
 
         Args:
-            driver: Oracle database connection driver.
+            driver (OracleDriver): Oracle database connection driver.
         """
         self._driver = driver
 
@@ -215,9 +214,9 @@ class ObjectDependencyAnalyzer:
         """Query upstream objects that the specified object directly depends on.
 
         Args:
-            owner: Schema owner of the object.
-            name: Object name.
-            object_type: Optional object type filter.
+            owner (str): Schema owner of the object.
+            name (str): Object name.
+            object_type (str | None): Optional object type filter.
 
         Returns:
             list[DependencyItem]: List of referenced dependency items.
@@ -272,9 +271,9 @@ class ObjectDependencyAnalyzer:
         """Query downstream objects that directly depend on the specified object.
 
         Args:
-            owner: Schema owner of the referenced object.
-            name: Referenced object name.
-            object_type: Optional referenced object type filter.
+            owner (str): Schema owner of the referenced object.
+            name (str): Referenced object name.
+            object_type (str | None): Optional referenced object type filter.
 
         Returns:
             list[DependencyItem]: List of dependent object items.
@@ -329,9 +328,9 @@ class ObjectDependencyAnalyzer:
         """Execute query against DBA_DEPENDENCIES with fallback to ALL_DEPENDENCIES.
 
         Args:
-            dba_query: SQL query for DBA_DEPENDENCIES.
-            all_query: Fallback SQL query for ALL_DEPENDENCIES.
-            binds: Named query bind parameters.
+            dba_query (str): SQL query for DBA_DEPENDENCIES.
+            all_query (str): Fallback SQL query for ALL_DEPENDENCIES.
+            binds (dict[str, Any]): Named query bind parameters.
 
         Returns:
             list[DependencyItem]: Parsed dependency items.
@@ -384,13 +383,13 @@ class ObjectDependencyAnalyzer:
         """Recursively build hierarchical dependency tree with cycle detection.
 
         Args:
-            owner: Schema owner of root or intermediate node.
-            name: Object name.
-            object_type: Object type if known.
-            direction: 'references' (upstream) or 'dependents' (downstream).
-            max_depth: Maximum recursion depth.
-            current_depth: Current recursion level.
-            visited_path: Set of objects visited along current ancestry path.
+            owner (str): Schema owner of root or intermediate node.
+            name (str): Object name.
+            object_type (str | None): Object type if known.
+            direction (str): 'references' (upstream) or 'dependents' (downstream).
+            max_depth (int): Maximum recursion depth.
+            current_depth (int): Current recursion level.
+            visited_path (set[tuple[str, str, str]] | None): Set of objects visited along current ancestry path.
 
         Returns:
             DependencyTreeNode: Populated tree node with children.
@@ -462,11 +461,11 @@ class ObjectDependencyAnalyzer:
         """Run complete dependency analysis for specified object.
 
         Args:
-            owner: Schema owner of the object.
-            name: Name of the object.
-            object_type: Optional object type filter.
-            direction: Analysis direction ('references', 'dependents', or 'both').
-            max_depth: Maximum recursion tree depth.
+            owner (str): Schema owner of the object.
+            name (str): Name of the object.
+            object_type (str | None): Optional object type filter.
+            direction (str): Analysis direction ('references', 'dependents', or 'both').
+            max_depth (int): Maximum recursion tree depth.
 
         Returns:
             ObjectDependencyReport: Comprehensive dependency report.
@@ -520,10 +519,10 @@ def _render_tree_lines(
     """Recursively render a tree node into indented ASCII lines.
 
     Args:
-        node: Node to render.
-        prefix: Indentation prefix for child lines.
-        is_last: Whether this node is the last child of its parent.
-        is_root: Whether this is the root node.
+        node (DependencyTreeNode): Node to render.
+        prefix (str): Indentation prefix for child lines.
+        is_last (bool): Whether this node is the last child of its parent.
+        is_root (bool): Whether this is the root node.
 
     Returns:
         list[str]: Formatted lines.
@@ -557,7 +556,7 @@ def format_dependency_text(report: ObjectDependencyReport) -> str:
     """Format dependency report into human-readable text.
 
     Args:
-        report: Populated object dependency report.
+        report (ObjectDependencyReport): Populated object dependency report.
 
     Returns:
         str: Formatted report text.
@@ -602,153 +601,110 @@ def format_dependency_text(report: ObjectDependencyReport) -> str:
     return "\n".join(out)
 
 
-def parse_arguments(args: list[str]) -> argparse.Namespace:
-    """Parse command-line arguments.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Args:
-        args: Command line argument list.
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
 
-    Returns:
-        argparse.Namespace: Parsed CLI options.
-    """
-    parser = argparse.ArgumentParser(
-        description="Display object dependency hierarchies in Oracle database.",
-    )
-    parser.add_argument("--host", default=os.getenv("ORACLE_HOST", "localhost"), help="Oracle host")
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
-        help="Oracle listener port",
-    )
-    parser.add_argument(
-        "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
-        help="Oracle service name",
-    )
-    parser.add_argument("--sid", default=os.getenv("ORACLE_SID"), help="Oracle SID")
-    parser.add_argument(
-        "-u",
-        "--user",
-        default=os.getenv("ORACLE_USER"),
-        help="Oracle username",
-    )
-    parser.add_argument(
-        "-p",
-        "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
-        help="Oracle password",
-    )
-    parser.add_argument(
-        "--sysdba",
-        action="store_true",
-        default=os.getenv("ORACLE_SYSDBA", "0").lower() in ("1", "true", "yes"),
-        help="Connect as SYSDBA",
-    )
-    parser.add_argument(
-        "-o",
-        "--owner",
-        default=None,
-        help="Schema owner of target object (defaults to connected username)",
-    )
-    parser.add_argument(
-        "-n",
-        "--name",
-        required=True,
-        help="Target object name (e.g. SCENES, GET_SCENE_INFO)",
-    )
-    parser.add_argument(
-        "-t",
-        "--type",
-        default=None,
-        help="Target object type filter (e.g. TABLE, VIEW, PACKAGE, PACKAGE BODY)",
-    )
-    parser.add_argument(
-        "-d",
-        "--direction",
-        choices=["references", "dependents", "both"],
-        default="both",
-        help="Dependency traversal direction (default: both)",
-    )
-    parser.add_argument(
-        "--max-depth",
-        type=int,
-        default=5,
-        help="Maximum recursion depth for dependency tree (default: 5)",
-    )
-    parser.add_argument(
-        "-f",
-        "--format",
-        choices=["text", "json"],
-        default="text",
-        help="Output format (default: text)",
-    )
-    parser.add_argument(
-        "--output-file",
-        default=None,
-        help="Write report to file instead of stdout",
-    )
-    return parser.parse_args(args)
+        Args:
+            args (Sequence[str] | None): Argument list to parse.
+
+        Returns:
+            SimpleNamespace: Parsed arguments as a namespace.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("display_object_dependencies", list(args) if args is not None else sys.argv[1:])
+        return SimpleNamespace(**ctx.params)
 
 
-def main(args: list[str] | None = None) -> int:
+app = TyperApp(add_completion=False, help="Display object dependency hierarchies in Oracle database.")
+
+
+@app.command()
+def run(
+    name: str = typer.Option(..., "-n", "--name", help="Target object name (e.g. SCENES, GET_SCENE_INFO)"),
+    user: str | None = typer.Option(None, "-u", "--user", envvar="ORACLE_USER", help="Oracle username"),
+    password: str | None = typer.Option(None, "-p", "--password", envvar="ORACLE_PASSWORD", help="Oracle password"),
+    host: str = typer.Option("localhost", "--host", envvar="ORACLE_HOST", help="Oracle host"),
+    port: int = typer.Option(1521, "--port", envvar="ORACLE_PORT", help="Oracle listener port"),
+    service_name: str | None = typer.Option(None, "--service-name", envvar="ORACLE_SERVICE_NAME", help="Oracle service name"),
+    sid: str | None = typer.Option(None, "--sid", envvar="ORACLE_SID", help="Oracle SID"),
+    sysdba: bool = typer.Option(False, "--sysdba", envvar="ORACLE_SYSDBA", help="Connect as SYSDBA"),
+    owner: str | None = typer.Option(None, "-o", "--owner", help="Schema owner of target object (defaults to connected username)"),
+    type: str | None = typer.Option(None, "-t", "--type", help="Target object type filter (e.g. TABLE, VIEW, PACKAGE, PACKAGE BODY)"),
+    direction: str = typer.Option("both", "-d", "--direction", help="Dependency traversal direction (default: both)"),
+    max_depth: int = typer.Option(5, "--max-depth", help="Maximum recursion depth for dependency tree (default: 5)"),
+    format: str = typer.Option("text", "-f", "--format", help="Output format (default: text)"),
+    output_file: str | None = typer.Option(None, "--output-file", help="Write report to file instead of stdout"),
+) -> int:
     """Execute the object dependency analyzer CLI.
 
     Args:
-        args: Optional list of CLI arguments (defaults to sys.argv[1:]).
+        name (str): Target object name.
+        user (str | None): Oracle username.
+        password (str | None): Oracle password.
+        host (str): Oracle host.
+        port (int): Oracle listener port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        sysdba (bool): Connect as SYSDBA.
+        owner (str | None): Schema owner.
+        type (str | None): Target object type filter.
+        direction (str): Dependency traversal direction.
+        max_depth (int): Maximum recursion depth.
+        format (str): Output format.
+        output_file (str | None): Output file path.
 
     Returns:
-        int: Exit status code (0 for success, non-zero for error).
+        int: Exit status code.
     """
-    opts = parse_arguments(args or sys.argv[1:])
-
-    if not opts.user or not opts.password:
+    if not user or not password:
         logger.error("Missing required credentials: username and password must be specified")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=opts.host,
-            port=opts.port,
-            service_name=opts.service_name,
-            sid=opts.sid,
-            username=opts.user,
-            password=SecretStr(opts.password),
-            is_sysdba=opts.sysdba,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
         )
     except ValidationError as err:
         logger.error("Configuration validation error: {}", err)
         return 1
 
-    target_owner = opts.owner or opts.user
+    target_owner = owner or user
     driver = OracleDriver(config)
     analyzer = ObjectDependencyAnalyzer(driver)
 
     try:
         report = analyzer.analyze(
             owner=target_owner,
-            name=opts.name,
-            object_type=opts.type,
-            direction=opts.direction,
-            max_depth=opts.max_depth,
+            name=name,
+            object_type=type,
+            direction=direction,
+            max_depth=max_depth,
         )
     except (oracledb.DatabaseError, ValueError, RuntimeError, OSError) as exc:
         logger.error("Error executing object dependency analyzer: {}", exc)
         return 1
 
-    output_text = ""
-    if opts.format == "json":
+    if format == "json":
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_dependency_text(report)
 
-    if opts.output_file:
+    if output_file:
         try:
-            with open(opts.output_file, "w", encoding="utf-8") as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Report written to {}", opts.output_file)
+            logger.info("Report written to {}", output_file)
         except OSError as err:
-            logger.error("Failed to write output to {}: {}", opts.output_file, err)
+            logger.error("Failed to write output to {}: {}", output_file, err)
             return 1
     else:
         sys.stdout.write(output_text + "\n")
@@ -756,5 +712,37 @@ def main(args: list[str] | None = None) -> int:
     return 0
 
 
+def parse_arguments(args: list[str]) -> SimpleNamespace:
+    """Parse command-line arguments using Typer.
+
+    Args:
+        args (list[str]): Command line argument list.
+
+    Returns:
+        SimpleNamespace: Parsed CLI options.
+    """
+    return app.parse_args(args)
+
+
+def main(args: list[str] | None = None) -> int:
+    """Execute the object dependency analyzer CLI entrypoint.
+
+    Args:
+        args (list[str] | None): Optional list of CLI arguments (defaults to sys.argv[1:]).
+
+    Returns:
+        int: Exit status code (0 for success, non-zero for error).
+    """
+    try:
+        cmd_args = list(args) if args is not None else None
+        ret = app(args=cmd_args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

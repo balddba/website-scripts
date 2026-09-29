@@ -1,3 +1,4 @@
+SQL> @asm_disk_group_capacity_analysis.sql
 === ASM Disk Group Capacity & Safety Analysis ===
 
 Disk Group         State       Redundancy Raw Total GB Raw Free GB Raw % Used Req Mirror GB Usable File GB Safe Free % Offline

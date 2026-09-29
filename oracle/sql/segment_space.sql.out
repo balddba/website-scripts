@@ -1,0 +1,26 @@
+SQL> @segment_space.sql HR EMPLOYEES
+
+=== Segment space (HR EMPLOYEES) ===
+
+
+Owner                Segment Name                   Partition Name                 Type                     Tablespace           Bytes        Size MB     Extents  Initial KB   Next KB Min Exts Max Exts
+-------------------- ------------------------------ ------------------------------ ------------------------ -------------------- ------------ ----------- ------- ----------- --------- -------- --------
+HR                   EMPLOYEES                      (null)                         TABLE                    USERS                       65536        0.06       1          64        64        1 UNLIMITED
+
+1 row selected.
+
+
+=== Space advisory (DBMS_SPACE) ===
+
+
+Metric                                                                                    Value
+----------------------------------------------------------------------------------------- ----------------------------------------
+Total Blocks                                                                                                                     8
+Total Bytes                                                                                                                 65,536
+Unused Blocks                                                                                                                    3
+Unused Bytes                                                                                                                24,576
+Last Used Extent File ID                                                                                                         4
+Last Used Extent Block ID                                                                                                      130
+Last Used Block                                                                                                                  5
+
+7 rows selected.

@@ -5,11 +5,11 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import dataclass, field
 from pathlib import Path
 
 import oracledb
 from loguru import logger
+from pydantic import BaseModel, ConfigDict, Field
 
 from tests.oracle.script_parser import ParsedScript, apply_substitutions, parse_sqlplus_script
 from tests.oracle.settings import OracleTestSettings
@@ -20,14 +20,15 @@ _IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_#$]*$")
 _BIND_NAME = re.compile(r":([A-Za-z][A-Za-z0-9_#$]*)")
 
 
-@dataclass(frozen=True)
-class QueryResult:
+class QueryResult(BaseModel):
     """One SELECT result set from a catalog script.
 
     Attributes:
         columns (list[str]): Column names from the cursor description.
         rows (list[tuple[object, ...]]): Fetched rows.
     """
+
+    model_config = ConfigDict(frozen=True, extra="forbid", arbitrary_types_allowed=True)
 
     columns: list[str]
     rows: list[tuple[object, ...]]
@@ -63,8 +64,7 @@ class QueryResult:
         return [row[index] for row in self.rows]
 
 
-@dataclass
-class ScriptResult:
+class ScriptResult(BaseModel):
     """Outcome of running a catalog SQL script.
 
     Attributes:
@@ -73,9 +73,11 @@ class ScriptResult:
         dbms_output (list[str]): Lines collected from DBMS_OUTPUT.
     """
 
+    model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
+
     statements: list[str]
-    queries: list[QueryResult] = field(default_factory=list)
-    dbms_output: list[str] = field(default_factory=list)
+    queries: list[QueryResult] = Field(default_factory=list)
+    dbms_output: list[str] = Field(default_factory=list)
 
 
 def quote_ident(name: str) -> str:

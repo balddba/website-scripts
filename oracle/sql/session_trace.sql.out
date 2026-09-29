@@ -1,0 +1,14 @@
+SQL> @session_trace.sql ENABLE
+Enabled SQL trace for SID=142,SERIAL#=33891 user=APP_USER program=sqlplus@phxdbjab68 waits=TRUE binds=TRUE
+Trace file: /u01/app/oracle/diag/rdbms/homelab/homelab/trace/homelab_ora_18492.trc
+Default Trace File: /u01/app/oracle/diag/rdbms/homelab/homelab/trace/homelab_ora_18492.trc
+Session ID: 142
+
+=== Session trace status ===
+
+
+  SID   Serial# SQL Trace  Trace File
+----- --------- ---------- ------------------------------------------------------------------------------------------------------------------------
+  142     33891 ENABLED    /u01/app/oracle/diag/rdbms/homelab/homelab/trace/homelab_ora_18492.trc
+
+1 row selected.

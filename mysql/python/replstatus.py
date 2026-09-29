@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: replstatus.py
 # Title: MySQL replication status
@@ -29,7 +29,7 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Compare MySQL primary and standby replication coordinates."""
 
 import json
@@ -43,7 +43,17 @@ import mysql.connector
 
 
 def sync_status_message(primary_log: str, primary_pos: int, standby_log: str, standby_pos: int) -> str:
-    """Return a plain-text synchronization status."""
+    """Return a plain-text synchronization status message.
+
+    Args:
+        primary_log (str): Binary log file name on the primary database.
+        primary_pos (int): Binary log position on the primary database.
+        standby_log (str): Binary log file name on the standby database.
+        standby_pos (int): Binary log position on the standby database.
+
+    Returns:
+        str: Human-readable synchronization status description.
+    """
     primary_log_number = int(primary_log.split(".")[1])
     standby_log_number = int(standby_log.split(".")[1])
 
@@ -55,9 +65,7 @@ def sync_status_message(primary_log: str, primary_pos: int, standby_log: str, st
     }
 
     logs_in_sync = primary_log_number == standby_log_number
-    positions_in_sync = primary_pos == standby_pos or (
-        primary_log_number != standby_log_number and primary_pos - standby_pos < 2
-    )
+    positions_in_sync = primary_pos == standby_pos or (primary_log_number != standby_log_number and primary_pos - standby_pos < 2)
     return status_messages[(logs_in_sync, positions_in_sync)]
 
 
@@ -91,20 +99,37 @@ def terminal_report(
     standby_log: str,
     standby_pos: int,
 ) -> str:
-    """Render replication details as a plain-text terminal report."""
+    """Render replication details as a plain-text terminal report.
+
+    Args:
+        primary_host (str): Primary database hostname.
+        primary_log (str): Primary binary log file name.
+        primary_pos (int): Primary binary log position.
+        standby_host (str): Standby database hostname.
+        standby_log (str): Standby binary log file name.
+        standby_pos (int): Standby binary log position.
+
+    Returns:
+        str: Formatted ASCII table containing replication comparison.
+    """
     rows = [
         ("Hostname", primary_host, standby_host),
         ("Binary Log", primary_log, standby_log),
         ("Log Position", str(primary_pos), str(standby_pos)),
     ]
     headers = ("Metric", "Primary", "Standby")
-    widths = [
-        max(len(headers[index]), *(len(row[index]) for row in rows))
-        for index in range(len(headers))
-    ]
+    widths = [max(len(headers[index]), *(len(row[index]) for row in rows)) for index in range(len(headers))]
     separator = "+" + "+".join("-" * (width + 2) for width in widths) + "+"
 
     def format_row(row: tuple[str, str, str]) -> str:
+        """Format a single table row with column alignment.
+
+        Args:
+            row (tuple[str, str, str]): Column values for the row.
+
+        Returns:
+            str: Padded table row string.
+        """
         return "| " + " | ".join(value.ljust(widths[index]) for index, value in enumerate(row)) + " |"
 
     status = sync_status_message(primary_log, primary_pos, standby_log, standby_pos)
@@ -113,6 +138,7 @@ def terminal_report(
     table.append(separator)
     table.append(f"Sync Status: {status}")
     return "\n".join(table)
+
 
 def main() -> None:
     """Check primary and standby synchronization and report the results.

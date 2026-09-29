@@ -1,0 +1,12 @@
+SQL> @seqfix.sql HR.EMPLOYEES_SEQ HR.EMPLOYEES.EMPLOYEE_ID
+--------------------------------------------------------------------------------
+                    Oracle Sequence Synchronization Tool                        
+--------------------------------------------------------------------------------
+Sequence:      "HR"."EMPLOYEES_SEQ"
+Table Column:  "HR"."EMPLOYEES"."EMPLOYEE_ID"
+Current Value: 206
+Max Column Val: 206
+Advancing seq by 1 to reach 207...
+Next value is now 207.
+Original increment restored to 1.
+Sequence sync complete.

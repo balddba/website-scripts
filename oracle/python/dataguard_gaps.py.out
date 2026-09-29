@@ -1,4 +1,4 @@
-python oracle/python/dataguard_gaps.py \
+$ python oracle/python/dataguard_gaps.py \
   --connect-string standby01:1521/ORCL_DG \
   --username system \
   --password *******

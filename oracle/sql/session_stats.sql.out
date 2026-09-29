@@ -1,0 +1,18 @@
+SQL> @session_stats.sql 142
+
+=== Session statistics for SID 142 ===
+
+
+  SID Username             Stat# Name                                                                                     Value
+----- -------------------- ----- ---------------------------------------------------------------- -----------------------------
+  142 APP_USER                12 session logical reads                                                                   46,630
+  142 APP_USER                15 DB time                                                                                     42
+  142 APP_USER                18 CPU used by this session                                                                    28
+  142 APP_USER                22 parse time cpu                                                                               4
+  142 APP_USER                23 parse time elapsed                                                                           8
+  142 APP_USER                24 parse count (total)                                                                         120
+  142 APP_USER                25 parse count (hard)                                                                            2
+  142 APP_USER                26 execute count                                                                              118
+  142 APP_USER                27 user calls                                                                                 145
+
+9 rows selected.

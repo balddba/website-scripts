@@ -1,0 +1,10 @@
+SQL> @sql_baselines.sql
+
+=== SQL Plan Baselines (DBA_SQL_PLAN_BASELINES) ===
+
+
+SQL Handle           Plan Name                      Creator         Origin           Ena  Acc  Fix  Rep  Prg        Execs     Ela/Exec     CPU/Exec    Gets/Exec Created          Last Executed    SQL Text
+-------------------- ------------------------------ --------------- ---------------- ---- ---- ---- ---- ---- ----------- ------------ ------------ ------------ ---------------- ---------------- --------------------------------------------------
+SQL_2b84920184920184 SQL_PLAN_2b84920184920184      AUTO_CAPTURE    AUTO-CAPTURE     YES  YES  NO   YES  YES       14,520       0.0420       0.0380          450 2026-09-01 10:00 2026-09-28 12:00 SELECT id, name FROM customers WHERE region = :1
+
+1 row selected.

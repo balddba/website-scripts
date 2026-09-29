@@ -1,4 +1,4 @@
-python oracle/python/tde_report.py \
+$ python oracle/python/tde_report.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1

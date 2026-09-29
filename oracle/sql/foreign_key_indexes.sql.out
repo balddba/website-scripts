@@ -1,10 +1,19 @@
+SQL> @foreign_key_indexes.sql
+
 === Foreign keys missing a supporting child index ===
 
+Owner                Child Table                    FK Name                        FK Columns                               Parent Owner         Parent Table                   Parent Key                     FK Status Delete Rule  Suggested Index
+-------------------- ------------------------------ ------------------------------ ---------------------------------------- -------------------- ------------------------------ ------------------------------ --------- ------------ ------------------------------------------------------------------------------------------
+HR                   ORDERS                         FK_ORDERS_CUSTOMER             CUSTOMER_ID                              HR                   CUSTOMERS                      PK_CUSTOMERS                   ENABLED   NO ACTION    CREATE INDEX HR.ORDERS_CUSTOMER_ID_IDX ON HR.ORDERS(CUSTOMER_ID);
+HR                   ORDER_ITEMS                    FK_ORDER_ITEMS_PRODUCT         PRODUCT_ID                               HR                   PRODUCTS                       PK_PRODUCTS                    ENABLED   NO ACTION    CREATE INDEX HR.ORDER_ITEMS_PRODUCT_ID_IDX ON HR.ORDER_ITEMS(PRODUCT_ID);
 
-no rows selected
+2 rows selected.
 
 
 === Referenced parent keys with a missing or unusable unique index ===
 
+Child Owner          Child Table                    FK Name                        Parent Owner         Parent Table                   Parent Key                     Type   PK Status Parent Columns                           Index Owner          Index Name                     Idx Status Visible    Problem
+-------------------- ------------------------------ ------------------------------ -------------------- ------------------------------ ------------------------------ ------ --------- ---------------------------------------- -------------------- ------------------------------ ---------- ---------- ------------------------------------
+HR                   AUDIT_LOG                      FK_AUDIT_USER                  HR                   USERS                          UK_USERS_BAD                   U      ENABLED   USER_UUID                                HR                   UK_USERS_BAD_IDX               UNUSABLE   VISIBLE    INDEX UNUSABLE
 
-no rows selected
+1 row selected.

@@ -1,4 +1,10 @@
+SQL> @database_links.sql APP_USER
+
 === Database links ===
 
 Passwords are not displayed.
-Enter value for 1:
+
+Owner                          DB Link                                  Remote User                    Host                                                         Created
+------------------------------ ---------------------------------------- ------------------------------ ------------------------------------------------------------ -------------------
+APP_USER                       FINANCE_LINK.CORP                        FIN_RO                         corp-fin-db:1521/FINPDB                                      2025-03-12 14:22:10
+APP_USER                       WAREHOUSE_REPL.CORP                      WH_USER                        wh-dw-scan:1521/WHPDB                                        2025-06-18 09:15:44

@@ -1,0 +1,16 @@
+SQL> @purge_sqlid.sql 8zxfktj5s7k8m
+
+=== Cursors for SQL_ID 8zxfktj5s7k8m (all instances) ===
+
+
+Inst Child Schema                Plan Hash        Execs  Open  Exec Last Active         SQL Text
+---- ----- -------------------- ---------- ------------ ----- ----- ------------------- --------------------------------------------------
+   1     0 HR                   2849102842           12     0     0 2026-09-28 11:45:00 SELECT * FROM employees WHERE department_id = 10
+
+1 row selected.
+
+SQL_ID 8zxfktj5s7k8m purged from shared pool on instance homelab.
+
+=== Cursors remaining for SQL_ID 8zxfktj5s7k8m ===
+
+no rows selected

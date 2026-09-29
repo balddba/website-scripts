@@ -1,3 +1,4 @@
+SQL> @flash_recovery_area.sql
 === Database ===
 
 

@@ -1,3 +1,4 @@
+SQL> @mview_log_orphans.sql
 === DISPLAY ONLY: do not DELETE or UNREGISTER from this script ===
 
 === Mview logs with no registered snapshots ===

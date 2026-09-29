@@ -1,3 +1,4 @@
+SQL> @system_wait_events.sql
 === System Non-Idle Wait Events ===
 
 

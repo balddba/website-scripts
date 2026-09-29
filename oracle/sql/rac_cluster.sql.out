@@ -1,3 +1,4 @@
+SQL> @rac_cluster.sql
 === Cluster identity ===
 
 

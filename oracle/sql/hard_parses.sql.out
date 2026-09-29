@@ -1,0 +1,35 @@
+SQL> @hard_parses.sql
+
+=== Instance parse ratios ===
+
+
+Name                                                   Value
+---------------------------------------- -------------------
+parse count (total)                                2,845,920
+parse count (hard)                                    14,230
+parse count (failures)                                    42
+execute count                                      8,912,400
+
+4 rows selected.
+
+
+=== Top parse-to-execute ratio SQL (potential literal SQL) ===
+
+
+Parsing Schema       Force Matching Signature SQL ID        Parse Total Parse Hard   Executions Ratio %  SQL Text
+-------------------- ------------------------ ------------- ----------- ---------- ------------ -------- ------------------------------------------------------------
+APP_USER             1489201948201928472      9a1b2c3d4e5f6          42         42           42   100.00 SELECT balance FROM accounts WHERE id = :id
+APP_USER             8291048201948201948      8f7e6d5c4b3a2          15         15           15   100.00 INSERT INTO audit_events VALUES (:1, :2, SYSDATE)
+
+2 rows selected.
+
+
+=== Top hard parsing sessions ===
+
+
+   SID   Serial# Username             Program                  Hard Parses   Total Parses Ratio %
+------ --------- -------------------- ------------------------ ----------- -------------- --------
+   142     33891 APP_USER             python@phxdbjab68                840          2,100    40.00
+    88     19402 BATCH_USER           JDBC Thin Client                 320          5,400     5.93
+
+2 rows selected.

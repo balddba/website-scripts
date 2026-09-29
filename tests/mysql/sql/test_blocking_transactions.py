@@ -14,9 +14,4 @@ def test_blocking_transactions(run_mysql_sql, blocking_lock, fixture_objects) ->
     blocking_index = query.column_index("blocking_pid")
     table_index = query.column_index("locked_table")
 
-    assert any(
-        int(row[waiting_index]) == blocking_lock.waiter_id
-        and int(row[blocking_index]) == blocking_lock.blocker_id
-        and fixture_objects.lock_table in str(row[table_index])
-        for row in query.rows
-    )
+    assert any(int(row[waiting_index]) == blocking_lock.waiter_id and int(row[blocking_index]) == blocking_lock.blocker_id and fixture_objects.lock_table in str(row[table_index]) for row in query.rows)

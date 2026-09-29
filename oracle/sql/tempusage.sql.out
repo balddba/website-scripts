@@ -1,0 +1,23 @@
+SQL> @tempusage.sql
+
+Temporary Tablespace Usage by Instance
+====================================
+
+
+Inst Tablespace Name      Total Space (MB) Used Space (MB) Free Space (MB) Usage %  Status                              Recommendation
+---- -------------------- ---------------- --------------- --------------- -------- ----------------------------------- ----------------------------------------
+   1 TEMP                            2,048             128           1,920     6.3% OK - Usage is optimal               No action needed
+
+1 row selected.
+
+
+Current Session Temp Space Usage (All Instances)
+==============================================
+
+
+Inst
+  ID Username        SID Serial# OS User    Module                         Tablespace Name      Current Usage (MB) Max Usage (MB) Segments
+---- --------------- --- ------- ---------- ------------------------------ -------------------- ------------------ -------------- --------
+   1 APP_USER        142   33891 amyers     python@phxdbjab68              TEMP                                 64            128        1
+
+1 row selected.

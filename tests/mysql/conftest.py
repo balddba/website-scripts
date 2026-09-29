@@ -80,6 +80,14 @@ def run_mysql_sql(
     """
 
     def _run(script_name: str) -> ScriptResult:
+        """Execute a MySQL script and record test results.
+
+        Args:
+            script_name (str): Script filename.
+
+        Returns:
+            ScriptResult: Script execution result.
+        """
         try:
             with mysql_connection(mysql_settings) as connection:
                 result = run_script(connection, script_name)

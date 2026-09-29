@@ -1,0 +1,11 @@
+SQL> @sql_history.sql 8zxfktj5s7k8m
+
+=== Historical SQL Execution Statistics (DBA_HIST_SQLSTAT) ===
+
+
+ Snap ID Begin Time        Inst SQL ID          Plan Hash        Execs      Elapsed S       CPU S    Buf Gets  Disk Reads Rows Returned      Ela/Exec      CPU/Exec
+-------- ---------------- ----- ------------- ---------- ------------ -------------- ----------- ----------- ----------- ------------- ------------- -------------
+    1240 2026-09-28 10:00     1 8zxfktj5s7k8m 2849102842        1,200          45.20       38.10     184,200          12         1,200        0.0377        0.0318
+    1241 2026-09-28 11:00     1 8zxfktj5s7k8m 2849102842        1,450          54.80       46.50     221,400          18         1,450        0.0378        0.0321
+
+2 rows selected.

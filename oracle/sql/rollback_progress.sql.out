@@ -1,3 +1,4 @@
+SQL> @rollback_progress.sql
 Remaining undo (used_ublk / used_urec) falls as rollback proceeds.
 Re-run the script to measure progress. Longops and fast-start recovery
 include percent complete when Oracle publishes it.
@@ -5,11 +6,30 @@ include percent complete when Oracle publishes it.
 
 === Transactions rolling back ===
 
+Inst    SID   Serial# Username             Program                      XID                     Undo MB  Undo Blks  Undo Recs Tx Start             Command          SQL ID        Event                                Wait S
+---- ------ --------- -------------------- ---------------------------- ------------------ ------------ ---------- ---------- -------------------- ---------------- ------------- -------------------------------- --------
+   1    284     18290 BATCH_USER           sqlplus@batch01              14.28.19041               250.4      32050     140200 09/28/26 14:15:20    UPDATE           7zq2w1h9k8a2b db file sequential read                 2
+
 
 === Rollback longops (percent complete) ===
+
+Inst    SID   Serial# Operation                           Sofar        Total   Pct  Elapsed    ETA S Message
+---- ------ --------- ---------------------------- ------------ ------------ ----- -------- -------- ------------------------------------------------------------
+   1    284     18290 Transaction Rollback                18500        32050  57.7      142      104 Transaction Rollback: 18500 out of 32050 Blocks done
 
 
 === Fast-start transaction recovery ===
 
+Inst   USN   Slot       Seq State                 Blks Done  Blks Total   Pct    CPU S    ETA S    PID Slaves
+---- ----- ------ --------- ------------------ ------------ ----------- ----- -------- -------- ------ ------
+   1    14     28     19041 RECOVERING                18500       32050  57.7       85       62     34      4
+
 
 === Fast-start recovery servers ===
+
+Inst    PID State                 Blks Done XID
+---- ------ ------------------ ------------ --------------------------------
+   1     35 WORKING                    5200 000E001C00004A61
+   1     36 WORKING                    4800 000E001C00004A61
+   1     37 WORKING                    4500 000E001C00004A61
+   1     38 WORKING                    4000 000E001C00004A61

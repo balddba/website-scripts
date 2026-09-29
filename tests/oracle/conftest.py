@@ -88,6 +88,16 @@ def run_oracle_sql(
         args: list[str] | None = None,
         defines: dict[str, str] | None = None,
     ) -> ScriptResult:
+        """Execute a SQL script and record test results.
+
+        Args:
+            script_name (str): SQL script filename.
+            args (list[str] | None): Optional positional parameters.
+            defines (dict[str, str] | None): Optional substitution variables.
+
+        Returns:
+            ScriptResult: Script execution result.
+        """
         try:
             with oracle_connection(oracle_settings) as connection:
                 result = run_script(connection, script_name, args=args, defines=defines)

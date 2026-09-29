@@ -1,0 +1,11 @@
+SQL> @session_io.sql
+
+=== Session I/O ===
+
+
+  SID   Serial# Username             Program                      Status      Block Gets Consistent Gets  Physical Reads    Block Changes Consistent Changes
+----- --------- -------------------- ---------------------------- -------- ------------- --------------- --------------- ---------------- ------------------
+  142     33891 APP_USER             python@phxdbjab68            ACTIVE           1,420          45,210             120              340                  0
+   88     19402 SYS                  sqlplus@phxdbjab68           ACTIVE             340           8,920               2               15                  0
+
+2 rows selected.

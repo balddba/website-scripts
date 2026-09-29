@@ -14,9 +14,4 @@ def test_unused_indexes(run_mysql_sql, fixture_objects) -> None:
     table_index = query.column_index("table_name")
     name_index = query.column_index("index_name")
 
-    assert any(
-        row[schema_index] == fixture_objects.schema
-        and row[table_index] == fixture_objects.index_table
-        and row[name_index] == fixture_objects.unused_index
-        for row in query.rows
-    )
+    assert any(row[schema_index] == fixture_objects.schema and row[table_index] == fixture_objects.index_table and row[name_index] == fixture_objects.unused_index for row in query.rows)

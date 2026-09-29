@@ -1,4 +1,4 @@
-python oracle/python/tde_keys.py \
+$ python oracle/python/tde_keys.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1

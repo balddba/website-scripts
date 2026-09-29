@@ -1,0 +1,139 @@
+$ python oracle/python/triggers.py LIST MVADMIN.ORDERS ALL \
+  --user c##admin \
+  --password ******* \
+  --service-name ORDERPROD
+
+================================================================================
+ Oracle Table Trigger Report
+================================================================================
+
+Database   : ORDERPROD
+Schema     : MVADMIN
+Table      : ORDERS
+Generated  : 2026-09-28 16:31:22
+
+--------------------------------------------------------------------------------
+ Trigger Summary
+--------------------------------------------------------------------------------
+
+Trigger Name                   Status    Type          Event
+------------------------------ --------- ------------- --------------------------
+TRG_ORDERS_BI                  ENABLED   BEFORE EACH   INSERT
+TRG_ORDERS_BU                  ENABLED   BEFORE EACH   UPDATE
+TRG_ORDERS_AUDIT               DISABLED  AFTER EACH    INSERT OR UPDATE OR DELETE
+TRG_ORDERS_TOTAL               ENABLED   COMPOUND      INSERT OR UPDATE OR DELETE
+
+Triggers: 4
+Enabled : 3
+Disabled: 1
+
+================================================================================
+ Trigger: TRG_ORDERS_BI
+================================================================================
+Status       : ENABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Trigger Type : BEFORE EACH ROW
+Event        : INSERT
+When Clause  : <none>
+--------------------------------------------------------------------------------
+ Definition
+--------------------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER MVADMIN.TRG_ORDERS_BI
+BEFORE INSERT ON MVADMIN.ORDERS
+FOR EACH ROW
+BEGIN
+  IF :NEW.ORDER_ID IS NULL THEN
+    :NEW.ORDER_ID := ORDERS_SEQ.NEXTVAL;
+  END IF;
+END;
+/
+
+================================================================================
+ Trigger: TRG_ORDERS_BU
+================================================================================
+Status       : ENABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Trigger Type : BEFORE EACH ROW
+Event        : UPDATE
+When Clause  : <none>
+--------------------------------------------------------------------------------
+ Definition
+--------------------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER MVADMIN.TRG_ORDERS_BU
+BEFORE UPDATE ON MVADMIN.ORDERS
+FOR EACH ROW
+BEGIN
+  :NEW.UPDATED_AT := SYSTIMESTAMP;
+  :NEW.UPDATED_BY := SYS_CONTEXT('USERENV', 'SESSION_USER');
+END;
+/
+
+================================================================================
+ Trigger: TRG_ORDERS_AUDIT
+================================================================================
+Status       : DISABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Trigger Type : AFTER EACH ROW
+Event        : INSERT OR UPDATE OR DELETE
+When Clause  : <none>
+--------------------------------------------------------------------------------
+ Definition
+--------------------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER MVADMIN.TRG_ORDERS_AUDIT
+AFTER INSERT OR UPDATE OR DELETE ON MVADMIN.ORDERS
+FOR EACH ROW
+BEGIN
+  INSERT INTO ORDER_AUDIT (
+    ORDER_ID,
+    ACTION_NAME,
+    ACTION_BY,
+    ACTION_AT
+  ) VALUES (
+    COALESCE(:NEW.ORDER_ID, :OLD.ORDER_ID),
+    CASE
+      WHEN INSERTING THEN 'INSERT'
+      WHEN UPDATING THEN 'UPDATE'
+      WHEN DELETING THEN 'DELETE'
+    END,
+    SYS_CONTEXT('USERENV', 'SESSION_USER'),
+    SYSTIMESTAMP
+  );
+END;
+/
+
+================================================================================
+ Trigger: TRG_ORDERS_TOTAL
+================================================================================
+Status       : ENABLED
+Owner        : MVADMIN
+Table        : ORDERS
+Trigger Type : COMPOUND
+Event        : INSERT OR UPDATE OR DELETE
+When Clause  : <none>
+--------------------------------------------------------------------------------
+ Definition
+--------------------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER MVADMIN.TRG_ORDERS_TOTAL
+FOR INSERT OR UPDATE OR DELETE ON MVADMIN.ORDERS
+COMPOUND TRIGGER
+  AFTER STATEMENT IS
+  BEGIN
+    UPDATE ORDER_SUMMARY
+       SET LAST_REFRESHED_AT = SYSTIMESTAMP;
+  END AFTER STATEMENT;
+END;
+/
+
+================================================================================
+ Trigger Errors
+================================================================================
+Trigger                         Line  Pos  Error
+------------------------------ ----- ---- ---------------------------------------
+TRG_ORDERS_AUDIT                  12    7  PLS-00201: identifier must be declared
+
+================================================================================
+ End of Report
+================================================================================

@@ -23,7 +23,7 @@ def test_undo_tuning(run_oracle_sql) -> None:
     """Execute undo_tuning.sql and verify undo statistics columns.
 
     Args:
-        run_oracle_sql: Fixture to execute a SQL script.
+        run_oracle_sql (Callable[..., ScriptResult]): Fixture to execute a SQL script.
     """
     try:
         result = run_oracle_sql("undo_tuning.sql")

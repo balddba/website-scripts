@@ -1,3 +1,4 @@
+SQL> @ash_wait_chains.sql
 === ASH Active Wait Chains and Blockers (Last 30 minutes) ===
 
 

@@ -1,3 +1,4 @@
+SQL> @sql_monitor_report.sql
 === Real-Time SQL Monitoring (GV$SQL_MONITOR) ===
 
 

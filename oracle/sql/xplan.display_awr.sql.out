@@ -1,0 +1,23 @@
+SQL> @xplan.display_awr.sql 8zxfktj5s7k8m
+ _____________________________________________________________________
+ 
+  XPlan v1.2 by Adrian Billington (http://www.oracle-developer.net)
+ _____________________________________________________________________
+
+PLAN_TABLE_OUTPUT
+--------------------------------------------------------------------------------
+SQL_ID 8zxfktj5s7k8m
+--------------------
+SELECT * FROM employees WHERE department_id = :deptid
+
+Plan hash value: 2849102842
+
+--------------------------------------------------------------------------------
+| Id  | Pid | Ord | Operation                   | Name              | Rows  | Bytes
+--------------------------------------------------------------------------------
+|   0 |     |   3 | SELECT STATEMENT            |                   |       |      
+|   1 |   0 |   2 |  TABLE ACCESS BY INDEX ROWID| EMPLOYEES         |    10 |   680
+|   2 |   1 |   1 |   INDEX RANGE SCAN          | EMP_DEPARTMENT_IX |    10 |      
+--------------------------------------------------------------------------------
+
+12 rows selected.

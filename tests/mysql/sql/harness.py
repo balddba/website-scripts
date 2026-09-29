@@ -32,7 +32,15 @@ EXPECTED_COLUMNS: dict[str, set[str]] = {
 
 
 def run_catalog_script(run_mysql_sql: Callable[[str], ScriptResult], script_name: str) -> ScriptResult:
-    """Run one catalog script and verify its result contract."""
+    """Run one catalog script and verify its result contract.
+
+    Args:
+        run_mysql_sql (Callable[[str], ScriptResult]): Runner callable executing a script by name.
+        script_name (str): Script filename under mysql/sql/.
+
+    Returns:
+        ScriptResult: Execution outcome with verified columns.
+    """
     result = run_mysql_sql(script_name)
 
     assert result.statements, f"{script_name} did not execute any SQL statements"

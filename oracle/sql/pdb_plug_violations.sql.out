@@ -1,0 +1,10 @@
+SQL> @pdb_plug_violations.sql
+
+=== PDB Plug-in Violations (CDB_PDB_VIOLATIONS) ===
+
+
+Con ID Container Name            Time Stamp          Type       Error Code Status    Action
+------ ------------------------- ------------------- ---------- ---------- --------- --------------------------------------------------------------------------------
+     3 ORCLPDB1                  2026-09-25 10:14:22 WARNING             0 RESOLVED  Check that current database timezone matches PDB timezone.
+
+1 row selected.

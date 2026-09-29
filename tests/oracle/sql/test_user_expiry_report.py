@@ -15,7 +15,7 @@ def test_user_expiry_report(run_oracle_sql, oracle_settings: OracleTestSettings)
     """Execute user_expiry_report.sql and verify user expiry details for the connected user.
 
     Args:
-        run_oracle_sql: Fixture to execute a SQL script.
+        run_oracle_sql (Callable[..., ScriptResult]): Fixture to execute a SQL script.
         oracle_settings (OracleTestSettings): Validated Oracle test configuration.
     """
     try:

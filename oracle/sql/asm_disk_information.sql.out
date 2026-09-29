@@ -1,3 +1,4 @@
+SQL> @asm_disk_information.sql
 === ASM Disk Information ===
 
 Disk Group         Fail Group       Disk# Disk Name            Mount    Header      Mode    State    Voting   Total GB    Free GB % Used Sector OS Device Path

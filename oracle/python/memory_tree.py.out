@@ -1,0 +1,34 @@
+python oracle/python/memory_tree.py \
+  --user system \
+  --password ******* \
+  --service-name ORDERPROD \
+  --min-mb 256
+
+╭────────────────────────────────────────────── Oracle Memory Tree: ORDERPROD ───────────────────────────────────────────────╮
+│ SGA  200.00 GiB                                                                                                            │
+│ ├── buffer_cache  150.00 GiB  (75.00% of parent)                                                                           │
+│ │   ├── db_block_hash_buckets  96.00 GiB  (64.00% of parent)                                                               │
+│ │   ├── buffer_cache  52.00 GiB  (34.67% of parent)                                                                        │
+│ │   └── Other (18 allocations below threshold)  2.00 GiB  (1.33% of parent)                                                │
+│ ├── shared pool  36.00 GiB  (18.00% of parent)                                                                             │
+│ │   ├── sql area  14.00 GiB  (38.89% of parent)                                                                            │
+│ │   ├── library cache  10.00 GiB  (27.78% of parent)                                                                       │
+│ │   ├── free memory  8.00 GiB  (22.22% of parent)                                                                          │
+│ │   ├── KGLH0  3.00 GiB  (8.33% of parent)                                                                                 │
+│ │   └── Other (214 allocations below threshold)  1.00 GiB  (2.78% of parent)                                               │
+│ ├── large pool  8.00 GiB  (4.00% of parent)                                                                                │
+│ │   ├── free memory  5.50 GiB  (68.75% of parent)                                                                          │
+│ │   └── PX msg pool  2.50 GiB  (31.25% of parent)                                                                          │
+│ ├── java pool  4.00 GiB  (2.00% of parent)                                                                                 │
+│ │   ├── free memory  3.25 GiB  (81.25% of parent)                                                                          │
+│ │   └── java shared pool  768.00 MiB  (18.75% of parent)                                                                   │
+│ └── streams pool  2.00 GiB  (1.00% of parent)                                                                              │
+│     └── free memory  2.00 GiB  (100.00% of parent)                                                                         │
+│                                                                                                                             │
+│ PGA  40.00 GiB                                                                                                             │
+│ ├── maximum PGA allocated  52.00 GiB  (130.00% of parent)                                                                  │
+│ ├── total PGA inuse  31.00 GiB  (77.50% of parent)                                                                         │
+│ ├── aggregate PGA target parameter  36.00 GiB  (90.00% of parent)                                                          │
+│ ├── total freeable PGA memory  6.00 GiB  (15.00% of parent)                                                                │
+│ └── global memory bound  1.00 GiB  (2.50% of parent)                                                                       │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯

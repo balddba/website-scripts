@@ -1,3 +1,4 @@
+SQL> @move_table_online.sql SQLTEST WS_SQLTEST_LOCK SYSTEM
 === Table tablespace and statistics before move ===
 
 

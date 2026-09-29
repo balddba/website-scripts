@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: find_low_cardinality_indexes.py
 # Title: Find low-cardinality Oracle indexes
@@ -24,20 +24,20 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """Analyze Oracle database indexes for low-cardinality and sub-optimal selectivity."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -585,126 +585,91 @@ def format_report_text(report: LowCardinalityReport) -> str:
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build and configure command-line argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured argument parser.
-    """
-    parser = argparse.ArgumentParser(description="Analyze Oracle database indexes for low-cardinality and sub-optimal selectivity.")
-    parser.add_argument(
-        "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
-        help="Oracle database hostname (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
-        help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
-        "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
-        help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
-        "--sid",
-        default=os.getenv("ORACLE_SID"),
-        help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
-        "--user",
-        default=os.getenv("ORACLE_USER"),
-        help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
-        "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
-        help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
-        "--sysdba",
-        action="store_true",
-        help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
-        "--owner",
-        default=os.getenv("ORACLE_OWNER"),
-        help="Filter by schema owner (default: all schemas accessible)",
-    )
-    parser.add_argument(
-        "--table",
-        default=os.getenv("ORACLE_TABLE"),
-        help="Filter by table name (default: all tables)",
-    )
-    parser.add_argument(
-        "--index",
-        default=os.getenv("ORACLE_INDEX"),
-        help="Filter by index name (default: all indexes)",
-    )
-    parser.add_argument(
-        "--threshold-pct",
-        type=float,
-        default=float(os.getenv("ORACLE_THRESHOLD_PCT", "5.0")),
-        help="Selectivity threshold percentage below which indexes are flagged (default: 5.0)",
-    )
-    parser.add_argument(
-        "--min-rows",
-        type=int,
-        default=int(os.getenv("ORACLE_MIN_ROWS", "1000")),
-        help="Minimum table row count required for index evaluation (default: 1000)",
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        dest="json_output",
-        help="Output report in JSON format",
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        help="File path to save the output report",
-    )
-    return parser
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Argument list to parse.
+
+        Returns:
+            SimpleNamespace: Parsed arguments as a namespace.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("find_low_cardinality_indexes", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "json_output"):
+            ns.json = ns.json_output
+        return ns
 
 
-def main(argv: list[str] | None = None) -> int:
-    """CLI execution entrypoint.
+app = TyperApp(add_completion=False, help="Analyze Oracle database indexes for low-cardinality and sub-optimal selectivity.")
+
+
+@app.command()
+def run(
+    host: str = typer.Option("localhost", "--host", envvar="ORACLE_HOST", help="Oracle database hostname"),
+    port: int = typer.Option(1521, "--port", envvar="ORACLE_PORT", help="Oracle database port"),
+    service_name: str | None = typer.Option(None, "--service-name", envvar="ORACLE_SERVICE_NAME", help="Oracle service name"),
+    sid: str | None = typer.Option(None, "--sid", envvar="ORACLE_SID", help="Oracle SID"),
+    user: str | None = typer.Option(None, "--user", envvar="ORACLE_USER", help="Database username"),
+    password: str | None = typer.Option(None, "--password", envvar="ORACLE_PASSWORD", help="Database password"),
+    sysdba: bool = typer.Option(False, "--sysdba", help="Connect with SYSDBA privilege"),
+    owner: str | None = typer.Option(None, "--owner", envvar="ORACLE_OWNER", help="Filter by schema owner"),
+    table: str | None = typer.Option(None, "--table", envvar="ORACLE_TABLE", help="Filter by table name"),
+    index: str | None = typer.Option(None, "--index", envvar="ORACLE_INDEX", help="Filter by index name"),
+    threshold_pct: float = typer.Option(5.0, "--threshold-pct", envvar="ORACLE_THRESHOLD_PCT", help="Selectivity threshold percentage"),
+    min_rows: int = typer.Option(1000, "--min-rows", envvar="ORACLE_MIN_ROWS", help="Minimum table row count"),
+    json_output: bool = typer.Option(False, "--json", help="Output report in JSON format"),
+    output: str | None = typer.Option(None, "-o", "--output", help="File path to save the output report"),
+) -> int:
+    """Analyze Oracle indexes for low-cardinality and sub-optimal selectivity.
 
     Args:
-        argv (list[str] | None): Optional command-line arguments list.
+        host (str): Database hostname.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        user (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Connect with SYSDBA privilege.
+        owner (str | None): Schema owner filter.
+        table (str | None): Table name filter.
+        index (str | None): Index name filter.
+        threshold_pct (float): Selectivity percentage threshold.
+        min_rows (int): Minimum row count threshold.
+        json_output (bool): Output in JSON format.
+        output (str | None): Output file path.
 
     Returns:
-        int: Exit status code (0 = clean / no low cardinality indexes, 2 = low cardinality indexes found, 1 = error).
+        int: Process exit code.
     """
-    parser = build_parser()
-    args = parser.parse_args(argv)
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via --user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via --password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
-            owner=args.owner,
-            table_name=args.table,
-            index_name=args.index,
-            threshold_pct=args.threshold_pct,
-            min_rows=args.min_rows,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
+            owner=owner,
+            table_name=table,
+            index_name=index,
+            threshold_pct=threshold_pct,
+            min_rows=min_rows,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
@@ -726,18 +691,18 @@ def main(argv: list[str] | None = None) -> int:
         logger.error("Database error while analyzing indexes: {}", exc)
         return 1
 
-    if args.json_output:
+    if json_output:
         output_text = report.model_dump_json(indent=2)
     else:
         output_text = format_report_text(report)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Report saved to {}", args.output)
+            logger.info("Report saved to {}", output)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output, exc)
+            logger.error("Failed to write report to {}: {}", output, exc)
             return 1
     else:
         sys.stdout.write(output_text + "\n")
@@ -745,5 +710,34 @@ def main(argv: list[str] | None = None) -> int:
     return 0 if report.low_cardinality_count == 0 else 2
 
 
+def build_parser() -> TyperApp:
+    """Build and configure command-line argument parser.
+
+    Returns:
+        TyperApp: Configured argument parser.
+    """
+    return app
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (list[str] | None): Optional command-line arguments list.
+
+    Returns:
+        int: Exit status code (0 = clean / no low cardinality indexes, 2 = low cardinality indexes found, 1 = error).
+    """
+    try:
+        args = list(argv) if argv is not None else None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

@@ -45,14 +45,14 @@
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -320,7 +320,7 @@ class OracleDriver:
         """Initialize the Oracle driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -382,8 +382,8 @@ class TdeReporter:
         """Initialize the TDE reporter.
 
         Args:
-            driver: Oracle database session driver.
-            owner_filter: Optional schema owner filter.
+            driver (OracleDriver): Oracle database session driver.
+            owner_filter (str | None): Optional schema owner filter.
         """
         self._driver = driver
         self._owner_filter = owner_filter.upper() if owner_filter else None
@@ -431,7 +431,7 @@ class TdeReporter:
         """Fetch TDE-related configuration parameters from V$PARAMETER.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[TdeParameter]: Initialization parameters.
@@ -456,7 +456,7 @@ class TdeReporter:
         """Fetch keystore wallet status from GV$ENCRYPTION_WALLET.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[KeystoreWallet]: Keystore wallet records.
@@ -502,7 +502,7 @@ class TdeReporter:
         """Fetch master encryption keys from V$ENCRYPTION_KEYS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[MasterEncryptionKey]: Master key records.
@@ -546,7 +546,7 @@ class TdeReporter:
         """Fetch tablespace inventory with encryption status.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[EncryptedTablespace]: Tablespace encryption metrics.
@@ -603,7 +603,7 @@ class TdeReporter:
         """Fetch table counts in encrypted tablespaces grouped by owner.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[EncryptedTableSummary]: Summary counts by owner and tablespace.
@@ -651,7 +651,7 @@ class TdeReporter:
         """Fetch detailed list of tables residing in encrypted tablespaces.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[EncryptedTableDetail]: Individual encrypted tables.
@@ -695,7 +695,7 @@ class TdeReporter:
         """Fetch column-level encryption records from DBA_ENCRYPTED_COLUMNS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[EncryptedColumn]: Encrypted column records.
@@ -735,7 +735,7 @@ class TdeReporter:
         """Fetch encrypted LOB column records from DBA_LOBS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[EncryptedLob]: Encrypted LOB records.
@@ -777,7 +777,7 @@ def format_report_text(report: TdeReport) -> str:
     """Format the TDE report into human-readable plain text.
 
     Args:
-        report: Structured TDE report data.
+        report (TdeReport): Structured TDE report data.
 
     Returns:
         str: Formatted report text.
@@ -897,7 +897,7 @@ def format_report_json(report: TdeReport) -> str:
     """Format the TDE report as JSON.
 
     Args:
-        report: Structured TDE report data.
+        report (TdeReport): Structured TDE report data.
 
     Returns:
         str: JSON-encoded report text.
@@ -905,111 +905,136 @@ def format_report_json(report: TdeReport) -> str:
     return report.model_dump_json(indent=2)
 
 
-def build_arg_parser() -> argparse.ArgumentParser:
-    """Build and return the CLI argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured argument parser.
-    """
-    parser = argparse.ArgumentParser(
-        description="Audit and report Oracle Transparent Data Encryption (TDE) status and objects.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    conn_group = parser.add_argument_group("Oracle Connection")
-    conn_group.add_argument(
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Arguments to parse.
+
+        Returns:
+            SimpleNamespace: Namespace of parsed arguments.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("tde_report", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "hostname") and not hasattr(ns, "host"):
+            ns.host = ns.hostname
+        elif hasattr(ns, "host") and not hasattr(ns, "hostname"):
+            ns.hostname = ns.host
+        if hasattr(ns, "username") and not hasattr(ns, "user"):
+            ns.user = ns.username
+        elif hasattr(ns, "user") and not hasattr(ns, "username"):
+            ns.username = ns.user
+        return ns
+
+
+app = TyperApp(
+    add_completion=False,
+    help="Audit and report Oracle Transparent Data Encryption (TDE) status and objects.",
+)
+
+
+@app.command()
+def run(
+    hostname: str = typer.Option(
+        "localhost",
         "--host",
-        dest="hostname",
-        default=os.getenv("ORACLE_HOST", "localhost"),
+        envvar="ORACLE_HOST",
         help="Database hostname or IP (default: localhost / $ORACLE_HOST)",
-    )
-    conn_group.add_argument(
+    ),
+    port: int = typer.Option(
+        1521,
         "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
+        envvar="ORACLE_PORT",
         help="Database listener port (default: 1521 / $ORACLE_PORT)",
-    )
-    conn_group.add_argument(
+    ),
+    service_name: str | None = typer.Option(
+        None,
         "--service-name",
-        dest="service_name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
+        envvar="ORACLE_SERVICE_NAME",
         help="Oracle service name (e.g. ORCLPDB1 / $ORACLE_SERVICE_NAME)",
-    )
-    conn_group.add_argument(
+    ),
+    sid: str | None = typer.Option(
+        None,
         "--sid",
-        default=os.getenv("ORACLE_SID"),
+        envvar="ORACLE_SID",
         help="Oracle SID (e.g. ORCL / $ORACLE_SID)",
-    )
-    conn_group.add_argument(
+    ),
+    username: str | None = typer.Option(
+        None,
         "-u",
         "--user",
-        dest="username",
-        default=os.getenv("ORACLE_USER"),
+        envvar="ORACLE_USER",
         help="Database username ($ORACLE_USER)",
-    )
-    conn_group.add_argument(
+    ),
+    password: str | None = typer.Option(
+        None,
         "-p",
         "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
+        envvar="ORACLE_PASSWORD",
         help="Database password ($ORACLE_PASSWORD)",
-    )
-    conn_group.add_argument(
+    ),
+    sysdba: bool = typer.Option(
+        False,
         "--sysdba",
-        action="store_true",
-        default=os.getenv("ORACLE_SYSDBA", "").lower() in ("1", "true", "yes"),
+        envvar="ORACLE_SYSDBA",
         help="Connect with SYSDBA administrative privilege",
-    )
-
-    filter_group = parser.add_argument_group("Report Filters")
-    filter_group.add_argument(
+    ),
+    owner: str | None = typer.Option(
+        None,
         "--owner",
         help="Filter tables and columns by schema owner (e.g. HR)",
-    )
-
-    out_group = parser.add_argument_group("Output Options")
-    out_group.add_argument(
+    ),
+    json: bool = typer.Option(
+        False,
         "--json",
-        action="store_true",
         help="Output report in JSON format",
-    )
-    out_group.add_argument(
+    ),
+    output: str | None = typer.Option(
+        None,
         "-o",
         "--output",
         help="Save report output to specified file path",
-    )
-
-    return parser
-
-
-def main(argv: list[str] | None = None) -> int:
+    ),
+) -> int:
     """Execute the CLI application.
 
     Args:
-        argv: Optional list of command-line arguments.
+        hostname (str): Database hostname or IP.
+        port (int): Database listener port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        username (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Connect with SYSDBA privilege.
+        owner (str | None): Schema owner filter.
+        json (bool): Output report in JSON format.
+        output (str | None): Save report output to specified file path.
 
     Returns:
         int: Exit status code (0 for success, non-zero for failure).
     """
-    parser = build_arg_parser()
-    args = parser.parse_args(argv)
-
-    if not args.username:
+    if not username:
         logger.error("Missing database username. Provide via --user or $ORACLE_USER.")
         return 1
 
-    if not args.password:
+    if not password:
         logger.error("Missing database password. Provide via --password or $ORACLE_PASSWORD.")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.hostname,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.username,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
-            owner=args.owner,
+            hostname=hostname,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=username,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
+            owner=owner,
         )
     except ValidationError as exc:
         logger.error("Invalid configuration: {}", exc)
@@ -1024,15 +1049,15 @@ def main(argv: list[str] | None = None) -> int:
         logger.error("Failed to generate TDE report: {}", exc)
         return 2
 
-    output_text = format_report_json(report) if args.json else format_report_text(report)
+    output_text = format_report_json(report) if json else format_report_text(report)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text + "\n")
-            logger.info("Report saved to {}", args.output)
+            logger.info("Report saved to {}", output)
         except OSError as exc:
-            logger.error("Could not write to output file {}: {}", args.output, exc)
+            logger.error("Could not write to output file {}: {}", output, exc)
             return 3
     else:
         sys.stdout.write(output_text + "\n")
@@ -1040,5 +1065,39 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def build_arg_parser() -> TyperApp:
+    """Build and return the CLI argument parser.
+
+    Returns:
+        TyperApp: Configured Typer application.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Execute the CLI application.
+
+    Args:
+        argv (Sequence[str] | None): Optional list of command-line arguments.
+
+    Returns:
+        int: Exit status code (0 for success, non-zero for failure).
+    """
+    try:
+        if argv is not None:
+            args = list(argv[1:]) if len(argv) > 0 and argv[0].endswith(".py") else list(argv)
+        else:
+            args = None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except (typer.BadParameter, typer.exceptions.TyperException) as exc:
+        sys.exit(getattr(exc, "exit_code", 2))
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

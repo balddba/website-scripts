@@ -1,0 +1,70 @@
+SQL> @sga.sql
+
+=== SGA parameters ===
+
+
+Parameter                            Value
+------------------------------------ ----------------------------------------
+sga_max_size                         4G
+sga_target                           4G
+
+2 rows selected.
+
+
+=== V$SGA ===
+
+
+SGA Component                                        MB            GB
+-------------------------------- ---------------------- -------------
+Fixed Size                                         8.50          0.01
+Variable Size                                   1240.00          1.21
+Database Buffers                                2800.00          2.73
+Redo Buffers                                      15.50          0.02
+
+4 rows selected.
+
+
+=== V$SGAINFO ===
+
+
+SGA Component                                        MB Resizeable
+-------------------------------- ---------------------- ----------
+Fixed SGA Size                                     8.50 No
+Redo Buffers                                      15.50 No
+Buffer Cache Size                               2800.00 Yes
+Shared Pool Size                                1200.00 Yes
+Large Pool Size                                   32.00 Yes
+Java Pool Size                                    16.00 Yes
+Streams Pool Size                                 16.00 Yes
+Shared IO Pool Size                               64.00 Yes
+Granule Size                                      32.00 No
+Maximum SGA Size                                4096.00 No
+Startup overhead in Shared Pool                  128.00 No
+Free SGA Memory Available                          0.00 No
+
+12 rows selected.
+
+
+=== Dynamic SGA components ===
+
+
+Component                                    Current MB         Min MB         Max MB    User Spec MB      Opers Last Oper      Mode       Last Oper Time      Granule MB
+---------------------------------------- -------------- -------------- -------------- --------------- ---------- -------------- ---------- ------------------- ----------
+shared pool                                     1200.00        1024.00        1400.00            0.00          2 GROW           DEFERRED   2026-09-28 08:30:00      32.00
+large pool                                        32.00          32.00          32.00            0.00          0 NONE           STATIC     (null)                   32.00
+java pool                                         16.00          16.00          16.00            0.00          0 NONE           STATIC     (null)                   32.00
+streams pool                                      16.00          16.00          16.00            0.00          0 NONE           STATIC     (null)                   32.00
+DEFAULT buffer cache                            2800.00        2600.00        2976.00            0.00          2 SHRINK         DEFERRED   2026-09-28 08:30:00      32.00
+
+5 rows selected.
+
+
+=== Recent SGA resize operations ===
+
+
+Component                                Oper         Mode       Parameter                        Initial MB       Target MB        Final MB Status     Start               End
+---------------------------------------- ------------ ---------- ---------------------------- -------------- --------------- --------------- ---------- ------------------- -------------------
+DEFAULT buffer cache                     SHRINK       DEFERRED   db_cache_size                      2,976.00        2,800.00        2,800.00 COMPLETE   2026-09-28 08:29:45 2026-09-28 08:30:00
+shared pool                              GROW         DEFERRED   shared_pool_size                   1,024.00        1,200.00        1,200.00 COMPLETE   2026-09-28 08:29:45 2026-09-28 08:30:00
+
+2 rows selected.

@@ -1,1 +1,10 @@
-no rows selected
+SQL> @feature_usage.sql
+
+Feature                                                 In Use   Detections  Samples Version           First Used          Last Used
+------------------------------------------------------- -------- ---------- -------- ----------------- ------------------- -------------------
+Automatic Workload Repository                           TRUE             52       52 19.0.0.0.0        2025-01-10 08:00:00 2026-09-28 08:00:00
+Partitioning (user)                                     TRUE             52       52 19.0.0.0.0        2025-01-15 10:30:15 2026-09-28 08:00:00
+Transparent Data Encryption                             TRUE             48       52 19.0.0.0.0        2025-02-01 14:00:00 2026-09-28 08:00:00
+SQL Tuning Advisor                                      FALSE            12       52 19.0.0.0.0        2025-03-05 11:20:00 2025-11-20 16:45:00
+
+4 rows selected.

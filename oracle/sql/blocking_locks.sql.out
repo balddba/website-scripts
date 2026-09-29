@@ -1,4 +1,15 @@
+SQL> @blocking_locks.sql
+
 === Blocking session tree ===
+
+Tree SID              SID   Serial# Username             Event                              Wait S SQL ID        Blk SID
+------------------ ------ --------- -------------------- -------------------------------- -------- ------------- -------
+142                   142     24151 APP_USER             SQL*Net message from client             0 4m9y1t0x8d9qz        
+  289                 289     11984 BATCH_USER           enq: TX - row lock contention          45 7zq2w1h9k8a2b     142
 
 
 === Blocker / waiter lock details ===
+
+Blk SID Blk Serial Blocker            Blk Event                    Blk SQL       Wait SID Wait Serial Waiter             Wait Event                     Wait S Wait SQL      Type Requested        Object
+------- ---------- ------------------ ---------------------------- ------------- -------- ----------- ------------------ ---------------------------- -------- ------------- ---- ---------------- ----------------------------------------
+    142      24151 APP_USER           SQL*Net message from client  4m9y1t0x8d9qz      289       11984 BATCH_USER         enq: TX - row lock contention        45 7zq2w1h9k8a2b TX   Exclusive        HR.EMPLOYEES

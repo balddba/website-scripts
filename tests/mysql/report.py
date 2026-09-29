@@ -2,49 +2,105 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from html import escape
 from pathlib import Path
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict
 
 from tests.mysql.script_runner import ScriptResult
 
 
-@dataclass(frozen=True)
-class ScriptReportEntry:
-    """One attempted catalog-script execution."""
+class ScriptReportEntry(BaseModel):
+    """One attempted catalog-script execution.
+
+    Attributes:
+        script_name (str): Catalog script filename.
+        test_name (str): Pytest test node name.
+        result (ScriptResult | None): Execution outcome when successful.
+        error (str | None): Formatted error message when execution failed.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid", arbitrary_types_allowed=True)
 
     script_name: str
     test_name: str
     result: ScriptResult | None = None
     error: str | None = None
 
+    def __init__(
+        self,
+        script_name: str,
+        test_name: str,
+        result: ScriptResult | None = None,
+        error: str | None = None,
+        **data: Any,
+    ) -> None:
+        """Initialize ScriptReportEntry.
+
+        Args:
+            script_name (str): Catalog script filename.
+            test_name (str): Pytest test node name.
+            result (ScriptResult | None): Execution outcome when successful.
+            error (str | None): Formatted error message when execution failed.
+            **data (Any): Additional keyword arguments.
+        """
+        super().__init__(script_name=script_name, test_name=test_name, result=result, error=error, **data)
+
 
 class MySQLScriptReporter:
     """Collect script executions and write their complete results at session end."""
 
     def __init__(self, output_path: Path) -> None:
-        """Create a reporter targeting ``output_path``."""
+        """Create a reporter targeting output_path.
+
+        Args:
+            output_path (Path): File path where the HTML report is saved.
+        """
         self.output_path = output_path
         self.entries: list[ScriptReportEntry] = []
 
     def record_success(self, script_name: str, test_name: str, result: ScriptResult) -> None:
-        """Record a successful script execution."""
+        """Record a successful script execution.
+
+        Args:
+            script_name (str): Catalog script filename.
+            test_name (str): Pytest test node name.
+            result (ScriptResult): Execution outcome.
+        """
         self.entries.append(ScriptReportEntry(script_name=script_name, test_name=test_name, result=result))
 
     def record_error(self, script_name: str, test_name: str, error: BaseException) -> None:
-        """Record a script execution that raised an exception."""
+        """Record a script execution that raised an exception.
+
+        Args:
+            script_name (str): Catalog script filename.
+            test_name (str): Pytest test node name.
+            error (BaseException): Exception raised during script execution.
+        """
         self.entries.append(ScriptReportEntry(script_name=script_name, test_name=test_name, error=str(error)))
 
     def write(self) -> Path:
-        """Write the report, including when no scripts were attempted."""
+        """Write the report, including when no scripts were attempted.
+
+        Returns:
+            Path: Path to the generated HTML report file.
+        """
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.output_path.write_text(render_html(self.entries), encoding="utf-8")
         return self.output_path
 
 
 def render_html(entries: list[ScriptReportEntry]) -> str:
-    """Return a self-contained HTML report for ``entries``."""
+    """Return a self-contained HTML report for script entries.
+
+    Args:
+        entries (list[ScriptReportEntry]): Collected script execution entries.
+
+    Returns:
+        str: Rendered HTML document content.
+    """
     generated_at = datetime.now(UTC).astimezone().isoformat(timespec="seconds")
     successful = sum(entry.result is not None for entry in entries)
     failed = len(entries) - successful
@@ -83,6 +139,14 @@ def render_html(entries: list[ScriptReportEntry]) -> str:
 
 
 def _render_entry(entry: ScriptReportEntry) -> str:
+    """Render HTML markup for a single script report entry.
+
+    Args:
+        entry (ScriptReportEntry): Script execution record.
+
+    Returns:
+        str: HTML section markup for the entry.
+    """
     status = "Succeeded" if entry.result is not None else "Failed"
     status_class = "ok" if entry.result is not None else "failed"
     body = f'<pre class="failed">{escape(entry.error or "Unknown error")}</pre>'
@@ -97,6 +161,14 @@ def _render_entry(entry: ScriptReportEntry) -> str:
 
 
 def _render_result(result: ScriptResult) -> str:
+    """Render HTML markup for an executed script outcome.
+
+    Args:
+        result (ScriptResult): Outcome of script execution.
+
+    Returns:
+        str: HTML markup showing executed SQL and queries.
+    """
     statements = "\n\n".join(result.statements)
     query_sections = "".join(_render_query(index, query.columns, query.rows) for index, query in enumerate(result.queries, 1))
     if not query_sections:
@@ -108,10 +180,18 @@ def _render_result(result: ScriptResult) -> str:
 
 
 def _render_query(index: int, columns: list[str], rows: list[tuple[object, ...]]) -> str:
+    """Render HTML table for one query result set.
+
+    Args:
+        index (int): One-based result set index.
+        columns (list[str]): Column headers.
+        rows (list[tuple[object, ...]]): Data rows.
+
+    Returns:
+        str: HTML table markup.
+    """
     headings = "".join(f"<th>{escape(column)}</th>" for column in columns)
-    table_rows = "".join(
-        "<tr>" + "".join(f"<td>{escape(_display_value(value))}</td>" for value in row) + "</tr>" for row in rows
-    )
+    table_rows = "".join("<tr>" + "".join(f"<td>{escape(_display_value(value))}</td>" for value in row) + "</tr>" for row in rows)
     if not rows:
         table_rows = f'<tr><td colspan="{max(len(columns), 1)}"><em>No rows returned</em></td></tr>'
     return f"""<h3>Result set {index} ({len(rows)} rows)</h3>
@@ -120,6 +200,14 @@ def _render_query(index: int, columns: list[str], rows: list[tuple[object, ...]]
 
 
 def _display_value(value: object) -> str:
+    """Format an arbitrary Python object as a display string.
+
+    Args:
+        value (object): Value to display.
+
+    Returns:
+        str: Formatted display string.
+    """
     if value is None:
         return "NULL"
     if isinstance(value, bytes):

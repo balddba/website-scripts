@@ -10,14 +10,15 @@ from tests.oracle.sql.harness import _is_environment_limitation
 
 EXPECTED_LAG_COLUMNS = {"METRIC_NAME", "METRIC_VALUE"}
 EXPECTED_PROCESS_COLUMNS = {"PROCESS_NAME", "STATUS"}
+EXPECTED_GAP_COLUMNS = {"THREAD#", "LOW_SEQUENCE#", "HIGH_SEQUENCE#"}
 
 
 @pytest.mark.oracle
 def test_dg_apply_lag(run_oracle_sql) -> None:
-    """Execute dg_apply_lag.sql and verify Data Guard lag and process columns.
+    """Execute dg_apply_lag.sql and verify Data Guard lag, process, and gap columns.
 
     Args:
-        run_oracle_sql: Fixture to execute a SQL script.
+        run_oracle_sql (Callable[..., ScriptResult]): Fixture to execute a SQL script.
     """
     try:
         result = run_oracle_sql("dg_apply_lag.sql")
@@ -31,6 +32,9 @@ def test_dg_apply_lag(run_oracle_sql) -> None:
 
     process_query = _query_with_columns(result, EXPECTED_PROCESS_COLUMNS)
     assert process_query is not None, f"dg_apply_lag.sql did not return process query with columns {sorted(EXPECTED_PROCESS_COLUMNS)}"
+
+    gap_query = _query_with_columns(result, EXPECTED_GAP_COLUMNS)
+    assert gap_query is not None, f"dg_apply_lag.sql did not return gap query with columns {sorted(EXPECTED_GAP_COLUMNS)}"
 
 
 def _query_with_columns(result: ScriptResult, columns: set[str]) -> QueryResult | None:

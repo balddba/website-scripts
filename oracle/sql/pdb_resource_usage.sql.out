@@ -1,0 +1,11 @@
+SQL> @pdb_resource_usage.sql
+
+=== PDB Resource Usage Metrics ===
+
+
+Inst Con ID Container Name            CPU Util % Avg CPU Util   Alloc Mem MB Avg Alloc MB    SGA Mem MB Avg SGA MB     Total I/O MB Avg I/O MB     Total I/O Ops Avg I/O Ops
+---- ------ ------------------------- ---------- ------------ -------------- ------------ ------------- ---------- ---------------- ---------- ---------------- -----------
+   1      1 CDB$ROOT                        1.20         0.95        1250.00      1200.00        800.00     800.00          5420.50     120.50            45210        1250
+   1      3 ORCLPDB1                        4.80         3.50        2100.00      1950.00       1500.00    1500.00         18420.00     450.20           184920        4500
+
+2 rows selected.

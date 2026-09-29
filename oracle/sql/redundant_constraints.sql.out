@@ -1,1 +1,8 @@
+SQL> @redundant_constraints.sql HR
+
 === Redundant unique, primary key, foreign key, and check constraints ===
+
+Owner                Table                          Constraint 1                   Type 1 Status 1  Constraint 2                   Type 2 Status 2  Columns / Check                                                        Redundancy
+-------------------- ------------------------------ ------------------------------ ------ --------- ------------------------------ ------ --------- ---------------------------------------------------------------------- ----------------------------------------
+HR                   EMPLOYEES                      EMP_EMAIL_UK                   U      ENABLED   EMP_EMAIL_UNIQUE               U      ENABLED   EMAIL                                                                  DUPLICATE UNIQUE/PK
+HR                   DEPARTMENTS                    DEPT_MGR_FK                    R      ENABLED   FK_DEPT_MANAGER                R      ENABLED   MANAGER_ID -> HR.EMP_EMP_ID_PK                                         DUPLICATE FOREIGN KEY

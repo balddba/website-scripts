@@ -1,4 +1,4 @@
-python oracle/python/report_invalid_objects.py \
+$ python oracle/python/report_invalid_objects.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1

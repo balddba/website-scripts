@@ -1,20 +1,30 @@
+SQL> @blocking_sessions_monitor.sql
 =====================================================================
 BLOCKING SESSIONS MONITOR
 =====================================================================
 
-no rows selected
+BLOCKING_STATUS
+----------------------------------------------------------------------------------------------------
+WAIT_EVENT                     WAITING_SECONDS SQL_TEXT
+------------------------------ --------------- --------------------------------------------------
+APP_USER@appserver01.lab.net (SID=142,SERIAL#=24151) is blocking BATCH_USER@batchhost02.lab.net (SID=289,SERIAL#=11984)
+enq: TX - row lock contention               45 UPDATE employees SET salary = salary * 1.05 WHERE
 
 
 Blocking Sessions Detail Report:
 =====================================================================
 
-no rows selected
+BLOCKER_SID    SERIAL# USERNAME             PROGRAM              MACHINE                        BLOCKING_COUNT SQL_TEXT
+----------- ---------- -------------------- -------------------- ------------------------------ -------------- --------------------------------------------------
+        142      24151 APP_USER             JDBC Thin Client     appserver01.lab.net                         1 UPDATE employees SET status = 'A' WHERE dept_id =
 
 
 Blocked Sessions Detail Report:
 =====================================================================
 
-no rows selected
+       SID    SERIAL# USERNAME             PROGRAM              MACHINE                        WAIT_EVENT                     WAITING_SECONDS
+---------- ---------- -------------------- -------------------- ------------------------------ ------------------------------ ---------------
+       289      11984 BATCH_USER           sqlplus@batchhost02  batchhost02.lab.net            enq: TX - row lock contention               45
 
 
 =====================================================================

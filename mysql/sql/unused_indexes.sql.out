@@ -1,2 +1,9 @@
 $ mysql --login-path=root --table < unused_indexes.sql
-Empty set (0.00 sec)
++-------------+-----------------+-----------------------+
+| schema_name | table_name      | index_name            |
++-------------+-----------------+-----------------------+
+| app         | customers       | idx_cust_phone_legacy |
+| app         | order_items     | idx_item_supplier_id  |
+| app         | orders          | idx_orders_promo_code |
+| app         | product_catalog | idx_prod_legacy_sku   |
++-------------+-----------------+-----------------------+

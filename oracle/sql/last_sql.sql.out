@@ -1,0 +1,10 @@
+SQL> @last_sql.sql 142
+
+=== Last SQL for SID 142 ===
+
+
+  SID   Serial# Username             Status   Source    SQL ID        Child  Plan Hash        Execs    Elapsed S        CPU S     Buf Gets    Disk Rd       Rows Last Active         SQL Text
+----- --------- -------------------- -------- --------- ------------- ----- ---------- ------------ ------------ ------------ ------------ ---------- ---------- ------------------- ------------------------------------------------------------
+  142     33891 APP_USER             ACTIVE   CURRENT   4uz0tutmv3d30     0 2849102842        1,200          0.4          0.3       14,520          0      1,200 2026-09-28 12:01:15 SELECT id, name, balance FROM accounts WHERE status = 'A'
+
+1 row selected.

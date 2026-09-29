@@ -1,4 +1,4 @@
-python oracle/python/find_low_cardinality_indexes.py \
+$ python oracle/python/find_low_cardinality_indexes.py \
   --user c##admin \
   --password ******* \
   --service-name ORCLPDB1 \

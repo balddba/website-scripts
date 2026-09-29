@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#===============================================================================
+# ===============================================================================
 #
 # Script Name: list_directory_objects.py
 # Title: List Oracle directory objects
@@ -24,20 +24,20 @@
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
-#===============================================================================
+# ===============================================================================
 """List and inspect Oracle database directory objects and permissions."""
 
 from __future__ import annotations
 
-import argparse
-import os
 import sys
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from typing import Any
 
 import oracledb
+import typer
 from loguru import logger
 from pydantic import BaseModel, Field, SecretStr, ValidationError
 
@@ -123,7 +123,7 @@ class OracleDriver:
         """Initialize the Oracle driver with connection settings.
 
         Args:
-            config: Oracle connection settings and credentials.
+            config (OracleConnectionConfig): Oracle connection settings and credentials.
         """
         self._config = config
 
@@ -190,9 +190,9 @@ class DirectoryObjectsLister:
         """Initialize the directory objects lister service.
 
         Args:
-            driver: Oracle database session driver.
-            directory_filter: Optional directory name pattern to filter by.
-            include_privileges: Whether to query and attach privilege grants.
+            driver (OracleDriver): Oracle database session driver.
+            directory_filter (str | None): Optional directory name pattern to filter by.
+            include_privileges (bool): Whether to query and attach privilege grants.
         """
         self._driver = driver
         self._directory_filter = directory_filter.upper() if directory_filter else None
@@ -220,7 +220,7 @@ class DirectoryObjectsLister:
         """Fetch directory definitions from DBA_DIRECTORIES or ALL_DIRECTORIES.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             list[DirectoryObject]: List of discovered directory objects.
@@ -255,7 +255,7 @@ class DirectoryObjectsLister:
         """Fetch privilege grants on directories from DBA_TAB_PRIVS or ALL_TAB_PRIVS.
 
         Args:
-            conn: Active Oracle connection.
+            conn (oracledb.Connection): Active Oracle connection.
 
         Returns:
             dict[str, list[DirectoryPrivilege]]: Privilege grants indexed by directory name.
@@ -312,10 +312,10 @@ class DirectoryObjectsLister:
         """Execute a catalog query with fallback to ALL_ views if DBA_ views are inaccessible.
 
         Args:
-            conn: Active Oracle connection.
-            primary_sql: Primary SQL referencing DBA_ view.
-            fallback_sql: Fallback SQL referencing ALL_ view.
-            params: Bind parameters dictionary.
+            conn (oracledb.Connection): Active Oracle connection.
+            primary_sql (str): Primary SQL referencing DBA_ view.
+            fallback_sql (str): Fallback SQL referencing ALL_ view.
+            params (dict[str, Any]): Bind parameters dictionary.
 
         Returns:
             list[tuple[Any, ...]]: Result rows.
@@ -347,8 +347,8 @@ def format_directories_text(report: DirectoryReportSummary, show_privileges: boo
     """Format directory report summary as a human-readable text table.
 
     Args:
-        report: Compiled directory report summary.
-        show_privileges: Whether to render privilege details.
+        report (DirectoryReportSummary): Compiled directory report summary.
+        show_privileges (bool): Whether to render privilege details.
 
     Returns:
         str: Formatted report text.
@@ -382,102 +382,83 @@ def format_directories_text(report: DirectoryReportSummary, show_privileges: boo
     return "\n".join(lines)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build and return the CLI argument parser.
+class TyperApp(typer.Typer):
+    """Typer application with parse_args support for programmatic parsing."""
 
-    Returns:
-        argparse.ArgumentParser: Configured parser.
-    """
-    parser = argparse.ArgumentParser(description="List and inspect directory objects in an Oracle database.")
-    parser.add_argument(
-        "--host",
-        default=os.getenv("ORACLE_HOST", "localhost"),
-        help="Oracle database host (default: ORACLE_HOST or localhost)",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=int(os.getenv("ORACLE_PORT", "1521")),
-        help="Oracle database port (default: ORACLE_PORT or 1521)",
-    )
-    parser.add_argument(
-        "--service-name",
-        default=os.getenv("ORACLE_SERVICE_NAME"),
-        help="Oracle service name (default: ORACLE_SERVICE_NAME)",
-    )
-    parser.add_argument(
-        "--sid",
-        default=os.getenv("ORACLE_SID"),
-        help="Oracle SID (default: ORACLE_SID)",
-    )
-    parser.add_argument(
-        "--user",
-        default=os.getenv("ORACLE_USER"),
-        help="Database username (default: ORACLE_USER)",
-    )
-    parser.add_argument(
-        "--password",
-        default=os.getenv("ORACLE_PASSWORD"),
-        help="Database password (default: ORACLE_PASSWORD)",
-    )
-    parser.add_argument(
-        "--sysdba",
-        action="store_true",
-        help="Connect with SYSDBA privilege",
-    )
-    parser.add_argument(
-        "--filter",
-        dest="directory_filter",
-        default=os.getenv("ORACLE_DIRECTORY_FILTER"),
-        help="Filter directory name (substring match)",
-    )
-    parser.add_argument(
-        "--no-privileges",
-        action="store_true",
-        help="Omit privilege inspection for faster queries",
-    )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        dest="json_output",
-        help="Output report in JSON format",
-    )
-    parser.add_argument(
-        "--output",
-        help="File path to save the output report",
-    )
-    return parser
+    def parse_args(self, args: Sequence[str] | None = None) -> SimpleNamespace:
+        """Parse arguments into a namespace for programmatic use.
+
+        Args:
+            args (Sequence[str] | None): Argument list to parse.
+
+        Returns:
+            SimpleNamespace: Parsed arguments as a namespace.
+        """
+        cmd = typer.main.get_command(self)
+        ctx = cmd.make_context("list_directory_objects", list(args) if args is not None else sys.argv[1:])
+        ns = SimpleNamespace(**ctx.params)
+        if hasattr(ns, "directory_filter") and not hasattr(ns, "filter"):
+            ns.filter = ns.directory_filter
+        if hasattr(ns, "json_output") and not hasattr(ns, "json"):
+            ns.json = ns.json_output
+        return ns
 
 
-def main() -> int:
-    """CLI execution entrypoint.
+app = TyperApp(add_completion=False, help="List and inspect directory objects in an Oracle database.")
+
+
+@app.command()
+def run(
+    host: str = typer.Option("localhost", "--host", envvar="ORACLE_HOST", help="Oracle database host"),
+    port: int = typer.Option(1521, "--port", envvar="ORACLE_PORT", help="Oracle database port"),
+    service_name: str | None = typer.Option(None, "--service-name", envvar="ORACLE_SERVICE_NAME", help="Oracle service name"),
+    sid: str | None = typer.Option(None, "--sid", envvar="ORACLE_SID", help="Oracle SID"),
+    user: str | None = typer.Option(None, "--user", envvar="ORACLE_USER", help="Database username"),
+    password: str | None = typer.Option(None, "--password", envvar="ORACLE_PASSWORD", help="Database password"),
+    sysdba: bool = typer.Option(False, "--sysdba", help="Connect with SYSDBA privilege"),
+    directory_filter: str | None = typer.Option(None, "--filter", envvar="ORACLE_DIRECTORY_FILTER", help="Filter directory name"),
+    no_privileges: bool = typer.Option(False, "--no-privileges", help="Omit privilege inspection for faster queries"),
+    json_output: bool = typer.Option(False, "--json", help="Output report in JSON format"),
+    output: str | None = typer.Option(None, "--output", help="File path to save the output report"),
+) -> int:
+    """List and inspect directory objects in an Oracle database.
+
+    Args:
+        host (str): Database host.
+        port (int): Database port.
+        service_name (str | None): Oracle service name.
+        sid (str | None): Oracle SID.
+        user (str | None): Database username.
+        password (str | None): Database password.
+        sysdba (bool): Connect with SYSDBA privilege.
+        directory_filter (str | None): Directory name filter.
+        no_privileges (bool): Omit privileges.
+        json_output (bool): Output in JSON format.
+        output (str | None): Output file path.
 
     Returns:
         int: Exit status code.
     """
-    parser = build_parser()
-    args = parser.parse_args()
-
-    if not args.user:
+    if not user:
         logger.error("Database username must be specified via --user or ORACLE_USER")
         return 1
-    if not args.password:
+    if not password:
         logger.error("Database password must be specified via --password or ORACLE_PASSWORD")
         return 1
-    if not args.service_name and not args.sid:
+    if not service_name and not sid:
         logger.error("Either --service-name or --sid must be specified (or via environment variables)")
         return 1
 
     try:
         config = OracleConnectionConfig(
-            hostname=args.host,
-            port=args.port,
-            service_name=args.service_name,
-            sid=args.sid,
-            username=args.user,
-            password=SecretStr(args.password),
-            is_sysdba=args.sysdba,
-            directory_filter=args.directory_filter,
+            hostname=host,
+            port=port,
+            service_name=service_name,
+            sid=sid,
+            username=user,
+            password=SecretStr(password),
+            is_sysdba=sysdba,
+            directory_filter=directory_filter,
         )
     except ValidationError as exc:
         logger.error("Configuration validation failed: {}", exc)
@@ -487,7 +468,7 @@ def main() -> int:
     lister = DirectoryObjectsLister(
         driver,
         directory_filter=config.directory_filter,
-        include_privileges=not args.no_privileges,
+        include_privileges=not no_privileges,
     )
 
     try:
@@ -496,25 +477,53 @@ def main() -> int:
         logger.error("Database error while querying directory objects: {}", exc)
         return 1
 
-    if args.json_output:
+    if json_output:
         output_text = report.model_dump_json(indent=2)
     else:
-        output_text = format_directories_text(report, show_privileges=not args.no_privileges)
+        output_text = format_directories_text(report, show_privileges=not no_privileges)
 
-    if args.output:
+    if output:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output, "w", encoding="utf-8") as f:
                 f.write(output_text)
-            logger.info("Directory report saved to {}", args.output)
+            logger.info("Directory report saved to {}", output)
         except OSError as exc:
-            logger.error("Failed to write report to {}: {}", args.output, exc)
+            logger.error("Failed to write report to {}: {}", output, exc)
             return 1
     else:
-        # Output directly to stdout for CLI consumption
         sys.stdout.write(output_text + "\n")
 
     return 0
 
 
+def build_parser() -> TyperApp:
+    """Build and return the CLI argument parser.
+
+    Returns:
+        TyperApp: Configured parser.
+    """
+    return app
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI execution entrypoint.
+
+    Args:
+        argv (Sequence[str] | None): Optional command-line arguments.
+
+    Returns:
+        int: Exit status code.
+    """
+    try:
+        args = list(argv) if argv is not None else None
+        ret = app(args=args, standalone_mode=False)
+        return 0 if ret is None else int(ret)
+    except typer.Exit as exc:
+        return exc.exit_code
+    except Exception as exc:
+        logger.error("{}", exc)
+        return 1
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    app()

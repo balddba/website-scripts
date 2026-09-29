@@ -6,10 +6,10 @@ import threading
 import time
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import dataclass
 
 import oracledb
 from loguru import logger
+from pydantic import BaseModel, ConfigDict
 
 from tests.oracle.bootstrap import FixtureObjects
 from tests.oracle.script_runner import oracle_connection
@@ -19,14 +19,15 @@ _POLL_SECONDS = 15.0
 _POLL_INTERVAL = 0.1
 
 
-@dataclass(frozen=True)
-class BlockingPair:
+class BlockingPair(BaseModel):
     """SIDs of a blocker session and the session waiting on it.
 
     Attributes:
         blocker_sid (int): SID holding the uncommitted row lock.
         waiter_sid (int): SID waiting on that lock.
     """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
     blocker_sid: int
     waiter_sid: int
@@ -60,6 +61,7 @@ def blocking_row_lock(settings: OracleTestSettings, objects: FixtureObjects) -> 
                 raise
 
         def wait_on_row() -> None:
+            """Execute blocking update on the waiter session in a worker thread."""
             try:
                 with waiter.cursor() as cursor:
                     cursor.execute(update_sql)

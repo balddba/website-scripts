@@ -1,3 +1,4 @@
+SQL> @installed_options.sql
 Option							Installed
 ------------------------------------------------------- ----------
 Active Data Guard					TRUE

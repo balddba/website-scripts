@@ -1,0 +1,20 @@
+SQL> @mview_refresh_groups.sql
+
+=== Refresh groups ===
+
+
+Owner                Refresh Group                     Group ID Next Date           Interval                                           Status   Broken Job ID
+-------------------- ------------------------------ ----------- ------------------- -------------------------------------------------- -------- ------ ----------
+HR                   HR_REFGROUP                            101 2026-09-29 01:00:00 SYSDATE + 1                                        VALID    N            5001
+
+1 row selected.
+
+
+=== Refresh group children ===
+
+
+Owner                Refresh Group                     Group ID Member Owner         Member Name                    Type
+-------------------- ------------------------------ ----------- -------------------- ------------------------------ ------------------------
+HR                   HR_REFGROUP                            101 HR                   MV_EMP_SALARY_SUMMARY          SNAPSHOT
+
+1 row selected.

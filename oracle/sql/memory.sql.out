@@ -1,0 +1,151 @@
+SQL> @memory.sql
+
+=== Memory management mode ===
+
+
+Memory Mode                  Mem Target GB SGA Target GB PGA Target GB
+---------------------------- ------------- ------------- -------------
+Manual                                0.00          0.00          4.00
+
+=== Memory parameters ===
+
+
+Parameter                            Value
+------------------------------------ ----------------------------------------
+db_cache_size                        0
+inmemory_size                        0
+java_pool_size                       0
+large_pool_size                      0
+lock_sga                             FALSE
+log_buffer                           8518656
+memory_max_target                    0
+memory_target                        0
+pga_aggregate_limit                  8G
+pga_aggregate_target                 4G
+pre_page_sga                         TRUE
+result_cache_max_size                0
+sga_max_size                         8G
+sga_target                           0
+shared_pool_reserved_size            260046848
+shared_pool_size                     0
+streams_pool_size                    0
+
+=== SGA summary ===
+
+
+SGA Component                                 MB          GB
+-------------------------------- --------------- -----------
+Variable Size                           5,264.00        5.14
+Database Buffers                        2,912.00        2.84
+Redo Buffers                                8.45        0.01
+Fixed Size                                  6.42        0.01
+
+=== SGA information ===
+
+
+SGA Info                                      MB Resizeable
+-------------------------------- --------------- ----------
+Maximum SGA Size                        8,190.87 No
+Free SGA Memory Available               5,137.13
+Shared Pool Size                        5,152.00 Yes
+Buffer Cache Size                       2,784.00 Yes
+Granule Size                               16.00 No
+Startup overhead in Shared Pool           14.13 No
+Large Pool Size                            64.00 Yes
+Streams Pool Size                          32.00 Yes
+Java Pool Size                              0.00 Yes
+
+=== PGA summary ===
+
+
+PGA Stat                                     Value
+-------------------------------------------- --------------------------------
+aggregate PGA auto target                           0.00 MB
+aggregate PGA target parameter                  4,096.00 MB
+cache hit percentage                               81.30 %
+global memory bound                               512.00 MB
+maximum PGA allocated                             502.72 MB
+over allocation count                                   0
+process count                                         131
+total PGA allocated                             1,673.29 MB
+total PGA inuse                                   875.00 MB
+total freeable PGA memory                         798.29 MB
+
+Processes     PGA Used MB    PGA Alloc MB PGA Freeable MB       PGA Max MB
+--------- --------------- --------------- --------------- ----------------
+      131          875.00        1,673.29          798.29         1,673.75
+
+=== SGA allocations by pool/component ===
+
+
+Pool               Allocation                                           MB     Pct
+------------------ -------------------------------------------- ----------- -------
+shared pool        free memory                                     2,048.00   25.02
+shared pool        SQLA                                             824.32   10.07
+shared pool        KGLH0                                            612.48    7.48
+(fixed)            buffer_cache                                    512.00    6.25
+shared pool        KGLHD                                            286.75    3.50
+shared pool        KQR M PO                                         196.40    2.40
+large pool         free memory                                      42.16    0.51
+streams pool       free memory                                      31.84    0.39
+shared pool        library cache                                    24.63    0.30
+shared pool        row cache                                        18.92    0.23
+shared pool        result cache                                      0.25    0.00
+
+=== Shared pool allocations ===
+
+
+Shared Pool Allocation                                   Bytes          MB     Pct
+------------------------------------------------ ---------------- ----------- -------
+free memory                                         2,147,483,648    2,048.00   39.75
+SQLA                                                  864,362,168      824.32   16.00
+KGLH0                                                 642,231,828      612.48   11.89
+KGLHD                                                 300,679,168      286.75    5.57
+KQR M PO                                              205,940,326      196.40    3.81
+library cache                                          25,826,099       24.63    0.48
+row cache                                              19,838,648       18.92    0.37
+ASH buffers                                            16,777,216       16.00    0.31
+CCursor                                                 9,982,362        9.52    0.18
+result cache                                              262,144        0.25    0.00
+
+=== Dynamic memory components ===
+
+
+Component                                 Current MB          Min MB          Max MB    User Spec MB  Opers Last Oper      Mode       Last Oper Time       Granule MB
+------------------------------------ --------------- --------------- --------------- --------------- ------ -------------- ---------- ------------------- -----------
+SGA Target                                  8,192.00        8,192.00        8,192.00        8,192.00      0 STATIC                                              16.00
+shared pool                                 5,152.00        5,056.00        5,152.00            0.00      6 GROW           IMMEDIATE  2026-09-21 09:00:15       16.00
+PGA Target                                  4,096.00        4,096.00        4,096.00        4,096.00      0 STATIC                                              16.00
+DEFAULT buffer cache                        2,784.00        2,784.00        2,880.00            0.00      6 SHRINK         IMMEDIATE  2026-09-21 09:00:15       16.00
+Shared IO Pool                                128.00          128.00          128.00          128.00      0 STATIC                                              16.00
+large pool                                     64.00           64.00           64.00            0.00      0 STATIC                                              16.00
+streams pool                                   32.00           32.00           32.00            0.00      0 STATIC                                              16.00
+
+=== Top PGA consumers ===
+
+
+   SID  Serial# OS PID       Username                 Process          Program                        Status    PGA Used MB    PGA Alloc MB PGA Freeable MB       PGA Max MB
+------ -------- ------------ ------------------------ ---------------- ------------------------------ -------- --------------- --------------- --------------- ----------------
+   186    49231 28742        SYS                                       sqlplus@dbhost (TNS V1-V3)     ACTIVE            92.14          128.32           18.00           146.32
+    72    13980 1294         ORACLE                   DBW0             oracle@dbhost (DBW0)                     76.45           96.12            0.00            96.12
+   244    31877 30518        APPUSER                                   JDBC Thin Client               INACTIVE          64.25           82.50           16.00            98.50
+   317    54702 31142        APPUSER                                   JDBC Thin Client               ACTIVE            58.76           75.40            8.00            83.40
+   103    22916 2651         ORACLE                   MMON             oracle@dbhost (MMON)                     44.18           61.25            0.00            61.25
+   408     8254 31987        REPORTING                                 python@reporthost              INACTIVE          37.92           54.10           12.00            66.10
+   155    60123 27890        APPUSER                                   JDBC Thin Client               INACTIVE          31.45           48.25            8.00            56.25
+   291    44318 30771        BATCHUSER                                 python@batchhost               ACTIVE            29.86           46.32            4.00            50.32
+
+=== MEMORY_TARGET advice (AMM) ===
+
+
+=== OS memory ===
+
+
+OS Stat                                        Value Unit
+-------------------------------- ------------------- --------
+FREE_MEMORY_BYTES                               1.37 GB
+NUM_CPUS                                        8.00
+NUM_CPU_CORES                                   8.00
+PHYSICAL_MEMORY_BYTES                          30.90 GB
+VM_IN_BYTES                                     0.00 GB
+VM_OUT_BYTES                                    0.00 GB

@@ -1,3 +1,4 @@
+SQL> @pinned_objects.sql
 Enter value for 1:
 
 

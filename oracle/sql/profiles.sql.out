@@ -1,0 +1,38 @@
+SQL> @profiles.sql DEFAULT
+
+=== Profile limits ===
+
+
+Profile                        Resource                         Type       Limit
+------------------------------ -------------------------------- ---------- ----------------------------------------
+DEFAULT                        COMPOSITE_LIMIT                  KERNEL     UNLIMITED
+DEFAULT                        FAILED_LOGIN_ATTEMPTS            PASSWORD   10
+DEFAULT                        PASSWORD_LIFE_TIME               PASSWORD   180
+DEFAULT                        PASSWORD_REUSE_TIME              PASSWORD   UNLIMITED
+DEFAULT                        PASSWORD_REUSE_MAX               PASSWORD   UNLIMITED
+DEFAULT                        PASSWORD_VERIFY_FUNCTION         PASSWORD   NULL
+DEFAULT                        PASSWORD_LOCK_TIME               PASSWORD   1
+DEFAULT                        PASSWORD_GRACE_TIME              PASSWORD   7
+DEFAULT                        SESSIONS_PER_USER                KERNEL     UNLIMITED
+DEFAULT                        CPU_PER_SESSION                  KERNEL     UNLIMITED
+DEFAULT                        CPU_PER_CALL                     KERNEL     UNLIMITED
+DEFAULT                        LOGICAL_READS_PER_SESSION        KERNEL     UNLIMITED
+DEFAULT                        LOGICAL_READS_PER_CALL           KERNEL     UNLIMITED
+DEFAULT                        IDLE_TIME                        KERNEL     UNLIMITED
+DEFAULT                        CONNECT_TIME                     KERNEL     UNLIMITED
+DEFAULT                        PRIVATE_SGA                      KERNEL     UNLIMITED
+
+16 rows selected.
+
+
+=== Users assigned to profile ===
+
+
+Username                       Status               Profile
+------------------------------ -------------------- ------------------------------
+APP_USER                       OPEN                 DEFAULT
+HR                             OPEN                 DEFAULT
+SCOTT                          OPEN                 DEFAULT
+SYSTEM                         OPEN                 DEFAULT
+
+4 rows selected.

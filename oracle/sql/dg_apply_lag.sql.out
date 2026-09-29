@@ -1,0 +1,78 @@
+SQL> @dg_apply_lag.sql
+
+===============================================================================
+Data Guard Apply Lag and Gap Details
+===============================================================================
+
+=== Database Role & Protection ===
+
+
+DB Name          DB Unique Name       Role             Open Mode        Protection Mode      Switchover Status
+---------------- -------------------- ---------------- ---------------- -------------------- --------------------
+HOMELAB          homelab_stby         PHYSICAL STANDBY READ ONLY WITH A MAXIMUM PERFORMANCE  NOT ALLOWED
+
+1 row selected.
+
+
+=== Data Guard Lag Statistics (V$DATAGUARD_STATS) ===
+
+
+Metric                    Value                  Unit         Time Computed       Datum Time
+------------------------- ---------------------- ------------ ------------------- -------------------
+apply finish time         +00 00:00:00.000       day(2) to se 2026-09-28 12:00:00 2026-09-28 12:00:00
+apply lag                 +00 00:00:00           day(2) to se 2026-09-28 12:00:00 2026-09-28 12:00:00
+transport lag             +00 00:00:00           day(2) to se 2026-09-28 12:00:00 2026-09-28 12:00:00
+
+3 rows selected.
+
+
+=== Active Archive Gaps (V$ARCHIVE_GAP) ===
+
+
+  Thr Low Missing Seq High Missing Seq Missing Logs
+----- --------------- ---------------- ------------
+    1            1201             1204            4
+
+1 row selected.
+
+
+=== Data Guard Processes (GV$DATAGUARD_PROCESS) ===
+
+
+ Inst Process            PID Process Role     Action / Status           Grp   Thr  Sequence#     Block# Client Proc
+----- ------------ --------- ---------------- ---------------------- ------ ----- ---------- ---------- ------------
+    1 ARCH             18231 ARCH             IDLE                        0     1          0          0 ARCH
+    1 RFS              18235 RFS              IDLE                        4     1       1205      45210 LGWR
+    1 MRP0             18240 MANAGED RECOVERY APPLYING_LOG                4     1       1205      45210 N/A
+
+3 rows selected.
+
+
+=== Managed Standby Recovery Processes (GV$MANAGED_STANDBY) ===
+
+
+ Inst Process            PID Action / Status        Client Proc   Thr  Sequence#     Block#
+----- ------------ --------- ---------------------- ------------ ---- ---------- ----------
+    1 MRP0             18240 APPLYING_LOG           N/A             1       1205      45210
+
+1 row selected.
+
+
+=== Archive Destination Status & Synchronization ===
+
+
+ Inst  Dest Dest Name        Type         Status     Sync     Gap Status           Arch Seq   Appl Seq   Seq Diff Error
+----- ----- ---------------- ------------ ---------- -------- ------------------ ---------- ---------- ---------- ----------------------------------------
+    1     1 LOG_ARCHIVE_DEST LOCAL        VALID      YES      LOCATING GAP             1205       1200          5 (null)
+
+1 row selected.
+
+
+=== Thread Archive & Applied Sequence Summary (V$ARCHIVED_LOG) ===
+
+
+  Thr Max Arch Seq Max Appl Seq   Seq Diff Last Applied Time
+----- ------------ ------------ ---------- -------------------
+    1         1205         1200          5 2026-09-28 11:30:00
+
+1 row selected.

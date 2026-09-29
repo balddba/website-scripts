@@ -1,3 +1,15 @@
-Target: SQLTEST.%
+SQL> @compile.sql HR.%
+Target: HR.%
 ----------------------------------------------------------------------
-No invalid objects matched this target.
+Invalid objects to compile: 3
+
+Pass 1
+OK    VIEW               HR.EMP_DETAILS_VIEW
+OK    PACKAGE            HR.EMP_ADMIN_PKG
+OK    PACKAGE BODY       HR.EMP_ADMIN_PKG
+
+----------------------------------------------------------------------
+Passes:         2
+Compiled valid: 3
+Skipped:        0
+Still invalid:  0

@@ -1,3 +1,4 @@
+SQL> @user_details.sql SCOTT
 ===============================
 Oracle User Account Summary
 ===============================

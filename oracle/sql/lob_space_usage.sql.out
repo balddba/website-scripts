@@ -1,1 +1,9 @@
+SQL> @lob_space_usage.sql APP_DATA
+
 === LOB Space Usage ===
+
+Owner            Table Name             Column Name          Tablespace         Securefile In Row Compression Deduplication Encryption      LOB MB    Index MB    Total MB
+---------------- ---------------------- -------------------- ------------------ ---------- ------ ----------- ------------- ---------- ----------- ----------- -----------
+APP_DATA         ATTACHMENTS            DOCUMENT_BODY        APP_LOB_DATA       YES        NO     HIGH        LOB           NONE          1,450.25        8.00    1,458.25
+APP_DATA         INVOICES               PDF_CONTENT          APP_LOB_DATA       YES        NO     MEDIUM      NONE          NONE            820.50        4.00      824.50
+APP_DATA         USER_PROFILES          AVATAR_IMAGE         USERS              NO         YES    NONE        NONE          NONE             45.00        1.00       46.00

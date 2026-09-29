@@ -1,3 +1,4 @@
+SQL> @asm_disk_performance.sql
 === ASM Disk Performance ===
 
 Disk Group           Fail Group         Disk# Disk Name                     Reads        Writes        Read MB       Write MB Avg Rd ms Avg Wr ms Rd Errs Wr Errs OS Path

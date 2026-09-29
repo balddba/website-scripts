@@ -1,3 +1,4 @@
+SQL> @tables_without_pk.sql
 === Tables without a primary key ===
 
 

@@ -1,3 +1,4 @@
+SQL> @cdb_services.sql
 Con ID PDB Name 	    Service Name		   Network Name 		   Inst Blocked  Goal	      CLB Goal	 FO Method    FO Type
 ------ -------------------- ------------------------------ ------------------------------ ----- -------- ------------ ---------- ------------ ------------
      6 SQLTEST		    SQLTEST			   SQLTEST						      LONG

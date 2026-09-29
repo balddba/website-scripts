@@ -1,3 +1,4 @@
+SQL> @tablespaces.sql
 Status    Tablespace               Type       Extent Mgt Bigfile Compression    Encryption       Size GB     Used GB Pct Used
 --------- ------------------------ ---------- ---------- ------- -------------- ------------ ----------- ----------- --------
 ONLINE    SYSAUX                   PERMANENT  LOCAL      YES     DISABLED       NO                  0.67        0.63     94.0

@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-
 import oracledb
 from loguru import logger
+from pydantic import BaseModel, ConfigDict, Field
 
 from tests.oracle.script_runner import quote_ident
 from tests.oracle.settings import OracleTestSettings
@@ -17,8 +16,7 @@ LOCK_TRIGGER = "WS_SQLTEST_LOCK_TRG"
 PART_TABLE = "WS_SQLTEST_PART"
 
 
-@dataclass(frozen=True)
-class FixtureObjects:
+class FixtureObjects(BaseModel):
     """Names of objects created for catalog script tests.
 
     Attributes:
@@ -32,7 +30,9 @@ class FixtureObjects:
         xplan_package (bool): True when the XPLAN package is available.
     """
 
-    schema: str
+    model_config = ConfigDict(frozen=True, extra="forbid", populate_by_name=True)
+
+    schema_name: str = Field(alias="schema")
     table: str
     index: str
     sequence: str
@@ -40,6 +40,11 @@ class FixtureObjects:
     part_table: str | None
     tablespace: str
     xplan_package: bool
+
+    @property
+    def schema(self) -> str:
+        """Return the owner schema name."""
+        return self.schema_name
 
 
 def bootstrap_fixture_objects(connection: oracledb.Connection, settings: OracleTestSettings) -> FixtureObjects:

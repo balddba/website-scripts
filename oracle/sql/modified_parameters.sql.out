@@ -1,0 +1,30 @@
+SQL> @modified_parameters.sql
+
+=== Modified parameters (V$PARAMETER, non-hidden) ===
+
+isdefault = FALSE. Hidden names are not in this view.
+
+Name                                               Value                                    Display                                  Default   Sys Mod      Inst Mod   Hidden  Description
+-------------------------------------------------- ---------------------------------------- ---------------------------------------- --------- ------------ ---------- ------- ----------------------------------------------------------------------
+db_name                                            HOMELAB                                  HOMELAB                                  FALSE     FALSE        FALSE      FALSE   database name
+db_recovery_file_dest                              +RECO                                    +RECO                                    FALSE     IMMEDIATE    FALSE      FALSE   default database recovery area
+db_recovery_file_dest_size                         53687091200                              50G                                      FALSE     IMMEDIATE    FALSE      FALSE   database recovery area size limit
+diagnostic_dest                                    /u01/app/oracle                          /u01/app/oracle                          FALSE     IMMEDIATE    FALSE      FALSE   diagnostic base directory
+memory_target                                      4294967296                               4G                                       FALSE     IMMEDIATE    FALSE      FALSE   Target size of Oracle SGA and PGA memory
+open_cursors                                       300                                      300                                      FALSE     IMMEDIATE    FALSE      FALSE   max # open cursors per session
+processes                                          300                                      300                                      FALSE     FALSE        FALSE      FALSE   user processes
+sga_target                                         0                                        0                                        FALSE     IMMEDIATE    FALSE      FALSE   Target size of SGA
+
+8 rows selected.
+
+
+=== Modified parameters including hidden (X$KSPPI / X$KSPPCV) ===
+
+Requires SYS or SYSDBA. If this query fails (ORA-00942), reconnect
+AS SYSDBA. Names that start with _ are hidden underscore parameters.
+
+Name                                               Value                                    Display                                  Default   Sys Mod      Inst Mod   Hidden  Description
+-------------------------------------------------- ---------------------------------------- ---------------------------------------- --------- ------------ ---------- ------- ----------------------------------------------------------------------
+_disable_interface_checking                        TRUE                                     TRUE                                     FALSE     FALSE        FALSE      TRUE    disable interface checking
+
+1 row selected.

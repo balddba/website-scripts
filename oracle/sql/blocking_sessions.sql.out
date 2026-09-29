@@ -1,1 +1,8 @@
-no rows selected
+SQL> @blocking_sessions.sql
+
+   INST_ID        SID    SERIAL# USERNAME                       STATUS   EVENT                                                            SECONDS_IN_WAIT SQL_ID        BLOCKING_INSTANCE BLOCKING_SESSION
+---------- ---------- ---------- ------------------------------ -------- ---------------------------------------------------------------- --------------- ------------- ----------------- ----------------
+         1        142      24151 APP_USER                       INACTIVE SQL*Net message from client                                                    0 4m9y1t0x8d9qz 
+         1        289      11984 BATCH_USER                     ACTIVE   enq: TX - row lock contention                                                 45 7zq2w1h9k8a2b                 1              142
+
+2 rows selected.

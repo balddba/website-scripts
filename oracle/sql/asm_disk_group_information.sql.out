@@ -1,3 +1,4 @@
+SQL> @asm_disk_group_information.sql
 === ASM Disk Group Configuration ===
 
  Grp# Disk Group           State        Redundancy  AU MB Log Sec Phy Sec   Total GB    Free GB Offline ASM Compat     RDBMS Compat

@@ -1,0 +1,26 @@
+SQL> @grant_tree.sql SCOTT
+
+=== Grantee ===
+
+
+Grantee                        Type       Mode       Status
+------------------------------ ---------- ---------- ------------------
+SCOTT                          USER       ALL        OPEN
+
+1 row selected.
+
+
+=== Grant tree ===
+
+
+Grantee                        Type     Options                      Grantor                        Grant Tree
+------------------------------ -------- ---------------------------- ------------------------------ --------------------------------------------------------------------------------------------------------------------------------------------
+SCOTT                          USER     (null)                       (null)                         SCOTT
+SCOTT                          ROLE     (null)                       ADMIN                            +- CONNECT
+SCOTT                          PRIV     (null)                       SYS                              |  +- CREATE SESSION
+SCOTT                          ROLE     (null)                       ADMIN                            +- RESOURCE
+SCOTT                          PRIV     (null)                       SYS                                 +- CREATE TABLE
+SCOTT                          PRIV     (null)                       SYS                                 +- CREATE SEQUENCE
+SCOTT                          PRIV     (null)                       SYS                                 +- CREATE TRIGGER
+
+7 rows selected.

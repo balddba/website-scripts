@@ -1,0 +1,68 @@
+SQL> @undo_tuning.sql
+
+===============================================================================
+Undo Tablespace Tuning
+===============================================================================
+
+=== Undo Tablespaces Configuration ===
+
+
+Inst Parameter                      Value                                    Tablespace
+---- ------------------------------ ---------------------------------------- -------------------------
+   1 undo_management                AUTO                                     UNDOTBS1
+   1 undo_tablespace                UNDOTBS1                                 UNDOTBS1
+   1 undo_retention                 900                                      UNDOTBS1
+
+3 rows selected.
+
+
+=== Active Undo Extents Summary ===
+
+
+Tablespace                Retention                 Total MB Autoextensible Status             Extent MB Extent Count
+------------------------- ----------------------- ---------- -------------- ----------------- ---------- ------------
+UNDOTBS1                  NOGUARANTEE                 100.00 YES            ACTIVE                  8.00            8
+UNDOTBS1                  NOGUARANTEE                 100.00 YES            UNEXPIRED              42.00           35
+UNDOTBS1                  NOGUARANTEE                 100.00 YES            EXPIRED                48.00           42
+
+3 rows selected.
+
+
+=== Undo Retention & Steal Metrics (GV$UNDOSTAT) ===
+
+
+Metric                                             Value
+-------------------------------------------------- ----------------------------------------
+Current UNDO_RETENTION Parameter (seconds)         900
+Max Query Length in Window (seconds)               420
+Max Concurrent Transactions in Window              18
+Peak Undo Rate (blocks/sec)                        45
+Average Tuned Retention (seconds)                  1,250
+Minimum Tuned Retention (seconds)                  900
+Unexpired Block Steals (unxpstealcnt)              0
+Expired Block Steals (expstealcnt)                 0
+Snapshot Too Old Errors (ssolderrcnt)              0
+Out of Space Errors (nospaceerrcnt)                0
+
+10 rows selected.
+
+
+=== Undo Sizing Recommendation ===
+
+
+Parameter Retention Sec Peak Blocks/Sec Block Size (KB) Recommended MB Current Size MB Recommendation
+----------------------- --------------- --------------- -------------- --------------- ------------------------------------------------------------
+                    900              45               8          31.64          100.00 Current undo tablespace size is adequate.
+
+1 row selected.
+
+
+=== Recent Undo Statistics Intervals (GV$UNDOSTAT) ===
+
+
+Inst Begin Time          End Time            Undo Blks   Txn Count  Max Query Tuned Ret Unxp Steal  Exp Steal Ssold Err No Space Err
+---- ------------------- ------------------- --------- ----------- ---------- --------- ---------- ---------- --------- ------------
+   1 2026-09-28 11:50:00 2026-09-28 12:00:00       420         180        310      1250          0          0         0            0
+   1 2026-09-28 11:40:00 2026-09-28 11:50:00       380         165        420      1250          0          0         0            0
+
+2 rows selected.
