@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 #===============================================================================
 #
-# Script Name: docker_iptraf.py
-# Title: Docker container network traffic
-# Tags: Docker, Networking, Monitoring
-# Purpose: Shows per-container RX and TX rates over a recent sample window.
+# Script Name: docker_io.py
+# Title: Docker container disk I/O
+# Tags: Docker, Storage, Monitoring
+# Purpose: Shows per-container read and write rates over a recent sample window.
 #
 # Description:
-#   Polls cumulative network counters from the Docker CLI and displays per-
-#   container receive and transmit rates measured across at least the requested
+#   Polls cumulative block I/O counters from the Docker CLI and displays per-
+#   container read and write rates measured across at least the requested
 #   number of seconds.
 #
 # Parameters:
@@ -17,7 +17,7 @@
 #   --all              Include stopped containers reported by Docker
 #   --once             Print one complete measurement and exit
 #   --no-clear         Do not clear the terminal between updates
-#   --graph-width N    Number of throughput samples shown (default: 60)
+#   --graph-width N    Number of I/O samples shown (default: 60)
 #
 # Required Privileges:
 #   - Permission to run the Docker CLI and access the Docker daemon
@@ -28,22 +28,22 @@
 #   - Typer 0.27.2 or newer
 #
 # Output Format:
-#   - Terminal table containing container identity, RX/TX rates, cumulative
+#   - Terminal table containing container identity, read/write rates, cumulative
 #     counters, and the elapsed sample span
 #
 # Example Usage:
-#   python docker_iptraf.py
-#   python docker_iptraf.py --window 10 --interval 2
-#   python docker_iptraf.py --window 2 --interval 1 --once
+#   python docker_io.py
+#   python docker_io.py --window 10 --interval 2
+#   python docker_io.py --window 2 --interval 1 --once
 #
 # Author: Aaron Myers <aaron@balddba.com>
 #
 #===============================================================================
-"""Monitor per-container Docker network traffic from cumulative counters.
+"""Monitor per-container Docker disk I/O from cumulative counters.
 
-Docker exposes cumulative network byte counters rather than instantaneous rates.
-This module periodically samples those counters and calculates receive and
-transmit rates across the shortest available interval that is at least as long
+Docker exposes cumulative block I/O byte counters rather than instantaneous rates.
+This module periodically samples those counters and calculates read and
+write rates across the shortest available interval that is at least as long
 as the requested measurement window.
 """
 
@@ -89,14 +89,14 @@ BYTE_UNITS = {
 BYTE_VALUE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)\s*([kmgt]?i?b)$", re.IGNORECASE)
 SPARKLINE_LEVELS = "▁▂▃▄▅▆▇█"
 # Fixed widths prevent table columns from shifting as rates gain or lose digits.
-# RX/s and TX/s intentionally receive extra room for large human-readable rates.
+# READ/s and WRITE/s intentionally receive extra room for large human-readable rates.
 TABLE_COLUMNS = (
     ("CONTAINER", 24, "left"),
     ("ID", 12, "left"),
-    ("RX/s", 18, "right"),
-    ("TX/s", 18, "right"),
-    ("RX TOTAL", 14, "right"),
-    ("TX TOTAL", 14, "right"),
+    ("READ/s", 18, "right"),
+    ("WRITE/s", 18, "right"),
+    ("READ TOTAL", 14, "right"),
+    ("WRITE TOTAL", 14, "right"),
     ("SPAN", 14, "right"),
 )
 
@@ -106,7 +106,7 @@ class DockerStatsError(RuntimeError):
 
 
 class FrozenModel(BaseModel):
-    """Provide an immutable Pydantic base for traffic-monitor value objects.
+    """Provide an immutable Pydantic base for I/O-monitor value objects.
 
     Attributes:
         model_config (ConfigDict): Pydantic configuration that prevents model
@@ -116,22 +116,22 @@ class FrozenModel(BaseModel):
     model_config = ConfigDict(frozen=True)
 
 
-class ContainerStats(FrozenModel):
-    """Represent cumulative network counters for one Docker container.
+class ContainerIoStats(FrozenModel):
+    """Represent cumulative block I/O counters for one Docker container.
 
     Attributes:
         container_id (str): Stable Docker container identifier.
         name (str): Human-readable Docker container name.
-        rx_bytes (int | None): Total received bytes, or ``None`` when Docker
+        read_bytes (int | None): Total read bytes, or ``None`` when Docker
             does not expose a usable counter.
-        tx_bytes (int | None): Total transmitted bytes, or ``None`` when Docker
+        write_bytes (int | None): Total written bytes, or ``None`` when Docker
             does not expose a usable counter.
     """
 
     container_id: str
     name: str
-    rx_bytes: int | None
-    tx_bytes: int | None
+    read_bytes: int | None
+    write_bytes: int | None
 
 
 class Sample(FrozenModel):
@@ -139,41 +139,41 @@ class Sample(FrozenModel):
 
     Attributes:
         timestamp (float): Monotonic time in seconds when the counters were read.
-        rx_bytes (int): Cumulative received-byte counter.
-        tx_bytes (int): Cumulative transmitted-byte counter.
+        read_bytes (int): Cumulative read-byte counter.
+        write_bytes (int): Cumulative written-byte counter.
     """
 
     timestamp: float
-    rx_bytes: int
-    tx_bytes: int
+    read_bytes: int
+    write_bytes: int
 
 
 class Rate(FrozenModel):
-    """Represent calculated network rates and their measurement span.
+    """Represent calculated disk I/O rates and their measurement span.
 
     Attributes:
-        rx_bytes_per_second (float): Average receive rate during ``span``.
-        tx_bytes_per_second (float): Average transmit rate during ``span``.
+        read_bytes_per_second (float): Average read rate during ``span``.
+        write_bytes_per_second (float): Average write rate during ``span``.
         span (float): Elapsed seconds between the samples used for the rate.
     """
 
-    rx_bytes_per_second: float
-    tx_bytes_per_second: float
+    read_bytes_per_second: float
+    write_bytes_per_second: float
     span: float
 
 
-class ThroughputPoint(FrozenModel):
-    """Represent one aggregate throughput point in the rolling graph.
+class IoPoint(FrozenModel):
+    """Represent one aggregate I/O point in the rolling graph.
 
     Attributes:
         timestamp (float): Monotonic time associated with the aggregate rates.
-        rx_bytes_per_second (float): Combined receive rate for all containers.
-        tx_bytes_per_second (float): Combined transmit rate for all containers.
+        read_bytes_per_second (float): Combined read rate for all containers.
+        write_bytes_per_second (float): Combined write rate for all containers.
     """
 
     timestamp: float
-    rx_bytes_per_second: float
-    tx_bytes_per_second: float
+    read_bytes_per_second: float
+    write_bytes_per_second: float
 
 
 def validate_minimum(value: float, minimum: float) -> float:
@@ -225,7 +225,7 @@ def validate_interval(value: float) -> float:
 
 
 def validate_graph_width(value: int) -> int:
-    """Validate the throughput graph width command-line option.
+    """Validate the I/O graph width command-line option.
 
     Args:
         value (int): Requested number of samples displayed in each sparkline.
@@ -260,14 +260,14 @@ def parse_byte_value(value: str) -> int:
     return int(float(amount) * BYTE_UNITS[unit.lower()])
 
 
-def parse_net_io(value: str) -> tuple[int, int]:
-    """Parse Docker's ``RX / TX`` network counter representation.
+def parse_block_io(value: str) -> tuple[int, int]:
+    """Parse Docker's ``READ / WRITE`` block I/O counter representation.
 
     Args:
-        value (str): Network counters in Docker's ``received / transmitted`` display format.
+        value (str): Block I/O counters in Docker's ``read / written`` display format.
 
     Returns:
-        tuple[int, int]: Received bytes followed by transmitted bytes.
+        tuple[int, int]: Read bytes followed by written bytes.
 
     Raises:
         ValueError: If the value is not exactly two valid byte quantities.
@@ -276,7 +276,7 @@ def parse_net_io(value: str) -> tuple[int, int]:
     # containers, which Docker can represent as "-- / --".
     parts = value.split("/")
     if len(parts) != 2:
-        raise ValueError(f"invalid NetIO value: {value!r}")
+        raise ValueError(f"invalid BlockIO value: {value!r}")
     return parse_byte_value(parts[0]), parse_byte_value(parts[1])
 
 
@@ -288,7 +288,7 @@ def calculate_rate(samples: Sequence[Sample], window: float) -> Rate | None:
         window (float): Minimum elapsed seconds required between samples.
 
     Returns:
-        Rate | None: Calculated RX/TX rates, or ``None`` when the history has not
+        Rate | None: Calculated READ/WRITE rates, or ``None`` when the history has not
             reached the window or the counters cannot produce a valid rate.
     """
     if len(samples) < 2:
@@ -309,27 +309,27 @@ def calculate_rate(samples: Sequence[Sample], window: float) -> Rate | None:
     # Cumulative counter deltas divided by elapsed monotonic time produce an
     # average rate that is unaffected by wall-clock adjustments.
     span = newest.timestamp - oldest.timestamp
-    rx_delta = newest.rx_bytes - oldest.rx_bytes
-    tx_delta = newest.tx_bytes - oldest.tx_bytes
+    read_delta = newest.read_bytes - oldest.read_bytes
+    write_delta = newest.write_bytes - oldest.write_bytes
     # A negative delta means Docker reset a counter, normally after a container
     # restart. Suppress that measurement instead of displaying a negative rate.
-    if span <= 0 or rx_delta < 0 or tx_delta < 0:
+    if span <= 0 or read_delta < 0 or write_delta < 0:
         return None
     return Rate(
-        rx_bytes_per_second=rx_delta / span,
-        tx_bytes_per_second=tx_delta / span,
+        read_bytes_per_second=read_delta / span,
+        write_bytes_per_second=write_delta / span,
         span=span,
     )
 
 
-def collect_stats(include_all: bool) -> tuple[list[ContainerStats], int]:
+def collect_stats(include_all: bool) -> tuple[list[ContainerIoStats], int]:
     """Collect and validate one snapshot from ``docker stats``.
 
     Args:
         include_all (bool): Whether Docker should include stopped containers.
 
     Returns:
-        tuple[list[ContainerStats], int]: Parsed container records and the number
+        tuple[list[ContainerIoStats], int]: Parsed container records and the number
             of malformed output lines that were ignored.
 
     Raises:
@@ -353,7 +353,7 @@ def collect_stats(include_all: bool) -> tuple[list[ContainerStats], int]:
         detail = result.stderr.strip() or result.stdout.strip() or "unknown Docker error"
         raise DockerStatsError(f"Unable to read Docker statistics: {detail}")
 
-    containers: list[ContainerStats] = []
+    containers: list[ContainerIoStats] = []
     malformed = 0
     # Process each emitted JSON object corresponding to a container's current stats.
     for line in result.stdout.splitlines():
@@ -363,18 +363,18 @@ def collect_stats(include_all: bool) -> tuple[list[ContainerStats], int]:
             record = json.loads(line)
             container_id = str(record["ID"])
             name = str(record.get("Name") or container_id)
-            # Stopped containers commonly have unavailable network values. Keep
+            # Stopped containers commonly have unavailable block I/O values. Keep
             # those containers visible while marking their counters unavailable.
             try:
-                rx_bytes, tx_bytes = parse_net_io(str(record["NetIO"]))
+                read_bytes, write_bytes = parse_block_io(str(record["BlockIO"]))
             except (KeyError, ValueError):
-                rx_bytes, tx_bytes = None, None
+                read_bytes, write_bytes = None, None
             containers.append(
-                ContainerStats(
+                ContainerIoStats(
                     container_id=container_id,
                     name=name,
-                    rx_bytes=rx_bytes,
-                    tx_bytes=tx_bytes,
+                    read_bytes=read_bytes,
+                    write_bytes=write_bytes,
                 )
             )
         except (json.JSONDecodeError, KeyError, TypeError):
@@ -411,7 +411,7 @@ def render_sparkline(values: Sequence[float], width: int) -> str:
     """Render numeric values as a right-aligned, fixed-width sparkline.
 
     Args:
-        values (Sequence[float]): Chronological non-negative throughput values.
+        values (Sequence[float]): Chronological non-negative I/O values.
         width (int): Exact number of terminal columns to return.
 
     Returns:
@@ -447,8 +447,8 @@ def format_table_cell(value: str, width: int, alignment: str) -> str:
     return fitted.rjust(width) if alignment == "right" else fitted.ljust(width)
 
 
-class TrafficMonitor:
-    """Own Docker traffic samples, display state, and the polling lifecycle.
+class IoMonitor:
+    """Own Docker I/O samples, display state, and the polling lifecycle.
 
     Attributes:
         window (float): Minimum seconds spanned by each calculated rate.
@@ -456,10 +456,10 @@ class TrafficMonitor:
         include_all (bool): Whether to request stopped containers from Docker.
         once (bool): Whether to exit after the first complete measurement.
         clear_screen (bool): Whether to clear an interactive terminal on refresh.
-        graph_width (int): Maximum samples displayed in each throughput graph.
+        graph_width (int): Maximum samples displayed in each I/O graph.
         histories (dict[str, deque[Sample]]): Samples keyed by container ID.
-        throughput_history (deque[ThroughputPoint]): Bounded aggregate rates.
-        containers (list[ContainerStats]): Container records from the latest poll.
+        io_history (deque[IoPoint]): Bounded aggregate rates.
+        containers (list[ContainerIoStats]): Container records from the latest poll.
         malformed_lines (int): Invalid Docker output lines in the latest poll.
         last_refresh (datetime | None): Local time of the latest completed poll.
         first_render (bool): Whether the monitor has yet to render output.
@@ -492,8 +492,8 @@ class TrafficMonitor:
         self.clear_screen = clear_screen
         self.graph_width = graph_width
         self.histories: dict[str, deque[Sample]] = {}
-        self.throughput_history: deque[ThroughputPoint] = deque(maxlen=graph_width)
-        self.containers: list[ContainerStats] = []
+        self.io_history: deque[IoPoint] = deque(maxlen=graph_width)
+        self.containers: list[ContainerIoStats] = []
         self.malformed_lines = 0
         self.last_refresh: datetime | None = None
         self.first_render = True
@@ -515,11 +515,11 @@ class TrafficMonitor:
         # so the displayed value describes the snapshot currently on screen.
         self.last_refresh = datetime.now().astimezone()
 
-    def update(self, containers: Sequence[ContainerStats], timestamp: float) -> None:
+    def update(self, containers: Sequence[ContainerIoStats], timestamp: float) -> None:
         """Update histories and retain the closest sample spanning the window.
 
         Args:
-            containers (Sequence[ContainerStats]): Container counters in the
+            containers (Sequence[ContainerIoStats]): Container counters in the
                 newest Docker snapshot.
             timestamp (float): Monotonic timestamp shared by the snapshot.
         """
@@ -534,19 +534,19 @@ class TrafficMonitor:
         for container in containers:
             # An unavailable counter cannot contribute to a rate, but the
             # container remains in `self.containers` so render() can show N/A.
-            if container.rx_bytes is None or container.tx_bytes is None:
+            if container.read_bytes is None or container.write_bytes is None:
                 continue
             history = self.histories.setdefault(container.container_id, deque())
 
             # Cumulative counters should only increase. A decrease indicates a
             # reset or restart, so begin a fresh measurement window.
             if history and (
-                container.rx_bytes < history[-1].rx_bytes
-                or container.tx_bytes < history[-1].tx_bytes
+                container.read_bytes < history[-1].read_bytes
+                or container.write_bytes < history[-1].write_bytes
             ):
                 history.clear()
             history.append(
-                Sample(timestamp=timestamp, rx_bytes=container.rx_bytes, tx_bytes=container.tx_bytes)
+                Sample(timestamp=timestamp, read_bytes=container.read_bytes, write_bytes=container.write_bytes)
             )
 
             # Keep exactly one sample at or before the target boundary, plus all
@@ -559,12 +559,12 @@ class TrafficMonitor:
         # complete rate. This keeps the graph from depicting partial warm-up data.
         aggregate_rate = self.aggregate_rate()
         if aggregate_rate is not None:
-            rx_rate, tx_rate = aggregate_rate
-            self.throughput_history.append(
-                ThroughputPoint(
+            read_rate, write_rate = aggregate_rate
+            self.io_history.append(
+                IoPoint(
                     timestamp=timestamp,
-                    rx_bytes_per_second=rx_rate,
-                    tx_bytes_per_second=tx_rate,
+                    read_bytes_per_second=read_rate,
+                    write_bytes_per_second=write_rate,
                 )
             )
 
@@ -589,22 +589,22 @@ class TrafficMonitor:
         measurable_ids = [
             container.container_id
             for container in self.containers
-            if container.rx_bytes is not None and container.tx_bytes is not None
+            if container.read_bytes is not None and container.write_bytes is not None
         ]
         return all(self.rate_for(container_id) is not None for container_id in measurable_ids)
 
     def aggregate_rate(self) -> tuple[float, float] | None:
-        """Calculate complete aggregate receive and transmit rates.
+        """Calculate complete aggregate read and write rates.
 
         Returns:
-            tuple[float, float] | None: Combined RX and TX bytes per second, or
+            tuple[float, float] | None: Combined read and write bytes per second, or
                 ``None`` if no measurable container exists or any rate is still
                 warming up.
         """
         measurable_ids = [
             container.container_id
             for container in self.containers
-            if container.rx_bytes is not None and container.tx_bytes is not None
+            if container.read_bytes is not None and container.write_bytes is not None
         ]
         if not measurable_ids:
             return None
@@ -615,8 +615,8 @@ class TrafficMonitor:
 
         complete_rates = [rate for rate in rates if rate is not None]
         return (
-            sum(rate.rx_bytes_per_second for rate in complete_rates),
-            sum(rate.tx_bytes_per_second for rate in complete_rates),
+            sum(rate.read_bytes_per_second for rate in complete_rates),
+            sum(rate.write_bytes_per_second for rate in complete_rates),
         )
 
     def render(self) -> str:
@@ -629,31 +629,31 @@ class TrafficMonitor:
 
         # Sort by the user-facing name to keep row order stable between polls.
         for container in sorted(self.containers, key=lambda item: item.name.lower()):
-            if container.rx_bytes is None or container.tx_bytes is None:
-                rx_rate = tx_rate = rx_total = tx_total = span = "N/A"
+            if container.read_bytes is None or container.write_bytes is None:
+                read_rate = write_rate = read_total = write_total = span = "N/A"
             else:
                 rate = self.rate_for(container.container_id)
-                rx_total = format_bytes(container.rx_bytes)
-                tx_total = format_bytes(container.tx_bytes)
+                read_total = format_bytes(container.read_bytes)
+                write_total = format_bytes(container.write_bytes)
                 if rate is None:
                     # During warm-up, expose progress toward the minimum window
                     # rather than showing a misleading zero rate.
-                    rx_rate = tx_rate = "warming up"
+                    read_rate = write_rate = "warming up"
                     history = self.histories.get(container.container_id)
                     elapsed = history[-1].timestamp - history[0].timestamp if history else 0.0
                     span = f"{elapsed:.1f}s/{self.window:g}s"
                 else:
-                    rx_rate = f"{format_bytes(rate.rx_bytes_per_second)}/s"
-                    tx_rate = f"{format_bytes(rate.tx_bytes_per_second)}/s"
+                    read_rate = f"{format_bytes(rate.read_bytes_per_second)}/s"
+                    write_rate = f"{format_bytes(rate.write_bytes_per_second)}/s"
                     span = f"{rate.span:.1f}s"
             rows.append(
                 (
                     container.name,
                     container.container_id[:12],
-                    rx_rate,
-                    tx_rate,
-                    rx_total,
-                    tx_total,
+                    read_rate,
+                    write_rate,
+                    read_total,
+                    write_total,
                     span,
                 )
             )
@@ -668,7 +668,7 @@ class TrafficMonitor:
         headers = tuple(column[0] for column in TABLE_COLUMNS)
 
         output = [
-            f"Docker network traffic (minimum window: {self.window:g}s)",
+            f"Docker disk I/O (minimum window: {self.window:g}s)",
             line(headers),
             line(tuple("-" * width for _, width, _ in TABLE_COLUMNS)),
         ]
@@ -682,39 +682,39 @@ class TrafficMonitor:
         measurable = [
             container
             for container in self.containers
-            if container.rx_bytes is not None and container.tx_bytes is not None
+            if container.read_bytes is not None and container.write_bytes is not None
         ]
         if not measurable:
-            rx_rate = tx_rate = rx_total = tx_total = "N/A"
+            read_rate = write_rate = read_total = write_total = "N/A"
         else:
-            rx_total = format_bytes(sum(container.rx_bytes or 0 for container in measurable))
-            tx_total = format_bytes(sum(container.tx_bytes or 0 for container in measurable))
+            read_total = format_bytes(sum(container.read_bytes or 0 for container in measurable))
+            write_total = format_bytes(sum(container.write_bytes or 0 for container in measurable))
             aggregate_rate = self.aggregate_rate()
             if aggregate_rate is None:
-                rx_rate = tx_rate = "warming up"
+                read_rate = write_rate = "warming up"
             else:
-                aggregate_rx, aggregate_tx = aggregate_rate
-                rx_rate = f"{format_bytes(aggregate_rx)}/s"
-                tx_rate = f"{format_bytes(aggregate_tx)}/s"
+                aggregate_read, aggregate_write = aggregate_rate
+                read_rate = f"{format_bytes(aggregate_read)}/s"
+                write_rate = f"{format_bytes(aggregate_write)}/s"
 
-        rx_history = [point.rx_bytes_per_second for point in self.throughput_history]
-        tx_history = [point.tx_bytes_per_second for point in self.throughput_history]
-        if self.throughput_history:
+        read_history = [point.read_bytes_per_second for point in self.io_history]
+        write_history = [point.write_bytes_per_second for point in self.io_history]
+        if self.io_history:
             history_span = (
-                self.throughput_history[-1].timestamp
-                - self.throughput_history[0].timestamp
+                self.io_history[-1].timestamp
+                - self.io_history[0].timestamp
             )
             graph_status = (
                 f"{history_span:.0f}s, "
-                f"{len(self.throughput_history)}/{self.graph_width} samples"
+                f"{len(self.io_history)}/{self.graph_width} samples"
             )
-            rx_now = f"{format_bytes(rx_history[-1])}/s"
-            tx_now = f"{format_bytes(tx_history[-1])}/s"
-            rx_peak = f"{format_bytes(max(rx_history))}/s"
-            tx_peak = f"{format_bytes(max(tx_history))}/s"
+            read_now = f"{format_bytes(read_history[-1])}/s"
+            write_now = f"{format_bytes(write_history[-1])}/s"
+            read_peak = f"{format_bytes(max(read_history))}/s"
+            write_peak = f"{format_bytes(max(write_history))}/s"
         else:
             graph_status = f"collecting, 0/{self.graph_width} samples"
-            rx_now = tx_now = rx_peak = tx_peak = "N/A"
+            read_now = write_now = read_peak = write_peak = "N/A"
 
         refreshed_at = (
             self.last_refresh.strftime("%Y-%m-%d %H:%M:%S %Z")
@@ -722,19 +722,19 @@ class TrafficMonitor:
             else "not yet polled"
         )
         output.append("")
-        output.append(f"Throughput history ({graph_status})")
+        output.append(f"I/O history ({graph_status})")
         output.append(
-            f"RX  {render_sparkline(rx_history, self.graph_width)}  "
-            f"now {rx_now}  peak {rx_peak}"
+            f"READ  {render_sparkline(read_history, self.graph_width)}  "
+            f"now {read_now}  peak {read_peak}"
         )
         output.append(
-            f"TX  {render_sparkline(tx_history, self.graph_width)}  "
-            f"now {tx_now}  peak {tx_peak}"
+            f"WRITE  {render_sparkline(write_history, self.graph_width)}  "
+            f"now {write_now}  peak {write_peak}"
         )
         output.append("")
         output.append(
-            f"Overall: RX {rx_rate} | TX {tx_rate} | "
-            f"RX total {rx_total} | TX total {tx_total}"
+            f"Overall: READ {read_rate} | WRITE {write_rate} | "
+            f"READ total {read_total} | WRITE total {write_total}"
         )
         output.append(f"Last refresh: {refreshed_at}")
         if self.malformed_lines:
@@ -744,7 +744,7 @@ class TrafficMonitor:
         return "\n".join(output)
 
     def run(self) -> int:
-        """Poll and display traffic until completion or interruption.
+        """Poll and display disk I/O until completion or interruption.
 
         Returns:
             int: Process-style exit code: zero for normal completion or Ctrl-C,
@@ -797,7 +797,7 @@ class TrafficMonitor:
                 live_display.stop()
 
 
-@app.command(help="Monitor per-container Docker network traffic from cumulative counters.")
+@app.command(help="Monitor per-container Docker disk I/O from cumulative counters.")
 def main(
     window: Annotated[
         float,
@@ -832,11 +832,11 @@ def main(
             "--graph-width",
             metavar="N",
             callback=validate_graph_width,
-            help="Number of samples displayed in each throughput graph.",
+            help="Number of samples displayed in each I/O graph.",
         ),
     ] = 60,
 ) -> None:
-    """Monitor per-container Docker network traffic from cumulative counters.
+    """Monitor per-container Docker disk I/O from cumulative counters.
 
     Args:
         window (float): Minimum elapsed seconds used to calculate each rate.
@@ -850,7 +850,7 @@ def main(
         typer.Exit: Always raised with the monitor's process exit code so Typer
             can terminate the command consistently.
     """
-    monitor = TrafficMonitor(
+    monitor = IoMonitor(
         window=window,
         interval=interval,
         include_all=include_all,
