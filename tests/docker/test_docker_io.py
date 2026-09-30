@@ -94,13 +94,65 @@ def test_table_columns_have_fixed_widths() -> None:
         1.0,
     )
 
-    table_lines = monitor.render().splitlines()[1:4]
+    rendered_lines = monitor.render().splitlines()
+    table_lines = [rendered_lines[index] for index in (1, 2, 4)]
     expected_width = sum(column[1] for column in docker_io.TABLE_COLUMNS) + 2 * (
         len(docker_io.TABLE_COLUMNS) - 1
     )
 
     assert all(len(line) == expected_width for line in table_lines)
     assert "a-container-name-that..." in table_lines[-1]
+
+
+def test_collect_compose_metadata_reads_compose_labels(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Associate short stats IDs with Compose labels from Docker inspect."""
+    inspect_output = (
+        '{"Id":"abcdef1234567890","Config":{"Labels":{'
+        '"com.docker.compose.project.config_files":"/srv/app/compose.yaml",'
+        '"com.docker.compose.project":"inventory"}}}\n'
+    )
+
+    def fake_run(*_args: object, **_kwargs: object) -> object:
+        return type("Result", (), {"returncode": 0, "stdout": inspect_output})()
+
+    monkeypatch.setattr(docker_io.subprocess, "run", fake_run)
+
+    assert docker_io.collect_compose_metadata(["abcdef123456"])["abcdef123456"] == (
+        "/srv/app/compose.yaml",
+        "inventory",
+    )
+
+
+def test_render_groups_containers_by_compose_file() -> None:
+    """Render Compose-file groups before standalone containers."""
+    monitor = docker_io.IoMonitor(window=1.0, interval=1.0)
+    monitor.update(
+        [
+            docker_io.ContainerIoStats(
+                container_id="standalone",
+                name="manual-job",
+                read_bytes=0,
+                write_bytes=0,
+            ),
+            docker_io.ContainerIoStats(
+                container_id="composed",
+                name="web",
+                read_bytes=0,
+                write_bytes=0,
+                compose_file="/srv/app/compose.yaml",
+                compose_project="inventory",
+            ),
+        ],
+        0.0,
+    )
+
+    rendered = monitor.render()
+
+    assert "Compose: /srv/app/compose.yaml [inventory]" in rendered
+    assert "Standalone containers" in rendered
+    assert rendered.index("Compose: /srv/app/compose.yaml") < rendered.index(
+        "Standalone containers"
+    )
 
 
 def test_calculate_rate_uses_narrowest_span_at_least_window() -> None:

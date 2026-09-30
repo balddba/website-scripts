@@ -9,7 +9,7 @@
 # Description:
 #   Polls cumulative block I/O counters from the Docker CLI and displays per-
 #   container read and write rates measured across at least the requested
-#   number of seconds.
+#   number of seconds, grouped by the Compose file that created each container.
 #
 # Parameters:
 #   --window SECONDS   Minimum elapsed time used to calculate rates (default: 5)
@@ -126,12 +126,16 @@ class ContainerIoStats(FrozenModel):
             does not expose a usable counter.
         write_bytes (int | None): Total written bytes, or ``None`` when Docker
             does not expose a usable counter.
+        compose_file (str | None): Compose config file label, when present.
+        compose_project (str | None): Compose project label, when present.
     """
 
     container_id: str
     name: str
     read_bytes: int | None
     write_bytes: int | None
+    compose_file: str | None = None
+    compose_project: str | None = None
 
 
 class Sample(FrozenModel):
@@ -280,6 +284,51 @@ def parse_block_io(value: str) -> tuple[int, int]:
     return parse_byte_value(parts[0]), parse_byte_value(parts[1])
 
 
+def collect_compose_metadata(container_ids: Sequence[str]) -> dict[str, tuple[str | None, str | None]]:
+    """Read Compose file and project labels for a set of containers.
+
+    Args:
+        container_ids (Sequence[str]): Container IDs accepted by ``docker inspect``.
+
+    Returns:
+        dict[str, tuple[str | None, str | None]]: Metadata keyed by both full and
+            requested container IDs. Missing labels are represented by ``None``.
+    """
+    if not container_ids:
+        return {}
+
+    command = ["docker", "inspect", "--format", "{{json .}}", *container_ids]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+    except FileNotFoundError:
+        return {}
+    # Containers can disappear between stats and inspect. Metadata is optional,
+    # so keep the I/O snapshot usable when inspection races with removal.
+    if result.returncode != 0:
+        return {}
+
+    metadata: dict[str, tuple[str | None, str | None]] = {}
+    requested_ids = list(container_ids)
+    for line in result.stdout.splitlines():
+        try:
+            record = json.loads(line)
+            full_id = str(record["Id"])
+            labels = record.get("Config", {}).get("Labels") or {}
+            compose_file = labels.get("com.docker.compose.project.config_files")
+            compose_project = labels.get("com.docker.compose.project")
+            values = (
+                str(compose_file) if compose_file else None,
+                str(compose_project) if compose_project else None,
+            )
+            metadata[full_id] = values
+            for requested_id in requested_ids:
+                if full_id.startswith(requested_id):
+                    metadata[requested_id] = values
+        except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
+            continue
+    return metadata
+
+
 def calculate_rate(samples: Sequence[Sample], window: float) -> Rate | None:
     """Calculate rates over the narrowest sample span covering a window.
 
@@ -384,6 +433,18 @@ def collect_stats(include_all: bool) -> tuple[list[ContainerIoStats], int]:
     # If parsing completely failed across all records, assume an incompatible output format.
     if malformed and not containers:
         raise DockerStatsError("Docker returned statistics in an unrecognized format.")
+    compose_metadata = collect_compose_metadata(
+        [container.container_id for container in containers]
+    )
+    containers = [
+        container.model_copy(
+            update={
+                "compose_file": compose_metadata.get(container.container_id, (None, None))[0],
+                "compose_project": compose_metadata.get(container.container_id, (None, None))[1],
+            }
+        )
+        for container in containers
+    ]
     return containers, malformed
 
 
@@ -625,9 +686,9 @@ class IoMonitor:
         Returns:
             str: Complete display text for the latest snapshot.
         """
-        rows: list[tuple[str, ...]] = []
+        grouped_rows: dict[tuple[str, str], list[tuple[str, ...]]] = {}
 
-        # Sort by the user-facing name to keep row order stable between polls.
+        # Sort containers within Compose-file groups to keep output stable.
         for container in sorted(self.containers, key=lambda item: item.name.lower()):
             if container.read_bytes is None or container.write_bytes is None:
                 read_rate = write_rate = read_total = write_total = span = "N/A"
@@ -646,7 +707,12 @@ class IoMonitor:
                     read_rate = f"{format_bytes(rate.read_bytes_per_second)}/s"
                     write_rate = f"{format_bytes(rate.write_bytes_per_second)}/s"
                     span = f"{rate.span:.1f}s"
-            rows.append(
+            group = (
+                (container.compose_file, container.compose_project or "")
+                if container.compose_file
+                else ("", "")
+            )
+            grouped_rows.setdefault(group, []).append(
                 (
                     container.name,
                     container.container_id[:12],
@@ -672,8 +738,16 @@ class IoMonitor:
             line(headers),
             line(tuple("-" * width for _, width, _ in TABLE_COLUMNS)),
         ]
-        output.extend(line(row) for row in rows)
-        if not rows:
+        for (compose_file, compose_project), rows in sorted(
+            grouped_rows.items(), key=lambda item: (not item[0][0], item[0][0].lower())
+        ):
+            if compose_file:
+                project_suffix = f" [{compose_project}]" if compose_project else ""
+                output.append(f"Compose: {compose_file}{project_suffix}")
+            else:
+                output.append("Standalone containers")
+            output.extend(line(row) for row in rows)
+        if not grouped_rows:
             output.append("No containers found.")
 
         # Aggregate only containers with usable counters. Rate totals remain in

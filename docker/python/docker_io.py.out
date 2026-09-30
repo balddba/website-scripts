@@ -2,8 +2,10 @@ $ uv run python docker/python/docker_io.py --window 2 --interval 1 --graph-width
 Docker disk I/O (minimum window: 2s)
 CONTAINER                 ID                       READ/s             WRITE/s      READ TOTAL     WRITE TOTAL            SPAN
 ------------------------  ------------  ------------------  ------------------  --------------  --------------  --------------
+Compose: /Users/aaron/projects/shop/compose.yaml [shop]
 api                       b2c3d4e5f6a7          64.0 KiB/s         128.0 KiB/s         4.0 MiB         8.0 MiB            2.0s
 web                       a1b2c3d4e5f6         256.0 KiB/s          32.0 KiB/s        16.0 MiB         2.0 MiB            2.0s
+Standalone containers
 worker                    c3d4e5f6a7b8          12.0 KiB/s          48.0 KiB/s       768.0 KiB         3.0 MiB            2.0s
 
 I/O history (6s, 7/30 samples)
